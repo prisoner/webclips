@@ -31,7 +31,7 @@
   },
   {
     "ID": "0dd5f1d6814fe845867b38521b39468e5b2b7229",
-    "Title": "万字长文，带你从零学习Webpack - 掘金",
+    "Title": "万字长文，带你从零学习Webpack",
     "Link": "https://juejin.cn/post/6994346951739179039",
     "Time": "2023-05-14T16:14:17.091592673+08:00"
   },
@@ -45,6 +45,12 @@
     "ID": "4f8fbbc934afd266f02b8d147cde177bf0379fc9",
     "Title": "给你们科普下神奇的伊斯兰女权",
     "Link": "https://mp.weixin.qq.com/s/qThF7o99K5Nl_L0h45nYTw",
-    "Time": "2023-05-14T21:04:44.455282162+08:00"
+    "Time": "2023-05-14T21:07:45.178461405+08:00"
+  },
+  {
+    "ID": "9a4500be4cc01559aab82834fd3daafe831035f6",
+    "Title": "函数式编程术语",
+    "Link": "https://github.com/shfshanyue/fp-jargon-zh",
+    "Time": "2023-05-14T21:16:21.694048395+08:00"
   }
 ]

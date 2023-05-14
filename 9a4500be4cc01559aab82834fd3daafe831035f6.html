@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数式编程术语</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>函数式编程术语</h1>
+</header>
+<main class="typo"><div><div><div><main><turbo-frame><div><div><div><div><div><readme-toc><div><div><article><h1><a href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E6%9C%AF%E8%AF%AD"></a>函数式编程术语</h1>
+<blockquote>
+<p>译者注：本项目译自 <a href="https://github.com/hemanth/functional-programming-jargon">functional-programing-jargon</a>，专业术语居多，如有错误，可以提 pr 更正。除了术语翻译，针对每项术语，也有代码示例，位于 /demos 目录下。另外，这里也有几份不错的文章和仓库。</p>
+</blockquote>
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2017/02/fp-tutorial.html">函数式编程入门教程</a></li>
+<li><a href="https://github.com/MostlyAdequate/mostly-adequate-guide">mostly-adequate-guide (10749 stars)</a></li>
+<li><a href="https://github.com/llh911001/mostly-adequate-guide-chinese">mostly-adequate-guide-chinese (602 stars)</a></li>
+<li><a href="https://github.com/fantasyland/fantasy-land">fantasy-land</a></li>
+</ul>
+<p>函数式编程有许多优势，由此越来越受欢迎。然而每个编程范式 (paradigm) 都有自己唯一的术语，函数式编程也不例外。我们提供一张术语表，希望使你学习函数式编程变得容易些。</p>
+<p>示例均为 javascript (ES2015)。<a href="https://github.com/hemanth/functional-programming-jargon/wiki/Why-JavaScript%3F">为什么使用JavaScript?</a></p>
+<p><em>尚在 WIP 阶段，欢迎 pr。</em></p>
+<p>如果适用，本篇文档使用定义在 <a href="https://github.com/fantasyland/fantasy-land">Fantasy Land spec</a> 中的术语。</p>
+<p><strong>目录</strong></p>
+<ul>
+<li><a href="#arity">Arity</a></li>
+<li><a href="#higher-order-functions-hof">高阶函数 (HOF)</a></li>
+<li><a href="#closure">闭包 (Closure)</a></li>
+<li><a href="#partial-application">偏函数应用 (Partial Application)</a></li>
+<li><a href="#currying">柯里化 (Currying)</a></li>
+<li><a href="#auto-currying">自动柯里化 (Auto Currying)</a></li>
+<li><a href="#function-composition">函数组合 (Function Composition)</a></li>
+<li><a href="#continuation">后续 (Continuation)</a></li>
+<li><a href="#purity">纯函数 (Purity)</a></li>
+<li><a href="#side-effects">副作用 (Side effects)</a></li>
+<li><a href="#idempotent">幂等性 (Idempotent)</a></li>
+<li><a href="#point-free-style">Point-Free 风格 (Point-Free Style)</a></li>
+<li><a href="#predicate">断定 (Predicate)</a></li>
+<li><a href="#contracts">契约 (Contracts)</a></li>
+<li><a href="#category">范畴 (Category)</a></li>
+<li><a href="#value">值 (Value)</a></li>
+<li><a href="#constant">常量 (Constant)</a></li>
+<li><a href="#functor">函子 (Functor)</a>
+<ul>
+<li><a href="#preserves-identity">一致性 (Preserves identity)</a></li>
+<li><a href="#composable">组合性 (Composable)</a></li>
+</ul>
+</li>
+<li><a href="#pointed-functor">指向函子 (Pointed Functor)</a></li>
+<li><a href="#lift">抬升 (Lift)</a></li>
+<li><a href="#referential-transparency">引用透明性 (Referential Transparency)</a></li>
+<li><a href="#equational-reasoning">等式推理 (Equational Reasoning)</a></li>
+<li><a href="#lambda">Lambda</a></li>
+<li><a href="#lambda-calculus">Lambda 演算 (Lambda Calculus)</a></li>
+<li><a href="#lazy-evaluation">惰性求值 (Lazy evaluation)</a></li>
+<li><a href="#monoid">幺半群 (Monoid)</a></li>
+<li><a href="#monad">单子 (Monad)</a></li>
+<li><a href="#comonad">余单子 (Comonad)</a></li>
+<li><a href="#applicative-functor">应用函子 (Applicative Functor)</a></li>
+<li><a href="#morphism">态射 (Morphism)</a>
+<ul>
+<li><a href="#endomorphism">Endomorphism (自同态)</a></li>
+<li><a href="#isomorphism">Isomorphism (同构)</a></li>
+<li><a href="#homomorphism">Homomorphism (同态)</a></li>
+<li><a href="#catamorphism">Catamorphism</a></li>
+<li><a href="#anamorphism">Anamorphism</a></li>
+<li><a href="#hylomorphism">Hylomorphism</a></li>
+<li><a href="#paramorphism">Paramorphism</a></li>
+<li><a href="#apomorphism">Apomorphism</a></li>
+</ul>
+</li>
+<li><a href="#setoid">Setoid</a></li>
+<li><a href="#semigroup">半群 (Semigroup)</a></li>
+<li><a href="#foldable">可折叠性 (Foldable)</a></li>
+<li><a href="#lens">透镜 (Lens)</a></li>
+<li><a href="#type-signatures">类型签名 (Type Signatures)</a></li>
+<li><a href="#algebraic-data-type">代数数据类型 (Algebraic data type)</a>
+<ul>
+<li><a href="#sum-type">和类型 (Sum type)</a></li>
+<li><a href="#product-type">积类型 (Product type)</a></li>
+</ul>
+</li>
+<li><a href="#option">可选类型 (Option)</a></li>
+<li><a href="#function">函数 (Function)</a></li>
+<li><a href="#partial-function">偏函数 (Partial Function)</a></li>
+<li><a href="#functional-programming-libraries-in-javascript">函数式编程库</a></li>
+</ul>
+<div></div>
+<h2><a href="#arity"></a>Arity</h2>
+<p>函数参数的个数。来自于单词 unary(一元), binary(二元), ternary(三元) 等等。这个单词是由 -ary 与 -ity 两个后缀拼接而成。例如，加法函数有两个参数，因此它被定义为二元函数(<code>binary function</code>)，或者说它的 <code>arity</code> 是2。它也被那些更喜欢希腊词根而非拉丁词根的人称为 <code>dyadic</code>。同样地，带有可变数量的参数的函数被称为 <code>variadic</code>，而二元函数只能且必须带两个参数，尽管有柯里化(currying)和偏函数应用(partial application)的存在(见下文)。</p>
+<div><pre><span>const</span> <span>sum</span> <span>=</span> <span>(</span><span>a</span><span>,</span> <span>b</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>b</span>
+
+<span>const</span> <span>arity</span> <span>=</span> <span>sum</span><span>.</span><span>length</span>
+<span>console</span><span>.</span><span>log</span><span>(</span><span>arity</span><span>)</span>        <span>// 2</span>
+
+<span>// 函数sum的arity为2。</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/arity.js">示例</a></p>
+<div></div>
+<h2><a href="#%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0-higher-order-function--hof"></a>高阶函数 (Higher-Order Function / HOF)</h2>
+<p>以函数为参数或/和返回值的函数。</p>
+<div><pre><span>const</span> <span>filter</span> <span>=</span> <span>(</span><span>predicate</span><span>,</span> <span>xs</span><span>)</span> <span>=&gt;</span> <span>xs</span><span>.</span><span>filter</span><span>(</span><span>predicate</span><span>)</span>
+
+<span>const</span> <span>is</span> <span>=</span> <span>(</span><span>type</span><span>)</span> <span>=&gt;</span> <span>(</span><span>x</span><span>)</span> <span>=&gt;</span> <span>Object</span><span>(</span><span>x</span><span>)</span> <span>instanceof</span> <span>type</span>
+
+<span>filter</span><span>(</span><span>is</span><span>(</span><span>Number</span><span>)</span><span>,</span> <span>[</span><span>0</span><span>,</span> <span>&#39;1&#39;</span><span>,</span> <span>2</span><span>,</span> <span>null</span><span>]</span><span>)</span> <span>// 0, 2</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/hoc.js">示例</a></p>
+<div></div>
+<h2><a href="#%E9%97%AD%E5%8C%85-closure"></a>闭包 (Closure)</h2>
+<p>闭包是访问在其作用域外的变量的一种方式。正式地说，闭包是一种用于实现词法作用域命名绑定的技术。它是存储一个函数和它的环境的一种方法。</p>
+<p>闭包是一个作用域，它会捕获函数的局部变量，因此即使执行过程已经移出了定义它的那个代码块，也可以访问它们。也就是说，它们允许在声明变量的代码块已经执行完成之后，还是可以引用这个作用域。</p>
+<div><pre><span>const</span> <span>addTo</span> <span>=</span> <span>x</span> <span>=&gt;</span> <span>y</span> <span>=&gt;</span> <span>x</span> <span>+</span> <span>y</span><span>;</span>
+<span>var</span> <span>addToFive</span> <span>=</span> <span>addTo</span><span>(</span><span>5</span><span>)</span><span>;</span>
+<span>addToFive</span><span>(</span><span>3</span><span>)</span><span>;</span> <span>//返回 8</span></pre></div>
+<p>函数<code>addTo()</code>返回了一个函数(在内部调用了<code>add()</code>)，我们将它保存在了一个叫做<code>addToFive</code>的变量中，并且柯里化地用一个参数5来调用它。</p>
+<p>理想情况下，当函数<code>addTo</code>执行完成后，它的作用域，包括本地变量add(即+)，x，y，都应该无法访问了。但是，<code>addToFive()</code>的调用返回了8。这说明，<code>addTo</code>函数的状态被保存了，即使在代码块已经完成执行之后。否则，就不会知道<code>addTo</code>曾经被<code>addTo(5)</code>这样调用过，且x的值被设为了5。</p>
+<p>词法作用域(lexical scoping)是它能找到x和add这两个已经完成执行的父级私有变量的原因。这个值就称为闭包。</p>
+<p>栈和函数的词法作用域被以父函数的引用的形式存储。这可以防止闭包和底层的变量被垃圾回收(因为至少有一个对它的有效引用)。</p>
+<p>Lambda Vs 闭包：Lambda本质上是一个内联定义的函数，而不是声明函数的标准方法。Lambda经常可以作为对象被传递。</p>
+<p>闭包是通过引用其主体外部的字段来将其周围的状态包裹进来的函数。被包裹的状态在闭包调用期间保持不变。</p>
+<div></div>
+<h2><a href="#%E5%81%8F%E5%87%BD%E6%95%B0%E5%BA%94%E7%94%A8-partial-application"></a>偏函数应用 (Partial Application)</h2>
+<p>&#34;部分地&#34;应用一个函数，即预设原始函数的部分参数来创建一个新的函数。</p>
+<div><pre><span>// 创建偏函数，固定一些参数</span>
+<span>const</span> <span>partial</span> <span>=</span> <span>(</span><span>f</span><span>,</span> ...<span>args</span><span>)</span> <span>=&gt;</span>
+  <span>// 返回一个带有剩余参数的函数</span>
+  <span>(</span>...<span>moreArgs</span><span>)</span> <span>=&gt;</span>
+    <span>// 调用原始函数</span>
+    <span>f</span><span>(</span>...<span>args</span><span>,</span> ...<span>moreArgs</span><span>)</span>
+
+<span>const</span> <span>add3</span> <span>=</span> <span>(</span><span>a</span><span>,</span> <span>b</span><span>,</span> <span>c</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>b</span> <span>+</span> <span>c</span> <span>// (c) =&gt; 2 + 3 + c</span>
+
+<span>// 部分地将`2`和`3`应用于`add3`，得到一个只有一个参数的函数</span>
+<span>const</span> <span>fivePlus</span> <span>=</span> <span>partial</span><span>(</span><span>add3</span><span>,</span> <span>2</span><span>,</span> <span>3</span><span>)</span>
+
+<span>fivePlus</span><span>(</span><span>4</span><span>)</span>  <span>// 9</span></pre></div>
+<p>也可以使用 <code>Function.prototype.bind</code> 实现偏函数。</p>
+<div><pre><span>const</span> <span>add1More</span> <span>=</span> <span>add3</span><span>.</span><span>bind</span><span>(</span><span>null</span><span>,</span> <span>2</span><span>,</span> <span>3</span><span>)</span> <span>// (c) =&gt; 2 + 3 + c</span></pre></div>
+<p>偏函数应用通过对复杂的函数填充一部分数据来构成一个简单的函数。柯里化就是自动实现的偏函数。</p>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/partial.js">示例</a></p>
+<div></div>
+<h2><a href="#%E6%9F%AF%E9%87%8C%E5%8C%96-currying"></a>柯里化 (Currying)</h2>
+<p>将一个多元函数转变为一元函数的过程。
+每当函数被调用时，它仅仅接收一个参数并且返回带有一个参数的函数，直到传递完所有的参数。</p>
+<div><pre><span>const</span> <span>sum</span> <span>=</span> <span>(</span><span>a</span><span>,</span> <span>b</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>b</span>
+
+<span>const</span> <span>curriedSum</span> <span>=</span> <span>(</span><span>a</span><span>)</span> <span>=&gt;</span> <span>(</span><span>b</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>b</span>
+
+<span>curriedSum</span><span>(</span><span>3</span><span>)</span><span>(</span><span>4</span><span>)</span>         <span>// 7</span>
+
+<span>const</span> <span>add2</span> <span>=</span> <span>curriedSum</span><span>(</span><span>2</span><span>)</span>
+
+<span>add2</span><span>(</span><span>10</span><span>)</span>     <span>// 12</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/curry.js">示例</a></p>
+<div></div>
+<h2><a href="#%E8%87%AA%E5%8A%A8%E6%9F%AF%E9%87%8C%E5%8C%96-auto-currying"></a>自动柯里化 (Auto Currying)</h2>
+<p>将一个包含多个参数的函数转换成另一个函数，这个函数如果被给到的参数少于正确的数量，就会返回一个接受剩余参数的函数。</p>
+<p>lodash &amp; Ramda 有一个<code>curry</code>函数可以做到这一点。</p>
+<div><pre><span>const</span> <span>add</span> <span>=</span> <span>(</span><span>x</span><span>,</span> <span>y</span><span>)</span> <span>=&gt;</span> <span>x</span> <span>+</span> <span>y</span>
+
+<span>const</span> <span>curriedAdd</span> <span>=</span> <span>_</span><span>.</span><span>curry</span><span>(</span><span>add</span><span>)</span>
+
+<span>curriedAdd</span><span>(</span><span>1</span><span>,</span> <span>2</span><span>)</span>   <span>// 3</span>
+<span>curriedAdd</span><span>(</span><span>1</span><span>)</span><span>(</span><span>2</span><span>)</span>   <span>// 3</span>
+<span>curriedAdd</span><span>(</span><span>1</span><span>)</span>      <span>// (y) =&gt; 1 + y</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/curry2.js">示例</a></p>
+<h4><a href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E9%98%85%E8%AF%BB"></a>进一步阅读</h4>
+<ul>
+<li><a href="http://fr.umio.us/favoring-curry/">Favoring Curry</a></li>
+<li><a href="https://www.youtube.com/watch?v=m3svKOdZijA">Hey Underscore, You&#39;re Doing It Wrong!</a></li>
+</ul>
+<div></div>
+<h2><a href="#%E5%87%BD%E6%95%B0%E7%BB%84%E5%90%88-function-composition"></a>函数组合 (Function Composition)</h2>
+<p>把两个函数放在一起形成第三个函数的行为，一个函数的输入为另一个函数的输出。</p>
+<div><pre><span>const</span> <span>compose</span> <span>=</span> <span>(</span><span>f</span><span>,</span> <span>g</span><span>)</span> <span>=&gt;</span> <span>(</span><span>a</span><span>)</span> <span>=&gt;</span> <span>f</span><span>(</span><span>g</span><span>(</span><span>a</span><span>)</span><span>)</span>    <span>// 定义</span>
+<span>const</span> <span>floorAndToString</span> <span>=</span> <span>compose</span><span>(</span><span>(</span><span>val</span><span>)</span> <span>=&gt;</span> <span>val</span><span>.</span><span>toString</span><span>(</span><span>)</span><span>,</span> <span>Math</span><span>.</span><span>floor</span><span>)</span> <span>// 使用</span>
+<span>floorAndToString</span><span>(</span><span>12.12</span><span>)</span>   <span>// &#39;12&#39;</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/compose.js">示例</a></p>
+<div></div>
+<h2><a href="#continuation-%E5%90%8E%E7%BB%AD"></a>Continuation (后续)</h2>
+<p>在一个程序执行的任意时刻，尚未执行的代码称为 Continuation。</p>
+<div><pre><span>const</span> <span>printAsString</span> <span>=</span> <span>(</span><span>num</span><span>)</span> <span>=&gt;</span> <span>console</span><span>.</span><span>log</span><span>(</span><span>`Given <span><span>${</span><span>num</span><span>}</span></span>`</span><span>)</span>
+
+<span>const</span> <span>addOneAndContinue</span> <span>=</span> <span>(</span><span>num</span><span>,</span> <span>cc</span><span>)</span> <span>=&gt;</span> <span>{</span>
+  <span>const</span> <span>result</span> <span>=</span> <span>num</span> <span>+</span> <span>1</span>
+  <span>cc</span><span>(</span><span>result</span><span>)</span>
+<span>}</span>
+
+<span>addOneAndContinue</span><span>(</span><span>2</span><span>,</span> <span>printAsString</span><span>)</span> <span>// &#39;Given 3&#39;</span></pre></div>
+<p>Continuation 在异步编程中很常见，比如当程序需要接收到数据才能够继续执行。请求的响应通常作为代码的剩余执行部分，一旦接收到数据，对数据的处理被作为 Continuation。</p>
+<div><pre><span>const</span> <span>continueProgramWith</span> <span>=</span> <span>(</span><span>data</span><span>)</span> <span>=&gt;</span> <span>{</span>
+  <span>// 继续执行程序</span>
+<span>}</span>
+
+<span>readFileAsync</span><span>(</span><span>&#39;path/to/file&#39;</span><span>,</span> <span>(</span><span>err</span><span>,</span> <span>response</span><span>)</span> <span>=&gt;</span> <span>{</span>
+  <span>if</span> <span>(</span><span>err</span><span>)</span> <span>{</span>
+    <span>// 错误处理</span>
+    <span>return</span>
+  <span>}</span>
+  <span>continueProgramWith</span><span>(</span><span>response</span><span>)</span>
+<span>}</span><span>)</span></pre></div>
+<div></div>
+<h2><a href="#%E7%BA%AF%E5%87%BD%E6%95%B0-purity"></a>纯函数 (Purity)</h2>
+<p>输出仅由输入决定，且不产生副作用。</p>
+<div><pre><span>const</span> <span>greet</span> <span>=</span> <span>(</span><span>name</span><span>)</span> <span>=&gt;</span> <span>`hello, <span><span>${</span><span>name</span><span>}</span></span>`</span>
+
+<span>greet</span><span>(</span><span>&#39;world&#39;</span><span>)</span></pre></div>
+<p>以下代码不是纯函数：</p>
+<div><pre><span>window</span><span>.</span><span>name</span> <span>=</span> <span>&#39;Brianne&#39;</span>
+
+<span>const</span> <span>greet</span> <span>=</span> <span>(</span><span>)</span> <span>=&gt;</span> <span>`Hi, <span><span>${</span><span>window</span><span>.</span><span>name</span><span>}</span></span>`</span>
+
+<span>greet</span><span>(</span><span>)</span> <span>// &#34;Hi, Brianne&#34;</span></pre></div>
+<p>以上示例中，函数输出基于在函数外部存储的数据。</p>
+<div><pre><span>let</span> <span>greeting</span>
+
+<span>const</span> <span>greet</span> <span>=</span> <span>(</span><span>name</span><span>)</span> <span>=&gt;</span> <span>{</span>
+    <span>greeting</span> <span>=</span> <span>`Hi, <span><span>${</span><span>name</span><span>}</span></span>`</span>
+<span>}</span>
+
+<span>greet</span><span>(</span><span>&#39;Brianne&#39;</span><span>)</span>
+<span>greeting</span> <span>// &#34;Hi, Brianne&#34;</span></pre></div>
+<p>以上示例中，函数修改了外部状态。</p>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/purity.js">示例</a></p>
+<div></div>
+<h2><a href="#%E5%89%AF%E4%BD%9C%E7%94%A8-side-effects"></a>副作用 (Side effects)</h2>
+<p>如果一个函数或者表达式除了返回一个值之外，还与外部可变状态进行了交互（读取或写入），则它是有副作用的。</p>
+<div><pre><span>const</span> <span>differentEveryTime</span> <span>=</span> <span>new</span> <span>Date</span><span>(</span><span>)</span></pre></div>
+<div><pre><span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;IO就是一种副作用!&#39;</span><span>)</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/sideEffect.js">示例</a></p>
+<div></div>
+<h2><a href="#%E5%B9%82%E7%AD%89-idempotent"></a>幂等 (Idempotent)</h2>
+<p>如果一个函数执行多次皆返回相同的结果，则它是幂等的。</p>
+<div><pre><span>f</span><span>(</span><span>f</span><span>(</span><span>x</span><span>)</span><span>)</span> <span>≍</span> <span>f</span><span>(</span><span>x</span><span>)</span></pre></div>
+<div><pre><span>Math</span><span>.</span><span>abs</span><span>(</span><span>Math</span><span>.</span><span>abs</span><span>(</span><span>10</span><span>)</span><span>)</span></pre></div>
+<div><pre><span>sort</span><span>(</span><span>sort</span><span>(</span><span>sort</span><span>(</span><span>[</span><span>2</span><span>,</span> <span>1</span><span>]</span><span>)</span><span>)</span><span>)</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/idempotent.js">示例</a></p>
+<div></div>
+<h2><a href="#point-free-%E9%A3%8E%E6%A0%BC-point-free-style"></a>Point-Free 风格 (Point-Free Style)</h2>
+<p>定义函数时，不显式地指出函数所带参数。这种风格通常需要柯里化或者高阶函数。也叫 Tacit programming。</p>
+<div><pre><span>// 已知：</span>
+<span>const</span> <span>map</span> <span>=</span> <span>(</span><span>fn</span><span>)</span> <span>=&gt;</span> <span>(</span><span>list</span><span>)</span> <span>=&gt;</span> <span>list</span><span>.</span><span>map</span><span>(</span><span>fn</span><span>)</span>
+<span>const</span> <span>add</span> <span>=</span> <span>(</span><span>a</span><span>)</span> <span>=&gt;</span> <span>(</span><span>b</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>b</span>
+
+<span>// 所以：</span>
+
+<span>// 非Points-Free —— number 是显式参数</span>
+<span>const</span> <span>incrementAll</span> <span>=</span> <span>(</span><span>numbers</span><span>)</span> <span>=&gt;</span> <span>map</span><span>(</span><span>add</span><span>(</span><span>1</span><span>)</span><span>)</span><span>(</span><span>numbers</span><span>)</span>
+
+<span>// Points-Free —— list 是隐式参数</span>
+<span>const</span> <span>incrementAll2</span> <span>=</span> <span>map</span><span>(</span><span>add</span><span>(</span><span>1</span><span>)</span><span>)</span></pre></div>
+<p><code>incrementAll</code> 识别并且使用了 <code>numbers</code> 参数，因此它不是 Point-Free 风格的。
+<code>incrementAll2</code> 仅连接函数与值，并不提及它所使用的参数，因为它是 Point-Free 风格的。</p>
+<p>Point-Free 风格的函数就像平常的赋值，不使用 <code>function</code> 或者 <code>=&gt;</code>。</p>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/pointFree.js">示例</a></p>
+<div></div>
+<h2><a href="#%E6%96%AD%E5%AE%9A-predicate"></a>断定 (Predicate)</h2>
+<p>根据输入返回 true 或 false。通常用在 array filter 的回调函数中。</p>
+<div><pre><span>const</span> <span>predicate</span> <span>=</span> <span>(</span><span>a</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>&gt;</span> <span>2</span>
+
+<span>;</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>,</span> <span>3</span><span>,</span> <span>4</span><span>]</span><span>.</span><span>filter</span><span>(</span><span>predicate</span><span>)</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/predicate.js">示例</a></p>
+<div></div>
+<h2><a href="#%E5%A5%91%E7%BA%A6-contracts"></a>契约 (Contracts)</h2>
+<p>契约规定了函数或表达式在运行时的行为的职责和保障。它表现为一组规则，这些规则是对函数或表达式的输入和输出的期望。当违反契约时，将抛出一个错误。</p>
+<div><pre><span>// 定义的contract: int -&gt; boolean</span>
+<span>const</span> <span>contract</span> <span>=</span> <span>(</span><span>input</span><span>)</span> <span>=&gt;</span> <span>{</span>
+  <span>if</span> <span>(</span><span>typeof</span> <span>input</span> <span>===</span> <span>&#39;number&#39;</span><span>)</span> <span>return</span> <span>true</span>
+  <span>throw</span> <span>new</span> <span>Error</span><span>(</span><span>&#39;Contract Violated: expected int -&gt; int&#39;</span><span>)</span>
+<span>}</span>
+
+<span>const</span> <span>addOne</span> <span>=</span> <span>(</span><span>num</span><span>)</span> <span>=&gt;</span> <span>contract</span><span>(</span><span>num</span><span>)</span> <span>&amp;&amp;</span> <span>num</span> <span>+</span> <span>1</span>
+
+<span>addOne</span><span>(</span><span>2</span><span>)</span> <span>// 3</span>
+<span>addOne</span><span>(</span><span>&#39;hello&#39;</span><span>)</span> <span>// 违反了contract: int -&gt; boolean</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/contracts.js">示例</a></p>
+<div></div>
+<h2><a href="#%E8%8C%83%E7%95%B4-category"></a>范畴 (Category)</h2>
+<p>在范畴论中，范畴是指对象集合及它们之间的态射 (morphism)。在编程中，数据类型作为对象，函数作为态射。</p>
+<p>一个有效的范畴遵从以下三个原则：</p>
+<ol>
+<li>必有一个同一态射（identity morphism）将一个对象映射到它自身。即当 <code>a</code> 是范畴里的一个对象时，必有一个函数使 <code>a -&gt; a</code>。</li>
+<li>态射必是可组合的。<code>a</code>，<code>b</code>，<code>c</code> 是范畴里的对象，<code>f</code> 是态射 <code>a -&gt; b</code>，<code>g</code> 是 <code>b -&gt; c</code> 态射。<code>g(f(x))</code> 一定与 <code>(g • f)(x)</code> 是等价的。</li>
+<li>组合满足结合律。<code>f • (g • h)</code> 与 <code>(f • g) • h</code> 是等价的。</li>
+</ol>
+<p>由于这些准则是在非常抽象的层面控制着组合方式，因此范畴论对于发现组合的新方法来说是伟大的。</p>
+<h4><a href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E9%98%85%E8%AF%BB-1"></a>进一步阅读</h4>
+<ul>
+<li><a href="https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/">Category Theory for Programmers</a></li>
+</ul>
+<div></div>
+<h2><a href="#%E5%80%BC-value"></a>值 (Value)</h2>
+<p>任何可以赋给变量的东西叫做值。</p>
+<div><pre><span>5</span>
+<span>Object</span><span>.</span><span>freeze</span><span>(</span><span>{</span><span>name</span>: <span>&#39;John&#39;</span><span>,</span> <span>age</span>: <span>30</span><span>}</span><span>)</span>
+<span>;</span><span>(</span><span>a</span><span>)</span> <span>=&gt;</span> <span>a</span>
+<span>;</span><span>[</span><span>1</span><span>]</span>
+<span>undefined</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/value.js">示例</a></p>
+<div></div>
+<h2><a href="#%E5%B8%B8%E9%87%8F-constant"></a>常量 (Constant)</h2>
+<p>一旦被定义之后就不可以被重新赋值。</p>
+<div><pre><span>const</span> <span>five</span> <span>=</span> <span>5</span>
+<span>const</span> <span>john</span> <span>=</span> <span>Object</span><span>.</span><span>freeze</span><span>(</span><span>{</span><span>name</span>: <span>&#39;John&#39;</span><span>,</span> <span>age</span>: <span>30</span><span>}</span><span>)</span></pre></div>
+<p>常量是<a href="#referential-transparency">引用透明</a>的，也就是说，它们可以被它们所代表的值替代而不影响结果。</p>
+<p>对于以上两个常量，以下语句总会返回 true。</p>
+<div><pre><span>john</span><span>.</span><span>age</span> <span>+</span> <span>five</span> <span>===</span> <span>(</span><span>{</span><span>name</span>: <span>&#39;John&#39;</span><span>,</span> <span>age</span>: <span>30</span><span>}</span><span>)</span><span>.</span><span>age</span> <span>+</span> <span>(</span><span>5</span><span>)</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/constant.js">示例</a></p>
+<div></div>
+<h2><a href="#%E5%87%BD%E5%AD%90-functor"></a>函子 (Functor)</h2>
+<p>函子是一个实现了 <code>map</code> 函数的对象。<code>map</code> 函数会遍历对象中的每个值并生成一个新的对象�，遵守两个准则:</p>
+<div></div>
+<h3><a href="#%E4%B8%80%E8%87%B4%E6%80%A7-preserves-identity"></a>一致性 (Preserves identity)</h3>
+<div><pre><span>object</span><span>.</span><span>map</span><span>(</span><span>x</span> <span>=&gt;</span> <span>x</span><span>)</span> <span>≍</span> <span>object</span></pre></div>
+<div></div>
+<h3><a href="#%E7%BB%84%E5%90%88%E6%80%A7-composable"></a>组合性 (Composable)</h3>
+<div><pre><span>object</span><span>.</span><span>map</span><span>(</span><span>compose</span><span>(</span><span>f</span><span>,</span> <span>g</span><span>)</span><span>)</span> <span>≍</span> <span>object</span><span>.</span><span>map</span><span>(</span><span>g</span><span>)</span><span>.</span><span>map</span><span>(</span><span>f</span><span>)</span>  <span>// f, g 为任意函数</span></pre></div>
+<p>(<code>f</code>, <code>g</code> 是任意的函数)</p>
+<p>在 javascript 中一个常见的函子是 Array, 因为它遵守因子的两个准则。</p>
+<div><pre><span>const</span> <span>f</span> <span>=</span> <span>x</span> <span>=&gt;</span> <span>x</span> <span>+</span> <span>1</span>
+<span>const</span> <span>g</span> <span>=</span> <span>x</span> <span>=&gt;</span> <span>x</span> <span>*</span> <span>2</span>
+
+<span>;</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>,</span> <span>3</span><span>]</span><span>.</span><span>map</span><span>(</span><span>x</span> <span>=&gt;</span> <span>f</span><span>(</span><span>g</span><span>(</span><span>x</span><span>)</span><span>)</span><span>)</span>
+<span>;</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>,</span> <span>3</span><span>]</span><span>.</span><span>map</span><span>(</span><span>g</span><span>)</span><span>.</span><span>map</span><span>(</span><span>f</span><span>)</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/functor.js">示例</a></p>
+<div></div>
+<h3><a href="#%E6%8C%87%E5%90%91%E5%87%BD%E5%AD%90-pointed-functor"></a>指向函子 (Pointed Functor)</h3>
+<p>一个对象，拥有一个<code>of</code>函数，可以将一个任何值放入它自身。</p>
+<p>ES2015 添加了 <code>Array.of</code>，使 Array 成为了 Pointed Functor。</p>
+<div><pre><span>Array</span><span>.</span><span>of</span><span>(</span><span>1</span><span>)</span></pre></div>
+<div></div>
+<h2><a href="#%E6%8A%AC%E5%8D%87-lift"></a>抬升 (Lift)</h2>
+<p>抬升是指将一个值放进一个对象（如<a href="#functor">函子</a>）中。如果你将一个函数抬升到一个<a href="#applicative-functor">应用函子</a>中，那么就可以将它作用于该函子中的值。</p>
+<div><pre><span>const</span> <span>liftA2</span> <span>=</span> <span>(</span><span>f</span><span>)</span> <span>=&gt;</span> <span>(</span><span>a</span><span>,</span> <span>b</span><span>)</span> <span>=&gt;</span> <span>a</span><span>.</span><span>map</span><span>(</span><span>f</span><span>)</span><span>.</span><span>ap</span><span>(</span><span>b</span><span>)</span> <span>// 注意这里是 ap 而不是 map.</span>
+
+<span>const</span> <span>mult</span> <span>=</span> <span>a</span> <span>=&gt;</span> <span>b</span> <span>=&gt;</span> <span>a</span> <span>*</span> <span>b</span>
+
+<span>const</span> <span>liftedMult</span> <span>=</span> <span>liftA2</span><span>(</span><span>mult</span><span>)</span> <span>// 这个函数现在可以作用于函子，如Array</span>
+
+<span>liftedMult</span><span>(</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>]</span><span>,</span> <span>[</span><span>3</span><span>]</span><span>)</span> <span>// [3, 6]</span>
+<span>liftA2</span><span>(</span><span>a</span> <span>=&gt;</span> <span>b</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>b</span><span>)</span><span>(</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>]</span><span>,</span> <span>[</span><span>3</span><span>,</span> <span>4</span><span>]</span><span>)</span> <span>// [4, 5, 5, 6]</span></pre></div>
+<p>抬升并应用一个单参数的函数的作用等同于 <code>map</code>。</p>
+<div><pre><span>const</span> <span>increment</span> <span>=</span> <span>(</span><span>x</span><span>)</span> <span>=&gt;</span> <span>x</span> <span>+</span> <span>1</span>
+
+<span>lift</span><span>(</span><span>increment</span><span>)</span><span>(</span><span>[</span><span>2</span><span>]</span><span>)</span> <span>// [3]</span>
+<span>;</span><span>[</span><span>2</span><span>]</span><span>.</span><span>map</span><span>(</span><span>increment</span><span>)</span> <span>// [3]</span></pre></div>
+<div></div>
+<h2><a href="#%E5%BC%95%E7%94%A8%E9%80%8F%E6%98%8E%E6%80%A7-referential-transparency"></a>引用透明性 (Referential Transparency)</h2>
+<p>如果一个表达式能够被它的值替代而不改变程序的行为，则它是引用透明的。</p>
+<p>例如我们有 greet 函数：</p>
+<div><pre><span>const</span> <span>greet</span> <span>=</span> <span>(</span><span>)</span> <span>=&gt;</span> <span>&#39;hello, world.&#39;</span></pre></div>
+<p>任何对 <code>greet()</code> 的调用都可以被替换为 <code>Hello World!</code>, 因此 greet 是引用透明的。</p>
+<div></div>
+<h2><a href="#%E7%AD%89%E5%BC%8F%E6%8E%A8%E7%90%86-equational-reasoning"></a>等式推理 (Equational Reasoning)</h2>
+<p>当一个应用程序由表达式组成并且没有副作用时，我们可以从这些组成部分中得知系统的真相。</p>
+<div></div>
+<h2><a href="#lambda"></a>Lambda</h2>
+<p>一种可以被视作一个值的匿名函数。</p>
+<div><pre><span>;</span><span>(</span><span>function</span> <span>(</span><span>a</span><span>)</span> <span>{</span>
+    <span>return</span> <span>a</span> <span>+</span> <span>1</span>
+<span>}</span><span>)</span>
+
+<span>;</span><span>(</span><span>a</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>1</span></pre></div>
+<p>Lambda 通常作为参数被传递给高阶函数。</p>
+<div><pre><span>[</span><span>1</span><span>,</span> <span>2</span><span>]</span><span>.</span><span>map</span><span>(</span><span>(</span><span>a</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>1</span><span>)</span></pre></div>
+<p>可以把 Lambda 赋值给一个变量。</p>
+<div><pre><span>const</span> <span>add1</span> <span>=</span> <span>(</span><span>a</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>1</span></pre></div>
+<div></div>
+<h2><a href="#lambda%E6%BC%94%E7%AE%97-lambda-calculus"></a>Lambda演算 (Lambda Calculus)</h2>
+<p>数学的一个分支，使用函数创造 <a href="https://en.wikipedia.org/wiki/Lambda_calculus">通用计算模型</a></p>
+<div></div>
+<h2><a href="#%E6%83%B0%E6%80%A7%E6%B1%82%E5%80%BC-lazy-evaluation"></a>惰性求值 (Lazy evaluation)</h2>
+<p>惰性求值是一种按需调用的求值机制，它将表达式的求值延迟到需要它的值为止，在函数式语言中，允许类似无限列表这样的结构存在，而这在非常重视命令顺序的命令式语言中通常是不可用的。</p>
+<div><pre><span>const</span> <span>rand</span> <span>=</span> <span>function</span><span>*</span> <span>(</span><span>)</span> <span>{</span>
+  <span>while</span> <span>(</span><span>true</span><span>)</span> <span>{</span>
+    <span>yield</span> <span>Math</span><span>.</span><span>random</span><span>(</span><span>)</span>  
+  <span>}</span> 
+<span>}</span>
+
+<span>const</span> <span>randIter</span> <span>=</span> <span>rand</span><span>(</span><span>)</span>
+<span>randIter</span><span>.</span><span>next</span><span>(</span><span>)</span> <span>// 每次执行产生一个随机值，表达式会在需要时求值。</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/functor.js">示例</a></p>
+<div></div>
+<h2><a href="#%E5%B9%BA%E5%8D%8A%E7%BE%A4-monoid"></a>幺半群 (Monoid)</h2>
+<p>一个对象，它拥有一个函数，这个函数用来与另一个相同类型的对象&#34;结合&#34;。对象的类型（<a href="#semigroup">半群</a>）必须具有一个&#34;identity&#34;值。</p>
+<p>数值加法是一个简单的幺半群:</p>
+<div><pre><span>1</span> <span>+</span> <span>1</span>   <span>// 2</span></pre></div>
+<p>以上示例中，数是对象而 <code>+</code> 是函数。</p>
+<p>当任何一个值与&#34;identity&#34;值结合时，结果一定是原始的值。&#34;identity&#34;也是可换位的（即排列次序不影响结果）。</p>
+<p>加法的特征值是 0。</p>
+<div><pre><span>1</span> <span>+</span> <span>0</span>   <span>// 1</span></pre></div>
+<p>操作的组合不会影响结果（必须满足结合律）:</p>
+<div><pre><span>1</span> <span>+</span> <span>(</span><span>2</span> <span>+</span> <span>3</span><span>)</span> <span>===</span> <span>(</span><span>1</span> <span>+</span> <span>2</span><span>)</span> <span>+</span> <span>3</span> <span>// true</span></pre></div>
+<p>数组的结合也是幺半群:</p>
+<div><pre><span>;</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>]</span><span>.</span><span>concat</span><span>(</span><span>[</span><span>3</span><span>,</span> <span>4</span><span>]</span><span>)</span> <span>// [1, 2, 3, 4]</span></pre></div>
+<p><code>identity</code> 值为空数组</p>
+<div><pre><span>;</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>]</span><span>.</span><span>concat</span><span>(</span><span>[</span><span>]</span><span>)</span></pre></div>
+<p>减法作为一个反例，不形成幺半群，因为不存在可以换位的&#34;identity&#34;值。</p>
+<div><pre><span>0</span> <span>-</span> <span>4</span> <span>===</span> <span>4</span> <span>-</span> <span>0</span> <span>// false</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/monoid.js">示例</a></p>
+<div></div>
+<h2><a href="#%E5%8D%95%E5%AD%90-monad"></a>单子 (Monad)</h2>
+<p>拥有 <code>of</code> 和 <code>chain</code> 函数的对象即为单子。<code>chain</code> 很像 <code>map</code>， 不同的是它可以展平嵌套数据。</p>
+<div><pre><span>Array</span><span>.</span><span>prototype</span><span>.</span><span>chain</span> <span>=</span> <span>function</span> <span>(</span><span>f</span><span>)</span> <span>{</span>
+  <span>return</span> <span>this</span><span>.</span><span>reduce</span><span>(</span><span>(</span><span>acc</span><span>,</span> <span>it</span><span>)</span> <span>=&gt;</span> <span>acc</span><span>.</span><span>concat</span><span>(</span><span>f</span><span>(</span><span>it</span><span>)</span><span>)</span><span>,</span> <span>[</span><span>]</span><span>)</span>  
+<span>}</span>
+
+<span>// 使用</span>
+<span>;</span><span>Array</span><span>.</span><span>of</span><span>(</span><span>&#39;cat,dog&#39;</span><span>,</span> <span>&#39;fish,bird&#39;</span><span>)</span><span>.</span><span>chain</span><span>(</span><span>s</span> <span>=&gt;</span> <span>s</span><span>.</span><span>split</span><span>(</span><span>&#39;,&#39;</span><span>)</span><span>)</span> <span>// [&#39;cat&#39;, &#39;dog&#39;, &#39;fish&#39;, &#39;bird&#39;]</span>
+
+<span>// 和 map 相比</span>
+<span>;</span><span>Array</span><span>.</span><span>of</span><span>(</span><span>&#39;cat,dog&#39;</span><span>,</span> <span>&#39;fish,bird&#39;</span><span>)</span><span>.</span><span>map</span><span>(</span><span>s</span> <span>=&gt;</span> <span>s</span><span>.</span><span>split</span><span>(</span><span>&#39;,&#39;</span><span>)</span><span>)</span> <span>// [[&#39;cat&#39;, &#39;dog&#39;], [&#39;fish&#39;, &#39;bird&#39;]]</span></pre></div>
+<p>在有些函数式语言中，<code>of</code> 也称为 <code>return</code>，<code>chain</code> 也称为 <code>flatmap</code> 与 <code>bind</code>。</p>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/monad.js">示例</a></p>
+<div></div>
+<h2><a href="#%E4%BD%99%E5%8D%95%E5%AD%90-comonad"></a>余单子 (Comonad)</h2>
+<p>拥有 <code>extract</code> 与 <code>extend</code> 函数的对象。</p>
+<div><pre><span>const</span> <span>CoIdentity</span> <span>=</span> <span>(</span><span>v</span><span>)</span> <span>=&gt;</span> <span>(</span><span>{</span>
+  <span>val</span>: <span>v</span><span>,</span>
+  <span>extract</span> <span>(</span><span>)</span> <span>{</span>
+    <span>return</span> <span>this</span><span>.</span><span>val</span>  
+  <span>}</span><span>,</span>
+  <span>extend</span> <span>(</span><span>f</span><span>)</span> <span>{</span>
+    <span>return</span> <span>CoIdentity</span><span>(</span><span>f</span><span>(</span><span>this</span><span>)</span><span>)</span>  
+  <span>}</span>
+<span>}</span><span>)</span></pre></div>
+<p>Extract 将值从余单子中取出。</p>
+<div><pre><span>CoIdentity</span><span>(</span><span>1</span><span>)</span><span>.</span><span>extract</span><span>(</span><span>)</span> <span>// 1</span></pre></div>
+<p>Extends 在余单子上运行一个函数。这个函数会返回和余单子相同的类型。</p>
+<div><pre><span>CoIdentity</span><span>(</span><span>1</span><span>)</span><span>.</span><span>extend</span><span>(</span><span>x</span> <span>=&gt;</span> <span>x</span><span>.</span><span>extract</span><span>(</span><span>)</span> <span>+</span> <span>1</span><span>)</span> <span>// CoIdentity(2)</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/comonad.js">示例</a></p>
+<div></div>
+<h2><a href="#%E5%BA%94%E7%94%A8%E5%87%BD%E5%AD%90-applicative-functor"></a>应用函子 (Applicative Functor)</h2>
+<p>一个拥有 <code>ap</code> 函数的对象称为应用函子。<code>ap</code> 将对象中的函数应用于另一个同样类型的对象中的值。</p>
+<div><pre><span>// 实现</span>
+<span>Array</span><span>.</span><span>prototype</span><span>.</span><span>ap</span> <span>=</span> <span>function</span> <span>(</span><span>xs</span><span>)</span> <span>{</span>
+    <span>return</span> <span>this</span><span>.</span><span>reduce</span><span>(</span><span>(</span><span>acc</span><span>,</span> <span>f</span><span>)</span> <span>=&gt;</span> <span>acc</span><span>.</span><span>concat</span><span>(</span><span>xs</span><span>.</span><span>map</span><span>(</span><span>f</span><span>)</span><span>)</span><span>,</span> <span>[</span><span>]</span><span>)</span>
+<span>}</span>
+
+<span>// 示例</span>
+<span>;</span><span>[</span><span>(</span><span>a</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>1</span><span>]</span><span>.</span><span>ap</span><span>(</span><span>[</span><span>1</span><span>]</span><span>)</span> <span>// [2]</span></pre></div>
+<p>如果你有两个对象，并需要对他们的元素执行一个二元函数，这将会很有用。</p>
+<div><pre><span>// 你想要组合的两个数组</span>
+<span>const</span> <span>arg1</span> <span>=</span> <span>[</span><span>1</span><span>,</span> <span>3</span><span>]</span>
+<span>const</span> <span>arg2</span> <span>=</span> <span>[</span><span>4</span><span>,</span> <span>5</span><span>]</span>
+
+<span>// 组合函数 - 必须要柯里化</span>
+<span>const</span> <span>add</span> <span>=</span> <span>(</span><span>x</span><span>)</span> <span>=&gt;</span> <span>(</span><span>y</span><span>)</span> <span>=&gt;</span> <span>x</span> <span>+</span> <span>y</span>
+
+<span>const</span> <span>partiallyAppliedAdds</span> <span>=</span> <span>[</span><span>add</span><span>]</span><span>.</span><span>ap</span><span>(</span><span>arg1</span><span>)</span> <span>// [(y) =&gt; 1 + y, (y) =&gt; 3 + y]</span></pre></div>
+<p>由此得到了一个函数数组，并且可以调用 <code>ap</code> 函数得到结果。</p>
+<div><pre><span>partiallyAppliedAdds</span><span>.</span><span>ap</span><span>(</span><span>arg2</span><span>)</span> <span>// [5, 6, 7, 8]</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/applicativeFunctor.js">示例</a></p>
+<div></div>
+<h2><a href="#%E6%80%81%E5%B0%84-morphism"></a>态射 (Morphism)</h2>
+<p>一个变形函数。</p>
+<div></div>
+<h3><a href="#endomorphism-%E8%87%AA%E5%90%8C%E6%80%81"></a>Endomorphism (自同态)</h3>
+<p>输入输出是相同类型的函数。</p>
+<div><pre><span>// uppercase :: String -&gt; String</span>
+<span>const</span> <span>uppercase</span> <span>=</span> <span>(</span><span>str</span><span>)</span> <span>=&gt;</span> <span>str</span><span>.</span><span>toUpperCase</span><span>(</span><span>)</span>
+
+<span>// decrement :: Number -&gt; Number</span>
+<span>const</span> <span>decrement</span> <span>=</span> <span>(</span><span>x</span><span>)</span> <span>=&gt;</span> <span>x</span> <span>-</span> <span>1</span></pre></div>
+<div></div>
+<h3><a href="#isomorphism-%E5%90%8C%E6%9E%84"></a>Isomorphism (同构)</h3>
+<p>两个不用类型的对象之间的变换，保持结构并且不丢失数据。</p>
+<p>例如，一个二维坐标既可以表示为数组 <code>[2, 3]</code>，也可以表示为对象 <code>{x: 2, y: 3}</code>。</p>
+<div><pre><span>// 提供函数在两种类型间互相转换</span>
+<span>const</span> <span>pairToCoords</span> <span>=</span> <span>(</span><span>pair</span><span>)</span> <span>=&gt;</span> <span>(</span><span>{</span><span>x</span>: <span>pair</span><span>[</span><span>0</span><span>]</span><span>,</span> <span>y</span>: <span>pair</span><span>[</span><span>1</span><span>]</span><span>}</span><span>)</span>
+
+<span>const</span> <span>coordsToPair</span> <span>=</span> <span>(</span><span>coords</span><span>)</span> <span>=&gt;</span> <span>[</span><span>coords</span><span>.</span><span>x</span><span>,</span> <span>coords</span><span>.</span><span>y</span><span>]</span>
+
+<span>coordsToPair</span><span>(</span><span>pairToCoords</span><span>(</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>]</span><span>)</span><span>)</span> <span>// [1, 2]</span>
+
+<span>pairToCoords</span><span>(</span><span>coordsToPair</span><span>(</span><span>{</span><span>x</span>: <span>1</span><span>,</span> <span>y</span>: <span>2</span><span>}</span><span>)</span><span>)</span> <span>// {x: 1, y: 2}</span></pre></div>
+<div></div>
+<h3><a href="#homomorphism-%E5%90%8C%E6%80%81"></a>Homomorphism (同态)</h3>
+<p>同态只是一个保持结构的映射，实际上，函子只是<a href="#category">范畴</a>之间的同态，因为它在映射下保持了原范畴的结构。</p>
+<div><pre><span>A</span><span>.</span><span>of</span><span>(</span><span>f</span><span>)</span><span>.</span><span>ap</span><span>(</span><span>A</span><span>.</span><span>of</span><span>(</span><span>x</span><span>)</span><span>)</span> <span>==</span> <span>A</span><span>.</span><span>of</span><span>(</span><span>f</span><span>(</span><span>x</span><span>)</span><span>)</span>
+
+<span>Either</span><span>.</span><span>of</span><span>(</span><span>_</span><span>.</span><span>toUpper</span><span>)</span><span>.</span><span>ap</span><span>(</span><span>Either</span><span>.</span><span>of</span><span>(</span><span>&#34;oreos&#34;</span><span>)</span><span>)</span> <span>==</span> <span>Either</span><span>.</span><span>of</span><span>(</span><span>_</span><span>.</span><span>toUpper</span><span>(</span><span>&#34;oreos&#34;</span><span>)</span><span>)</span></pre></div>
+<div></div>
+<h3><a href="#catamorphism"></a>Catamorphism</h3>
+<p>一个 <code>reduceRight</code> 函数，它应用于累加器(accumulator)和数组中的每个值（从右到左），来将其缩减为一个单一的值。</p>
+<div></div>
+<h3><a href="#anamorphism"></a>Anamorphism</h3>
+<p>一个 <code>unfold</code> 函数。<code>unfold</code> 是 <code>fold</code>（<code>ruduce</code>）的反面。它从一个值生成一个列表。</p>
+<div><pre><span>const</span> <span>unfold</span> <span>=</span> <span>(</span><span>f</span><span>,</span> <span>seed</span><span>)</span> <span>=&gt;</span> <span>{</span>
+  <span>function</span> <span>go</span><span>(</span><span>f</span><span>,</span> <span>seed</span><span>,</span> <span>acc</span><span>)</span> <span>{</span>
+    <span>const</span> <span>res</span> <span>=</span> <span>f</span><span>(</span><span>seed</span><span>)</span><span>;</span>
+    <span>return</span> <span>res</span> ? <span>go</span><span>(</span><span>f</span><span>,</span> <span>res</span><span>[</span><span>1</span><span>]</span><span>,</span> <span>acc</span><span>.</span><span>concat</span><span>(</span><span>[</span><span>res</span><span>[</span><span>0</span><span>]</span><span>]</span><span>)</span><span>)</span> : <span>acc</span><span>;</span>
+  <span>}</span>
+  <span>return</span> <span>go</span><span>(</span><span>f</span><span>,</span> <span>seed</span><span>,</span> <span>[</span><span>]</span><span>)</span>
+<span>}</span></pre></div>
+<div><pre><span>const</span> <span>countDown</span> <span>=</span> <span>n</span> <span>=&gt;</span> <span>unfold</span><span>(</span><span>(</span><span>n</span><span>)</span> <span>=&gt;</span> <span>{</span>
+  <span>return</span> <span>n</span> <span>&lt;=</span> <span>0</span> ? <span>undefined</span> : <span>[</span><span>n</span><span>,</span> <span>n</span> <span>-</span> <span>1</span><span>]</span>
+<span>}</span><span>,</span> <span>n</span><span>)</span>
+
+<span>countDown</span><span>(</span><span>5</span><span>)</span> <span>// [5, 4, 3, 2, 1]</span></pre></div>
+<div></div>
+<h3><a href="#hylomorphism"></a>Hylomorphism</h3>
+<p>Anamorphism 和 catamorphism 的结合。</p>
+<div></div>
+<h3><a href="#paramorphism"></a>Paramorphism</h3>
+<p>一类类似于 <code>reduceRight</code> 的函数，不过还是有区别的：</p>
+<p>在Paramorphism中，reducer的参数是当前的值、所有先前的值的缩减(reduction，即reduce的结果)、以及形成该缩减的值的列表。</p>
+<div><pre><span>// 包含 undefined 对于列表来说显然是不安全的，</span>
+<span>// 但是足以说明问题。</span>
+<span>const</span> <span>para</span> <span>=</span> <span>(</span><span>reducer</span><span>,</span> <span>accumulator</span><span>,</span> <span>elements</span><span>)</span> <span>=&gt;</span> <span>{</span>
+  <span>if</span> <span>(</span><span>elements</span><span>.</span><span>length</span> <span>===</span> <span>0</span><span>)</span>
+    <span>return</span> <span>accumulator</span>
+
+  <span>const</span> <span>head</span> <span>=</span> <span>elements</span><span>[</span><span>0</span><span>]</span>
+  <span>const</span> <span>tail</span> <span>=</span> <span>elements</span><span>.</span><span>slice</span><span>(</span><span>1</span><span>)</span>
+
+  <span>return</span> <span>reducer</span><span>(</span><span>head</span><span>,</span> <span>tail</span><span>,</span> <span>para</span><span>(</span><span>reducer</span><span>,</span> <span>accumulator</span><span>,</span> <span>tail</span><span>)</span><span>)</span>
+<span>}</span>
+
+<span>const</span> <span>suffixes</span> <span>=</span> <span>list</span> <span>=&gt;</span> <span>para</span><span>(</span>
+  <span>(</span><span>x</span><span>,</span> <span>xs</span><span>,</span> <span>suffxs</span><span>)</span> <span>=&gt;</span> <span>[</span><span>xs</span><span>,</span> ... <span>suffxs</span><span>]</span><span>,</span>
+  <span>[</span><span>]</span><span>,</span>
+  <span>list</span>
+<span>)</span>
+
+<span>suffixes</span><span>(</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>,</span> <span>3</span><span>,</span> <span>4</span><span>,</span> <span>5</span><span>]</span><span>)</span> <span>// [[2, 3, 4, 5], [3, 4, 5], [4, 5], [5], []]</span></pre></div>
+<p>上面的例子中的 reducer（<code>[x, ... xs]</code>）的第三个参数有点像一个&#34;如何达到你当前的 acc 值&#34;的历史记录。</p>
+<div></div>
+<h3><a href="#apomorphism"></a>Apomorphism</h3>
+<p>paramorphism 的反面。就像 anamorphism 是 catamorphism 的反面一样。对于 paramorphism，我们结合了对累加器的访问和已经累加的东西，而apomorphism让我们可以 unfold（展开）并且具有提早return的可能性。</p>
+<div></div>
+<h2><a href="#setoid"></a>Setoid</h2>
+<p>拥有 <code>equals</code> 函数的对象。<code>equals</code> 可以用来和其它相同类型的对象比较。</p>
+<div><pre><span>Array</span><span>.</span><span>prototype</span><span>.</span><span>equals</span> <span>=</span> <span>function</span> <span>(</span><span>arr</span><span>)</span> <span>{</span>
+  <span>const</span> <span>len</span> <span>=</span> <span>this</span><span>.</span><span>length</span>
+  <span>if</span> <span>(</span><span>len</span> <span>!==</span> <span>arr</span><span>.</span><span>length</span><span>)</span> <span>{</span>
+    <span>return</span> <span>false</span>
+  <span>}</span>
+  <span>for</span> <span>(</span><span>let</span> <span>i</span> <span>=</span> <span>0</span><span>;</span> <span>i</span> <span>&lt;</span> <span>len</span><span>;</span> <span>i</span><span>++</span><span>)</span> <span>{</span>
+    <span>if</span> <span>(</span><span>this</span><span>[</span><span>i</span><span>]</span> <span>!==</span> <span>arr</span><span>[</span><span>i</span><span>]</span><span>)</span> <span>{</span>
+      <span>return</span> <span>false</span>
+    <span>}</span>
+  <span>}</span>
+  <span>return</span> <span>true</span>
+<span>}</span>
+
+<span>;</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>]</span><span>.</span><span>equals</span><span>(</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>]</span><span>)</span>   <span>// true</span>
+<span>;</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>]</span><span>.</span><span>equals</span><span>(</span><span>[</span><span>3</span><span>,</span> <span>4</span><span>]</span><span>)</span>   <span>// false</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/setoid.js">示例</a></p>
+<div></div>
+<h2><a href="#%E5%8D%8A%E7%BE%A4-semigroup"></a>半群 (Semigroup)</h2>
+<p>一个拥有 <code>concat</code> 函数的对象。<code>concat</code> 可以连接相同类型的两个对象。</p>
+<div><pre><span>;</span><span>[</span><span>1</span><span>]</span><span>.</span><span>concat</span><span>(</span><span>[</span><span>2</span><span>]</span><span>)</span> <span>// [1, 2]</span></pre></div>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/semigroup.js">示例</a></p>
+<div></div>
+<h2><a href="#%E5%8F%AF%E6%8A%98%E5%8F%A0%E6%80%A7-foldable"></a>可折叠性 (Foldable)</h2>
+<p>一个拥有 <code>reduce</code> 函数的对象具有可折叠性。<code>reduce</code> 可以把一种类型的对象转化为另一种类型。</p>
+<div><pre><span>const</span> <span>sum</span> <span>=</span> <span>(</span><span>list</span><span>)</span> <span>=&gt;</span> <span>list</span><span>.</span><span>reduce</span><span>(</span><span>(</span><span>acc</span><span>,</span> <span>val</span><span>)</span> <span>=&gt;</span> <span>acc</span> <span>+</span> <span>val</span><span>,</span> <span>0</span><span>)</span>
+<span>sum</span><span>(</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>,</span> <span>3</span><span>]</span><span>)</span>        <span>// 6</span></pre></div>
+<div></div>
+<h2><a href="#%E9%80%8F%E9%95%9C-lens"></a>透镜 (Lens)</h2>
+<p>Lens是一种结构（通常是一个对象或者函数），他为其他数据结构对 getter 和非可变的 setter 进行配对。</p>
+<div><pre><span>// 使用 [Ramda&#39;s lens](http://ramdajs.com/docs/#lens)</span>
+<span>const</span> <span>nameLens</span> <span>=</span> <span>R</span><span>.</span><span>lens</span><span>(</span>
+  <span>// 一个对象的 name 属性的 getter</span>
+  <span>(</span><span>obj</span><span>)</span> <span>=&gt;</span> <span>obj</span><span>.</span><span>name</span><span>,</span>
+  <span>// name 属性的 setter</span>
+  <span>(</span><span>val</span><span>,</span> <span>obj</span><span>)</span> <span>=&gt;</span> <span>Object</span><span>.</span><span>assign</span><span>(</span><span>{</span><span>}</span><span>,</span> <span>obj</span><span>,</span> <span>{</span><span>name</span>: <span>val</span><span>}</span><span>)</span>
+<span>)</span></pre></div>
+<p>为给定的数据结构设置 <code>get</code> 和 <code>set</code> 可以实现一些关键特性。</p>
+<div><pre><span>const</span> <span>person</span> <span>=</span> <span>{</span><span>name</span>: <span>&#39;Gertrude Blanch&#39;</span><span>}</span>
+
+<span>// 调用 getter</span>
+<span>R</span><span>.</span><span>view</span><span>(</span><span>nameLens</span><span>,</span> <span>person</span><span>)</span> <span>// &#39;Gertrude Blanch&#39;</span>
+
+<span>// 调用 setter</span>
+<span>R</span><span>.</span><span>set</span><span>(</span><span>nameLens</span><span>,</span> <span>&#39;Shafi Goldwasser&#39;</span><span>,</span> <span>person</span><span>)</span> <span>// {name: &#39;Shafi Goldwasser&#39;}</span>
+
+<span>// 将函数应用于结构中的值</span>
+<span>R</span><span>.</span><span>over</span><span>(</span><span>nameLens</span><span>,</span> <span>uppercase</span><span>,</span> <span>person</span><span>)</span> <span>// {name: &#39;GERTRUDE BLANCH&#39;}</span></pre></div>
+<p>lens 也是可以组合的。这让我们可以对深度嵌套的数据进行简单的不可变更新。</p>
+<div><pre><span>// 这个 lens 关注一个非空数组中的第一个元素</span>
+<span>const</span> <span>firstLens</span> <span>=</span> <span>R</span><span>.</span><span>lens</span><span>(</span>
+  <span>// 获取数组的第一个元素</span>
+  <span>xs</span> <span>=&gt;</span> <span>xs</span><span>[</span><span>0</span><span>]</span><span>,</span>
+  <span>// 数组的第一个元素的非可变 setter</span>
+  <span>(</span><span>val</span><span>,</span> <span>[</span><span>__</span><span>,</span> ...<span>xs</span><span>]</span><span>)</span> <span>=&gt;</span> <span>[</span><span>val</span><span>,</span> ...<span>xs</span><span>]</span>
+<span>)</span>
+
+<span>const</span> <span>people</span> <span>=</span> <span>[</span><span>{</span><span>name</span>: <span>&#39;Gertrude Blanch&#39;</span><span>}</span><span>,</span> <span>{</span><span>name</span>: <span>&#39;Shafi Goldwasser&#39;</span><span>}</span><span>]</span>
+
+<span>// 无论你怎么想，lens 是从左到右合成的</span>
+<span>R</span><span>.</span><span>over</span><span>(</span><span>compose</span><span>(</span><span>firstLens</span><span>,</span> <span>nameLens</span><span>)</span><span>,</span> <span>uppercase</span><span>,</span> <span>people</span><span>)</span> <span>// [{&#39;name&#39;: &#39;GERTRUDE BLANCH&#39;}, {&#39;name&#39;: &#39;Shafi Goldwasser&#39;}]</span></pre></div>
+<p>其他实现:</p>
+<p><a href="https://github.com/calmm-js/partial.lenses">partial.lenses</a> - &#34;好吃&#34;的语法糖和很多强大功能</p>
+<p><a href="http://www.kovach.me/nanoscope/">nanoscope</a> - 流畅接口</p>
+<div></div>
+<h2><a href="#%E7%B1%BB%E5%9E%8B%E7%AD%BE%E5%90%8D-type-signatures"></a>类型签名 (Type Signatures)</h2>
+<p>通常 js 中的函数会在注释中指出参数与返回值的类型。</p>
+<p>在整个社区内存在很大的差异，但通常遵循以下模式：</p>
+<div><pre><span>// functionName :: firstArgType -&gt; secondArgType -&gt; returnType</span>
+
+<span>// add :: Number -&gt; Number -&gt; Number</span>
+<span>const</span> <span>add</span> <span>=</span> <span>(</span><span>x</span><span>)</span> <span>=&gt;</span> <span>(</span><span>y</span><span>)</span> <span>=&gt;</span> <span>x</span> <span>+</span> <span>y</span>
+
+<span>// increment :: Number -&gt; Number</span>
+<span>const</span> <span>increment</span> <span>=</span> <span>(</span><span>x</span><span>)</span> <span>=&gt;</span> <span>x</span> <span>+</span> <span>1</span></pre></div>
+<p>如果函数接受其他函数作为参数，那么这个函数需要用括号括起来。</p>
+<div><pre><span>// call :: (a -&gt; b) -&gt; a -&gt; b</span>
+<span>const</span> <span>call</span> <span>=</span> <span>(</span><span>f</span><span>)</span> <span>=&gt;</span> <span>(</span><span>x</span><span>)</span> <span>=&gt;</span> <span>f</span><span>(</span><span>x</span><span>)</span></pre></div>
+<p>字符 <code>a</code>, <code>b</code>, <code>c</code>, <code>d</code> 表明参数可以是任意类型。以下版本的 <code>map</code> 的函数类型的参数 <code>f</code>，把一种类型 <code>a</code> 的数组转化为另一种类型 <code>b</code> 的数组。</p>
+<div><pre><span>// map :: (a -&gt; b) -&gt; [a] -&gt; [b]</span>
+<span>const</span> <span>map</span> <span>=</span> <span>(</span><span>f</span><span>)</span> <span>=&gt;</span> <span>(</span><span>list</span><span>)</span> <span>=&gt;</span> <span>list</span><span>.</span><span>map</span><span>(</span><span>f</span><span>)</span></pre></div>
+<p>进一步阅读：</p>
+<ul>
+<li><a href="https://github.com/ramda/ramda/wiki/Type-Signatures">Ramda&#39;s type signatures</a></li>
+<li><a href="https://stackoverflow.com/questions/399312/what-is-hindley-milner/399392#399392">What is Hindley-Milner?</a> on Stack Overflow</li>
+</ul>
+<div></div>
+<h2><a href="#%E4%BB%A3%E6%95%B0%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-algebraic-data-type"></a>代数数据类型 (Algebraic data type)</h2>
+<p>一种由其他类型组合而成的复合类型。两种常见的代数类型是<a href="#sum-type">sum</a>和<a href="#product-type">product</a>。</p>
+<div></div>
+<h3><a href="#%E5%92%8C%E7%B1%BB%E5%9E%8B-sum-type"></a>和类型 (Sum type)</h3>
+<p>和类型是将两种类型组合成另一种类型。之所以称为和，是因为结果类型的可能的值的数目是两种输入类型的值的数目的和。</p>
+<p>js 中没有这种类型，但是我们可以用 set 来假装：</p>
+<div><pre><span>// 想象这些不是 set，而是仅包含这些值的某种类型。</span>
+<span>const</span> <span>bools</span> <span>=</span> <span>new</span> <span>Set</span><span>(</span><span>[</span><span>true</span><span>,</span> <span>false</span><span>]</span><span>)</span>
+<span>const</span> <span>halfTrue</span> <span>=</span> <span>new</span> <span>Set</span><span>(</span><span>[</span><span>&#39;half-true&#39;</span><span>]</span><span>)</span>
+
+<span>// 这个 weakLogic 类型包含 bools 类型和 halfTrue 类型的和。</span>
+<span>const</span> <span>weakLogicValues</span> <span>=</span> <span>new</span> <span>Set</span><span>(</span><span>[</span>...<span>bools</span><span>,</span> ...<span>halfTrue</span><span>]</span><span>)</span></pre></div>
+<p>和类型有时也称作联合类型（union type）、区分联合（discriminated union）或标记联合（tagged unions）。</p>
+<p>JS中有一些库可以帮助定义和使用联合类型。</p>
+<p>流（flow）包括联合类型，而TypeScript具有提供相同能力的枚举（enum）。</p>
+<div></div>
+<h3><a href="#product-type"></a>Product type</h3>
+<p>用一种你可能更熟悉的方式把数据类型联合起来:</p>
+<div><pre><span>// point :: (Number, Number) -&gt; {x: Number, y: Number}</span>
+<span>const</span> <span>point</span> <span>=</span> <span>(</span><span>x</span><span>,</span> <span>y</span><span>)</span> <span>=&gt;</span> <span>(</span><span>{</span><span>x</span>: <span>x</span><span>,</span> <span>y</span>: <span>y</span><span>}</span><span>)</span></pre></div>
+<p>之所以称之为积，是因为数据结构的总的可能值是不同值的乘积。许多语言都有 tuple 类型，这是积类型的最简单形式。</p>
+<p>另见 <a href="https://en.wikipedia.org/wiki/Set_theory">Set theory</a></p>
+<div></div>
+<h2><a href="#%E5%8F%AF%E9%80%89%E7%B1%BB%E5%9E%8B-option"></a>可选类型 (Option)</h2>
+<p>Option 是一种联合类型，它有两种情况，<code>Some</code> 或者 <code>None</code>。</p>
+<p>Option对于一些可能不会返回值的组合函数非常有用。</p>
+<div><pre><span>// 简单的定义</span>
+<span>const</span> <span>Some</span> <span>=</span> <span>(</span><span>v</span><span>)</span> <span>=&gt;</span> <span>(</span><span>{</span>
+  <span>val</span>: <span>v</span><span>,</span>
+  <span>map</span> <span>(</span><span>f</span><span>)</span> <span>{</span>
+    <span>return</span> <span>Some</span><span>(</span><span>f</span><span>(</span><span>this</span><span>.</span><span>val</span><span>)</span><span>)</span>
+  <span>}</span><span>,</span>
+  <span>chain</span> <span>(</span><span>f</span><span>)</span> <span>{</span>
+    <span>return</span> <span>f</span><span>(</span><span>this</span><span>.</span><span>val</span><span>)</span>
+  <span>}</span>
+<span>}</span><span>)</span>
+
+<span>const</span> <span>None</span> <span>=</span> <span>(</span><span>)</span> <span>=&gt;</span> <span>(</span><span>{</span>
+  <span>map</span> <span>(</span><span>f</span><span>)</span> <span>{</span>
+    <span>return</span> <span>this</span>
+  <span>}</span><span>,</span>
+  <span>chain</span> <span>(</span><span>f</span><span>)</span> <span>{</span>
+    <span>return</span> <span>this</span>
+  <span>}</span>
+<span>}</span><span>)</span>
+
+<span>// maybeProp :: (String, {a}) -&gt; Option a</span>
+<span>const</span> <span>maybeProp</span> <span>=</span> <span>(</span><span>key</span><span>,</span> <span>obj</span><span>)</span> <span>=&gt;</span> <span>typeof</span> <span>obj</span><span>[</span><span>key</span><span>]</span> <span>===</span> <span>&#39;undefined&#39;</span> ? <span>None</span><span>(</span><span>)</span> : <span>Some</span><span>(</span><span>obj</span><span>[</span><span>key</span><span>]</span><span>)</span></pre></div>
+<p>使用 <code>chain</code> 可以序列化返回 <code>Option</code> 的函数。</p>
+<div><pre><span>// getItem :: Cart -&gt; Option CartItem</span>
+<span>const</span> <span>getItem</span> <span>=</span> <span>(</span><span>cart</span><span>)</span> <span>=&gt;</span> <span>maybeProp</span><span>(</span><span>&#39;item&#39;</span><span>,</span> <span>cart</span><span>)</span>
+
+<span>// getPrice :: Item -&gt; Option Number</span>
+<span>const</span> <span>getPrice</span> <span>=</span> <span>(</span><span>item</span><span>)</span> <span>=&gt;</span> <span>maybeProp</span><span>(</span><span>&#39;price&#39;</span><span>,</span> <span>item</span><span>)</span>
+
+<span>// getNestedPrice :: cart -&gt; Option a</span>
+<span>const</span> <span>getNestedPrice</span> <span>=</span> <span>(</span><span>cart</span><span>)</span> <span>=&gt;</span> <span>getItem</span><span>(</span><span>obj</span><span>)</span><span>.</span><span>chain</span><span>(</span><span>getPrice</span><span>)</span>
+
+<span>getNestedPrice</span><span>(</span><span>{</span><span>}</span><span>)</span> <span>// None()</span>
+<span>getNestedPrice</span><span>(</span><span>{</span><span>item</span>: <span>{</span><span>foo</span>: <span>1</span><span>}</span><span>}</span><span>)</span> <span>// None()</span>
+<span>getNestedPrice</span><span>(</span><span>{</span><span>item</span>: <span>{</span><span>price</span>: <span>9.99</span><span>}</span><span>}</span><span>)</span> <span>// Some(9.99)</span></pre></div>
+<p>在其它的一些地方，<code>Option</code> 也称为 <code>Maybe</code>，<code>Some</code> 也称为 <code>Just</code>，<code>None</code> 也称为 <code>Nothing</code>。</p>
+<p><a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/option.js">示例 option.js</a>
+<a href="https://github.com/shfshanyue/fp-jargon-zh/blob/master/demos/maybe.js">示例 maybe.js</a></p>
+<div></div>
+<h2><a href="#function"></a>Function</h2>
+<p>一个函数 <code>f :: A =&gt; B</code> 是一个表达式，通常称为 arrow 或者 lambda 表达式——只能有<strong>一个</strong>（这点是不可变的）的 <code>A</code> 类型参数和<strong>一个</strong> <code>B</code> 类型返回值。该返回值完全取决于参数，使函数独立于上下文，或者说<a href="#referential-transparency">引用透明</a>。这里暗示的是一个函数不能产生任何隐藏的<a href="#side-effects">副作用</a>——根据定义，函数总是<a href="#purity">纯</a>的。这些属性使函数易于使用：它们是完全确定的，因此也是可以预测的。函数可以将代码作为数据进行处理，对行为进行抽象：</p>
+<div><pre><span>// times2 :: Number -&gt; Number</span>
+<span>const</span> <span>times2</span> <span>=</span> <span>n</span> <span>=&gt;</span> <span>n</span> <span>*</span> <span>2</span>
+
+<span>[</span><span>1</span><span>,</span> <span>2</span><span>,</span> <span>3</span><span>]</span><span>.</span><span>map</span><span>(</span><span>times2</span><span>)</span> <span>// [2, 4, 6]</span></pre></div>
+<div></div>
+<h2><a href="#%E5%81%8F%E5%87%BD%E6%95%B0-partial-function"></a>偏函数 (Partial function)</h2>
+<p>偏函数是没有为全部参数定义的函数——它可能返回意料之外的结果或者永远不会终止。偏函数增加了认知开销，它们更难推理，并可能导致运行时错误。一些例子：</p>
+<div><pre><span>// 例1: 列表的和</span>
+<span>// sum :: [Number] -&gt; Number</span>
+<span>const</span> <span>sum</span> <span>=</span> <span>arr</span> <span>=&gt;</span> <span>arr</span><span>.</span><span>reduce</span><span>(</span><span>(</span><span>a</span><span>,</span> <span>b</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>b</span><span>)</span>
+<span>sum</span><span>(</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>,</span> <span>3</span><span>]</span><span>)</span> <span>// 6</span>
+<span>sum</span><span>(</span><span>[</span><span>]</span><span>)</span> <span>// TypeError: Reduce of empty array with no initial value</span>
+
+<span>// 例2: 获取列表的第一个值</span>
+<span>// first :: [A] -&gt; A</span>
+<span>const</span> <span>first</span> <span>=</span> <span>a</span> <span>=&gt;</span> <span>a</span><span>[</span><span>0</span><span>]</span>
+<span>first</span><span>(</span><span>[</span><span>42</span><span>]</span><span>)</span> <span>// 42</span>
+<span>first</span><span>(</span><span>[</span><span>]</span><span>)</span> <span>// undefined</span>
+<span>// 甚至更糟: </span>
+<span>first</span><span>(</span><span>[</span><span>[</span><span>42</span><span>]</span><span>]</span><span>)</span><span>[</span><span>0</span><span>]</span> <span>// 42</span>
+<span>first</span><span>(</span><span>[</span><span>]</span><span>)</span><span>[</span><span>0</span><span>]</span> <span>// Uncaught TypeError: Cannot read property &#39;0&#39; of undefined</span>
+
+<span>// 例3: 将函数重复 N 次</span>
+<span>// times :: Number -&gt; (Number -&gt; Number) -&gt; Number</span>
+<span>const</span> <span>times</span> <span>=</span> <span>n</span> <span>=&gt;</span> <span>fn</span> <span>=&gt;</span> <span>n</span> <span>&amp;&amp;</span> <span>(</span><span>fn</span><span>(</span><span>n</span><span>)</span><span>,</span> <span>times</span><span>(</span><span>n</span> <span>-</span> <span>1</span><span>)</span><span>(</span><span>fn</span><span>)</span><span>)</span>
+<span>times</span><span>(</span><span>3</span><span>)</span><span>(</span><span>console</span><span>.</span><span>log</span><span>)</span>
+<span>// 3</span>
+<span>// 2</span>
+<span>// 1</span>
+<span>times</span><span>(</span><span>-</span><span>1</span><span>)</span><span>(</span><span>console</span><span>.</span><span>log</span><span>)</span>
+<span>// RangeError: Maximum call stack size exceeded</span></pre></div>
+<h3><a href="#%E5%A4%84%E7%90%86%E5%81%8F%E5%87%BD%E6%95%B0"></a>处理偏函数</h3>
+<p>偏函数是危险的，它们需要被非常谨慎地对待。你可能会得到意料之外的（错误的）结果或遇到运行时错误。有时偏函数可能根本不会返回。意识到并相应地处理所有这些边缘情况可能会变得非常乏味。幸运的是，部分函数可以转换为常规函数。我们可以提供默认值或使用 guard 来处理偏函数未定义的输入。利用 option 类型，我们可以在可能会出现意外行为的地方使用 yield <code>Some(value)</code> 或 <code>None</code>:</p>
+<div><pre><span>// 例1: 列表的和</span>
+<span>// 我们可以提供默认值，使它总会返回结果</span>
+<span>// sum :: [Number] -&gt; Number</span>
+<span>const</span> <span>sum</span> <span>=</span> <span>arr</span> <span>=&gt;</span> <span>arr</span><span>.</span><span>reduce</span><span>(</span><span>(</span><span>a</span><span>,</span> <span>b</span><span>)</span> <span>=&gt;</span> <span>a</span> <span>+</span> <span>b</span><span>,</span> <span>0</span><span>)</span>
+<span>sum</span><span>(</span><span>[</span><span>1</span><span>,</span> <span>2</span><span>,</span> <span>3</span><span>]</span><span>)</span> <span>// 6</span>
+<span>sum</span><span>(</span><span>[</span><span>]</span><span>)</span> <span>// 0</span>
+
+<span>// 例2: 获取列表的第一个值</span>
+<span>// 将结果改为 Option</span>
+<span>// first :: [A] -&gt; A</span>
+<span>const</span> <span>first</span> <span>=</span> <span>a</span> <span>=&gt;</span> <span>a</span><span>.</span><span>length</span> ? <span>Some</span><span>(</span><span>a</span><span>[</span><span>0</span><span>]</span><span>)</span> : <span>None</span><span>(</span><span>)</span>
+<span>first</span><span>(</span><span>[</span><span>42</span><span>]</span><span>)</span><span>.</span><span>map</span><span>(</span><span>a</span> <span>=&gt;</span> <span>console</span><span>.</span><span>log</span><span>(</span><span>a</span><span>)</span><span>)</span> <span>// 42</span>
+<span>first</span><span>(</span><span>[</span><span>]</span><span>)</span><span>.</span><span>map</span><span>(</span><span>a</span> <span>=&gt;</span> <span>console</span><span>.</span><span>log</span><span>(</span><span>a</span><span>)</span><span>)</span> <span>// console.log 不会执行</span>
+<span>//我们之前的糟糕情况</span>
+<span>first</span><span>(</span><span>[</span><span>[</span><span>42</span><span>]</span><span>]</span><span>)</span><span>.</span><span>map</span><span>(</span><span>a</span> <span>=&gt;</span> <span>console</span><span>.</span><span>log</span><span>(</span><span>a</span><span>[</span><span>0</span><span>]</span><span>)</span><span>)</span> <span>// 42</span>
+<span>first</span><span>(</span><span>[</span><span>]</span><span>)</span><span>.</span><span>map</span><span>(</span><span>a</span> <span>=&gt;</span> <span>console</span><span>.</span><span>log</span><span>(</span><span>a</span><span>[</span><span>0</span><span>]</span><span>)</span><span>)</span> <span>// 不会执行，所以不会有 error</span>
+<span>// 更重要的是，通过返回类型 (Option) ，我们会知道：</span>
+<span>// 我们应该使用 .map 方法来访问数据，所以我们不会忘记检查输入，</span>
+<span>// 因为这样的检查会被内建在函数中。</span>
+
+<span>// 例3: 将函数重复 N 次</span>
+<span>// 我们需要通过改变条件来确保函数总会终止: </span>
+<span>// times :: Number -&gt; (Number -&gt; Number) -&gt; Number</span>
+<span>const</span> <span>times</span> <span>=</span> <span>n</span> <span>=&gt;</span> <span>fn</span> <span>=&gt;</span> <span>n</span> <span>&gt;</span> <span>0</span> <span>&amp;&amp;</span> <span>(</span><span>fn</span><span>(</span><span>n</span><span>)</span><span>,</span> <span>times</span><span>(</span><span>n</span> <span>-</span> <span>1</span><span>)</span><span>(</span><span>fn</span><span>)</span><span>)</span>
+<span>times</span><span>(</span><span>3</span><span>)</span><span>(</span><span>console</span><span>.</span><span>log</span><span>)</span>
+<span>// 3</span>
+<span>// 2</span>
+<span>// 1</span>
+<span>times</span><span>(</span><span>-</span><span>1</span><span>)</span><span>(</span><span>console</span><span>.</span><span>log</span><span>)</span>
+<span>// 不会再执行</span></pre></div>
+<p>将偏函数改成全函数可以防止此类运行时错误。总是返回一个&#34;值&#34;也会使得代码更容易维护和推理。</p>
+<div></div>
+<h2><a href="#%E5%9C%A8-js-%E4%B8%AD%E7%9A%84%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E5%BA%93"></a>在 js 中的函数式编程库</h2>
+<ul>
+<li><a href="https://github.com/swannodette/mori">mori</a></li>
+<li><a href="https://github.com/facebook/immutable-js/">Immutable</a></li>
+<li><a href="https://github.com/immerjs/immer">Immer</a></li>
+<li><a href="https://github.com/ramda/ramda">Ramda</a></li>
+<li><a href="https://github.com/char0n/ramda-adjunct">ramda-adjunct</a></li>
+<li><a href="http://folktalejs.org/">Folktale</a></li>
+<li><a href="https://cwmyers.github.io/monet.js/">monet.js</a></li>
+<li><a href="https://github.com/lodash/lodash">lodash</a></li>
+<li><a href="https://github.com/jashkenas/underscore">Underscore.js</a></li>
+<li><a href="https://github.com/dtao/lazy.js">Lazy.js</a></li>
+<li><a href="https://github.com/sjsyrek/maryamyriameliamurphies.js">maryamyriameliamurphies.js</a></li>
+<li><a href="https://github.com/casualjavascript/haskell-in-es6">Haskell in ES6</a></li>
+<li><a href="https://github.com/sanctuary-js/sanctuary">Sanctuary</a></li>
+<li><a href="https://github.com/evilsoft/crocks">Crocks</a></li>
+<li><a href="https://github.com/fluture-js/Fluture">Fluture</a></li>
+<li><a href="https://github.com/gcanti/fp-ts">fp-ts</a></li>
+</ul>
+</article></div></div></readme-toc></div></div></div></div></div></turbo-frame></main></div></div></div>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://github.com/shfshanyue/fp-jargon-zh" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-05-14 21:15:53</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
