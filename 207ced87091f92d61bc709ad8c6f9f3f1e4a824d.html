@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>这可能是掘金讲「原型链」，讲的最好最通俗易懂的了，附练习题！ - 掘金</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>这可能是掘金讲「原型链」，讲的最好最通俗易懂的了，附练习题！ - 掘金</h1>
+</header>
+<main class="typo"><div><div><div><div><main><div><div><article><div><div><h2>前言</h2>
+<p>大家好，我是林三心，相信大家都听过前端的三座大山：<strong>闭包，原型链，作用域</strong>，这三个其实都只是算基础。而我一直觉得<strong>基础是进阶的前提</strong>，所以不能因为是基础就忽视他们。今天我就以我的方式讲讲<strong>原型链</strong>吧，希望大家能牢固地掌握<strong>原型链</strong>知识</p>
+<p>很多文章一上来就扔这个图，但是我不喜欢这样，我觉得这样对基础不好的同学很不好，我喜欢带领大家去从零实现这个图，在实现的过程中，不断地掌握原型链的所有知识！！！<strong>来吧！！！跟着我从零实现吧！！！跟着我驯服原型链吧！！！</strong></p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/3e0c8899.webp"/></p>
+<h2>prototype和__proto__</h2>
+<h3>是啥</h3>
+<p>这两个东西到底是啥呢？</p>
+<ul>
+<li>prototype: 显式原型</li>
+<li>__ proto__: 隐式原型</li>
+</ul>
+<h3>有什么关系</h3>
+<p>那么这两个都叫原型，那他们两到底啥关系呢？</p>
+<p>一般，<code>构造函数</code>的prototype和其<code>实例</code>的__proto__是指向同一个地方的，这个地方就叫做<code>原型对象</code></p>
+<p>那什么是构造函数呢？俗话说就是，可以用来<code>new</code>的函数就叫构造函数，箭头函数不能用来当做构造函数哦</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">function Person(name, age) { // 这个就是构造函数
+  this.name = name
+  this.age = age
+}
+
+const person1 = new Person(&#39;小明&#39;, 20) // 这个是Person构造函数的实例
+const person2 = new Person(&#39;小红&#39;, 30) // 这个也是Person构造函数的实例
+</code></pre>
+<p><code>构造函数</code>的prototype和其<code>实例</code>的__proto__是指向同一个地方的，咱们可以来验证一下</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">function Person(name, age) {
+  this.name = name
+  this.age = age
+}
+Person.prototype.sayName = function() {
+  console.log(this.name)
+}
+console.log(Person.prototype) // { sayName: [Function] }
+
+const person1 = new Person(&#39;小明&#39;, 20)
+console.log(person1.__proto__) // { sayName: [Function] }
+
+const person2 = new Person(&#39;小红&#39;, 30)
+console.log(person2.__proto__) // { sayName: [Function] }
+
+console.log(Person.prototype === person1.__proto__) // true
+console.log(Person.prototype === person2.__proto__) // true
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/55d75ccf.webp"/></p>
+<h3>函数</h3>
+<p>咱们上面提到了<code>构造函数</code>，其实他说到底也是个函数，其实咱们平时定义函数，无非有以下几种</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">function fn1(name, age) {
+  console.log(`我是${name}, 我今年${age}岁`)
+}
+fn1(&#39;林三心&#39;, 10) // 我是林三心, 我今年10岁
+
+const fn2 = function(name, age){
+  console.log(`我是${name}, 我今年${age}岁`)
+}
+fn2(&#39;林三心&#39;, 10) // 我是林三心, 我今年10岁
+
+const arrowFn = (name, age) =&gt; {
+  console.log(`我是${name}, 我今年${age}岁`)
+}
+arrowFn(&#39;林三心&#39;, 10) // 我是林三心, 我今年10岁
+</code></pre>
+<p>其实这几种的本质都是一样的(只考虑函数的声明)，都可以使用<code>new Function</code>来声明，是的没错<code>Function</code>也是一个构造函数。上面的写法等同于下面的写法</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">const fn1 = new Function(&#39;name&#39;, &#39;age&#39;, &#39;console.log(`我是${name}, 我今年${age}岁`)&#39;)
+fn1(&#39;林三心&#39;, 10) // 我是林三心, 我今年10岁
+
+const fn2 = new Function(&#39;name&#39;, &#39;age&#39;, &#39;console.log(`我是${name}, 我今年${age}岁`)&#39;)
+fn2(&#39;林三心&#39;, 10) // 我是林三心, 我今年10岁
+
+const arrowFn = new Function(&#39;name&#39;, &#39;age&#39;, &#39;console.log(`我是${name}, 我今年${age}岁`)&#39;)
+arrowFn(&#39;林三心&#39;, 10) // 我是林三心, 我今年10岁
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/1be1de14.webp"/></p>
+<p>我们之前说过，<code>构造函数</code>的<code>prototype</code>和其<code>实例</code>的<code>__proto__</code>是指向同一个地方的，这里的<code>fn1，fn2，arrowFn</code>其实也都是<code>Function构造函数</code>的实例，那我们来验证一下吧</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">function fn1(name, age) {
+  console.log(`我是${name}, 我今年${age}岁`)
+}
+
+const fn2 = function(name, age){
+  console.log(`我是${name}, 我今年${age}岁`)
+}
+
+const arrowFn = (name, age) =&gt; {
+  console.log(`我是${name}, 我今年${age}岁`)
+}
+
+console.log(Function.prototype === fn1.__proto__) // true
+console.log(Function.prototype === fn2.__proto__) // true
+console.log(Function.prototype === arrowFn.__proto__) // true
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9a674a6f.webp"/></p>
+<h3>对象</h3>
+<p>咱们平常开发中，创建一个对象，通常会用以下几种方法。</p>
+<ul>
+<li><code>构造函数创建对象</code>，他创建出来的对象都是此<code>Function构造函数</code>的实例，所以这里不讨论它</li>
+<li><code>字面量创建对象</code></li>
+<li><code>new Object创建对象</code></li>
+<li><code>Object.create创建对象</code>，创建出来的是一个空原型的对象，这里不讨论它</li>
+</ul>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">// 第一种：构造函数创建对象
+function Person(name, age) {
+  this.name = name
+  this.age = age
+}
+const person1 = new Person(&#39;林三心&#39;, 10)
+console.log(person1) // Person { name: &#39;林三心&#39;, age: 10 }
+
+// 第二种：字面量创建对象
+const person2 = {name: &#39;林三心&#39;, age: 10}
+console.log(person2) // { name: &#39;林三心&#39;, age: 10 }
+
+// 第三种：new Object创建对象
+const person3 = new Object()
+person3.name = &#39;林三心&#39;
+person3.age = 10
+console.log(person3) // { name: &#39;林三心&#39;, age: 10 }
+
+// 第四种：Object.create创建对象
+const person4 = Object.create({})
+person4.name = &#39;林三心&#39;
+person4.age = 10
+console.log(person4) // { name: &#39;林三心&#39;, age: 10 }
+</code></pre>
+<p>咱们来看看<code>字面量创建对象</code>和<code>new Object创建对象</code>两种方式，其实<code>字面量创建对象</code>的本质就是<code>new Object创建对象</code></p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">// 字面量创建对象
+const person2 = {name: &#39;林三心&#39;, age: 10}
+console.log(person2) // { name: &#39;林三心&#39;, age: 10 }
+
+本质是
+
+// new Object创建对象
+const person2 = new Object()
+person2.name = &#39;林三心&#39;
+person2.age = 10
+console.log(person2) // { name: &#39;林三心&#39;, age: 10 }
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/5ca3ae07.webp"/></p>
+<p>我们之前说过，<code>构造函数</code>的<code>prototype</code>和其<code>实例</code>的<code>__proto__</code>是指向同一个地方的，这里的<code>person2，person3</code>其实也都是<code>Object构造函数</code>的实例，那我们来验证一下吧</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">const person2 = {name: &#39;林三心&#39;, age: 10}
+
+const person3 = new Object()
+person3.name = &#39;林三心&#39;
+person3.age = 10
+
+console.log(Object.prototype === person2.__proto__) // true
+console.log(Object.prototype === person3.__proto__) // true
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/c95956c7.webp"/></p>
+<h3>Function和Object</h3>
+<p>上面咱们常说</p>
+<ul>
+<li><code>函数</code>是<code>Function构造函数</code>的实例</li>
+<li><code>对象</code>是<code>Object构造函数</code>的实例</li>
+</ul>
+<p>那<code>Function构造函数</code>和<code>Object构造函数</code>他们两个又是谁的实例呢？</p>
+<ul>
+<li><code>function Object()</code>其实也是个函数，所以他是<code>Function构造函数</code>的实例</li>
+<li><code>function Function()</code>其实也是个函数，所以他也是<code>Function构造函数</code>的实例，没错，他是他自己本身的实例</li>
+</ul>
+<p>咱们可以试验一下就知道了</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">console.log(Function.prototype === Object.__proto__) // true
+console.log(Function.prototype === Function.__proto__) // true
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/0ed016bf.webp"/></p>
+<h3>constructor</h3>
+<p>constructor和prototype是成对的，你指向我，我指向你。举个例子，如果你是我老婆，那我肯定是你的老公。</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">function fn() {}
+
+console.log(fn.prototype) // {constructor: fn}
+console.log(fn.prototype.constructor === fn) // true
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/e87db46c.webp"/></p>
+<h2>原型链</h2>
+<h3>Person.prototype 和 Function.prototype</h3>
+<p>讨论原型链之前，咱们先来聊聊这两个东西</p>
+<ul>
+<li>Person.prototype，它是<code>构造函数Person</code>的原型对象</li>
+<li>Function.prototype，他是<code>构造函数Function</code>的原型对象</li>
+</ul>
+<p>都说了原型对象，原型对象，可以知道其实这两个本质都是<code>对象</code></p>
+<p>那既然是<code>对象</code>，本质肯定都是通过<code>new Object()</code>来创建的。既然是通过<code>new Object()</code>创建的，那就说明<code>Person.prototype 和 Function.prototype</code>都是<code>构造函数Object</code>的实例。也就说明了<code>Person.prototype 和 Function.prototype</code>他们两的<code>__proto__</code>都指向<code>Object.prototype</code></p>
+<p>咱们可以验证一下</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">function Person(){}
+
+console.log(Person.prototype.__proto__ === Object.prototype) // true
+console.log(Function.prototype.__proto__ === Object.prototype) // true
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/6f5bd985.webp"/></p>
+<h3>什么是原型链？</h3>
+<p>什么是原型链呢？其实俗话说就是：<code>__proto__的路径</code>就叫原型链</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/ba9fc73d.webp"/></p>
+<h3>原型链终点</h3>
+<p>上面咱们看到，三条原型链结尾都是<code>Object.prototype</code>，那是不是说明了<code>Object.prototype</code>就是原型链的终点呢？其实不是的，<code>Object.prototype</code>其实也有__proto__，指向null，那才是原型链的终点</p>
+<p>至此，整个原型示意图就画完啦！！！</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/4b4c6082.webp"/></p>
+<h2>原型继承</h2>
+<p>说到原型，就不得不说补充一下<code>原型继承</code>这个知识点了，<code>原型继承</code>就是，<code>实例</code>可以使用<code>构造函数上的prototype</code>中的方法</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">function Person(name) { // 构造函数
+  this.name = name
+}
+Person.prototype.sayName = function() { // 往原型对象添加方法
+  console.log(this.name)
+}
+
+
+const person = new Person(&#39;林三心&#39;) // 实例
+// 使用构造函数的prototype中的方法
+person.sayName() // 林三心
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/af703055.webp"/></p>
+<h2>instanceof</h2>
+<p>使用方法</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">A instanceof B
+</code></pre>
+<p>作用：<strong>判断B的prototype是否在A的原型链上</strong></p>
+<p>例子</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">function Person(name) { // 构造函数
+  this.name = name
+}
+
+const person = new Person(&#39;林三心&#39;) // 实例
+
+console.log(Person instanceof Function) // true
+console.log(Person instanceof Object) // true
+console.log(person instanceof Person) // true
+console.log(person instanceof Object) // true
+</code></pre>
+<h2>练习题</h2>
+<p>练习题只为了大家能巩固本文章的知识</p>
+<h3>第一题</h3>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">var F = function() {};
+
+Object.prototype.a = function() {
+  console.log(&#39;a&#39;);
+};
+
+Function.prototype.b = function() {
+  console.log(&#39;b&#39;);
+}
+
+var f = new F();
+
+f.a();
+f.b();
+
+F.a();
+F.b();
+</code></pre>
+<p>答案</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">f.a(); // a
+f.b(); // f.b is not a function
+
+F.a(); // a
+F.b(); // b
+</code></pre>
+<h3>第二题</h3>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">var A = function() {};
+A.prototype.n = 1;
+var b = new A();
+A.prototype = {
+  n: 2,
+  m: 3
+}
+var c = new A();
+
+console.log(b.n);
+console.log(b.m);
+
+console.log(c.n);
+console.log(c.m);
+</code></pre>
+<p>答案</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">console.log(b.n); // 1
+console.log(b.m); // undefined
+
+console.log(c.n); // 2
+console.log(c.m); // 3
+</code></pre>
+<h3>第三题</h3>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">var foo = {},
+    F = function(){};
+Object.prototype.a = &#39;value a&#39;;
+Function.prototype.b = &#39;value b&#39;;
+
+console.log(foo.a);
+console.log(foo.b);
+
+console.log(F.a);
+console.log(F.b);
+</code></pre>
+<p>答案</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">console.log(foo.a); // value a
+console.log(foo.b); // undefined
+
+console.log(F.a); // value a
+console.log(F.b); // value b
+</code></pre>
+<h3>第四题</h3>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">function A() {}
+function B(a) {
+    this.a = a;
+}
+function C(a) {
+    if (a) {
+        this.a = a;
+    }
+}
+A.prototype.a = 1;
+B.prototype.a = 1;
+C.prototype.a = 1;
+
+console.log(new A().a); 
+console.log(new B().a);
+console.log(new C(2).a);
+</code></pre>
+<p>答案</p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">console.log(new A().a); // 1
+console.log(new B().a); // undefined
+console.log(new C(2).a); // 2
+</code></pre>
+<h3>第五题</h3>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">console.log(123[&#39;toString&#39;].length + 123)
+</code></pre>
+<p>答案：123是数字，数字本质是<code>new Number()</code>，数字本身没有<code>toString</code>方法，则沿着<code>__proto__</code>去<code>function Number()</code>的<code>prototype</code>上找，找到toString方法，toString方法的length是1，<code>1 + 123 = 124</code>，至于为什么length是1，可以看<a href="https://juejin.cn/post/7003369591967596552">95%的人都回答不上来的问题：函数的length是多少？</a></p>
+<pre><code class="hljs language-js copyable code-block-extension-codeShowNum">console.log(123[&#39;toString&#39;].length + 123) // 124
+</code></pre>
+<h2>结语</h2>
+<blockquote>
+<p>如果你觉得此文对你有一丁点帮助，点个赞，鼓励一下林三心哈哈。或者加入我的群哈哈，咱们一起摸鱼一起学习  : meron857287645</p>
+</blockquote></div></div></article></div></div></main></div></div></div></div>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://juejin.cn/post/7007416743215759373" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-05-14 15:11:12</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>

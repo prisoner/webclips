@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端正确处理“文字溢出”的思路 - 掘金</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>前端正确处理“文字溢出”的思路 - 掘金</h1>
+</header>
+<main class="typo"><div><div><div><div><main><div><div><article><div><div><p><em><strong>本文正在参加<a href="https://juejin.cn/post/7207698564641996856/">「金石计划」</a></strong></em></p>
+<p><strong>前言：</strong> 最近在项目中需要做到类似于 <strong>Mac</strong> 下这种，当屏幕宽度足以容下当前文件名称的时候，文件名称全部展示，不做省略。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/223ae32d.webp"/><br/>
+然而当用户缩放浏览器显示的尺寸时，我们需要做到省略中间的文字，选择保留后缀这种方案。如下图所示：<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/48393f0e.webp"/><br/></p>
+<p>我个人也是感觉这个方案是最好的，因为大部分情况下，用户更关心的是这个文件的类型，而后缀名的保留往往是最佳的选择。我个人也查阅了很多相关文章，并且借鉴了一些已有轮子的代码思路，实现了一个符合我们项目中需求的一个组件。</p>
+<hr/>
+<h2>一.组件效果预览</h2>
+<ol>
+<li>
+<p>单行文字溢出时自动省略，并且<strong>不保留</strong>后缀。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/c5bfeb7a.webp"/></p>
+</li>
+<li>
+<p>单行文字溢出时自动省略，并且<strong>保留</strong>后缀。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/85d37e14.webp"/></p>
+</li>
+<li>
+<p>多行文字溢出时，然后再开始省略。这个情况是我们项目中比较特殊的场景。简单来说就是假设我现在想让文字显示<strong>两行</strong>，如果<strong>两行</strong>的时候没有溢出，那么正常显示。如果两行情况下还是溢出了，那么我再去处理溢出的文字。
+假设这是没有做任何操作的的效果:<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/ca9e1e8a.webp"/><br/>
+使用我们的组件以后的效果：<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/70f526bc.webp"/><br/>
+<strong>（tips：不一定必须是两行，三行，四行都是可以的。我们接下来实现的组件会让你高度自定义去处理文字溢出的场景。）</strong></p>
+</li>
+<li>
+<p>如果你想自己先尝试一下效果，那么你可以快速使用 <strong>npm</strong> 安装一下。</p>
+<ul>
+<li>
+<p><code>npm i auto-ellipsis-text</code></p>
+</li>
+<li>
+<p><code>pnpm i auto-ellipsis-text</code></p>
+</li>
+<li>
+<p><code>yarn add auto-ellipsis-text</code></p>
+</li>
+</ul>
+<p>原仓库地址： <a href="https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fhanzhenfang%2Fauto-ellipsis-text">🫱AutoEllipsisTxt自动省略文字</a></p>
+</li>
+<li>
+<p>使用起来也非常简单，你只需要包裹住你的文字即可
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/6ce0cf63.webp"/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/5df3bf19.webp"/></p>
+</li>
+<li>
+<p>话回正题，接下来我会一步一步讲解我实现这个组件的思路，我写的这个组件不一定是最优的，你需要做到<strong>知其然并知其所以然</strong>，然后完善我写的组件的不足之处，你可以实现自己的<strong>自动省略文本方案</strong>，才是本文的目的。</p>
+</li>
+</ol>
+<h2>二. 单行溢出的处理</h2>
+<ol>
+<li>
+<p>我们先只考虑<strong>单行</strong>的情况。通常我们在自己的应用中展示很多文件信息的时候，往往选择的布局方式就是高度是一定的，说白了就是高度其实我们是定死的，宽度我们不确定，因为用户有可能会在某些情况下拖动浏览器，造成宽度发生变化，但是总会给宽度一个<strong>最小值</strong>和一个<strong>最大值</strong>来保障排版的统一性。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/66067208.webp"/></p>
+</li>
+<li>
+<p>样式方面，在这里我使用的是 <code>UnoCSS</code> ，将样式內联在了标签里，如果你还不了解这种写法，你可以点击下方的文章学习。不过即使你之前从未了解过 <code>UnoCSS</code> ，也不会影响你下面的阅读，因为样式不是本文的重点，并不影响整体阅读。<br/>
+<a href="https://juejin.cn/post/7178130338240020539">🫱手把手教你如何创建一个代码仓库</a></p>
+</li>
+<li>
+<p>让我们先创造一个简单的溢出场景，代码很简单，容器是一个 <strong>width</strong> 最大值为 <strong>200px</strong>，<strong>height</strong> 为固定 <strong>30px</strong> 的 <strong>div</strong>。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/cb255610.webp"/><br/>
+现在页面上的效果如下图：<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/61e56037.webp"/><br/></p>
+</li>
+<li>
+<p>可以很清晰的看出，由于我们文字在容器内放不下，但是我们又没对<strong>溢出</strong>这一特殊场景做出处理，所以就造成了当前页面的效果。先别急，我们一步一步来。</p>
+</li>
+<li>
+<p>最开始我去查阅 <strong>MDN</strong> 的时候，查阅到了一个 <strong>“确认过眼神，你就是我要找到人”</strong> 的属性。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/0e35bb1b.webp"/><br/></p>
+</li>
+<li>
+<p>什么？<strong>text-overflow</strong>，我们要找到不就是文字溢出时候的处理吗？我兴奋的赶快添加到了我的组件上。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/4127cdee.webp"/><br/>
+效果如下：<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/53a97f3b.webp"/><br/>
+然后看着毫无变化的页面，开始怀疑我自己是不是单词拼错了，然后一个字母字母的比对，排除了单词打错字的情况，但页面还是没有变化。🤔</p>
+</li>
+<li>
+<p>于是我又返回 <strong>MDN</strong> 去查看自己是否遗漏了哪些东西，发现了这样一段文字。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/02eac00e.webp"/><br/>
+这里直接说结论，其实 <strong>text-overflow</strong> 这个属性不会为了让文字省略而去创造省略的场景。它其实是在你处理过<strong>溢出</strong>场景之后，帮你做对于<strong>文字溢出</strong>的的二次特殊处理。当你对于页面溢出做没有任何操作时，这个属性其实是无效的。 <strong>（注意：它仅仅只处理文字溢出的场景。）</strong></p>
+</li>
+<li>
+<p>既然你说了，让我们添加额外的属性：<code>overflow-hidden</code> 和 <code>white-space</code>，那么我们就自己添加。我们先只添加一个 <code>overflow-hidden</code> 来看看会发生什么。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/efd06514.webp"/><br/>
+我们发现，下面多出去的文字倒是被省略了，但是我们的省略号呢？？我就不卖官子了，其实造成这个的原因的答案就是下面这句话:<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/47df6586.webp"/><br/></p>
+</li>
+<li>
+<p>我们仔细看上面我们溢出的场景。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/c4ac18ae.webp"/><br/>
+我们下面两行文字其实是<strong>溢出</strong>在了<strong>盒子下方</strong>，正好对应了上面 <code>text-overflow</code> 的介绍，<strong>“无法在盒子下面溢出”</strong> 这句话。</p>
+</li>
+<li>
+<p>在这里我们就需要制造一个让<strong>文字强制不换行</strong>的场景。那么就需要用到我们另外一个十分重要的属性，<code>white-space</code>。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/4f421b53.webp"/><br/>
+我们本节只需要关系 <code>nowrap</code> 这一个值即可。剩下的值如果读者有兴趣可以自行了解，我们不过多解释。</p>
+</li>
+<li>
+<p>首先你要知道，其实我们 <strong>web</strong> 页面的换行，并不是毫无意义的自己就换行了，而是都有一个隐藏的换行符，你可以把这个隐藏的换行符浅浅的理解为 <code>white-space(空格)</code>。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/8568173a.webp"/></p>
+</li>
+<li>
+<p>理解了上面那段话，那我们的属性 <code>white-space:nowrap</code> 的中文含义就十分明显了。<code>white-space</code>对应<strong>空格</strong>，<code>no-wrap</code> 代表不换行。连起来的意思就是，遇到<strong>空格不换行</strong>。而我们的换行其实有一个隐藏的 <code>white-space</code> ，那么我们添加这个属性以后，就会造成一个不会换行的场景。</p>
+</li>
+<li>
+<p>让我们先把 <code>text-ellipsis</code> 和 <code>overflow-hidden</code> 属性删除，只添加 <code>white-space:nowrap</code> 看看页面效果会是怎么样。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/e07ca8f7.webp"/><br/>
+效果如下：<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/4344413e.webp"/><br/>
+可以看到，我们省略了那个隐藏的<strong>换行符</strong>，所以文字不会自动换行了，那么整段文字都显示到了一行上。此时我们再加上我们的两个属性，<code>overflow-hidden</code> 和 <code>text-ellipsis</code>，神奇的一幕就发生了。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/36e08238.webp"/><br/>
+我们仅仅只使用了几个 <strong>CSS</strong> 属性就完成了单行情况下<strong>不保留后缀</strong>的文字溢出处理。</p>
+</li>
+</ol>
+<h2>三. 前期准备</h2>
+<ol>
+<li>
+<p>首先你需要准备一个 <code>autoEllipsis.vue</code> 文件，首先写出下面的代码，来和我一起完成这个组件。</p>
+<pre><code class="hljs language-vue copyable code-block-extension-codeShowNum">
+  
+
+  
+
+  
+
+
+</code></pre>
+</li>
+<li>
+<p>请注意这个 <strong>id</strong> 叫做 <code>container</code> 的 <strong>div</strong> 元素将在接下来的内容中起到至关重要的作用。</p>
+</li>
+<li>
+<p>接下来使用 <code>ref</code> 分别去拿到这两个 <strong>dom</strong> 元素。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/0d149263.webp"/><br/></p>
+</li>
+<li>
+<p>最后我们需要设计一个函数，在组件挂载以后，让它去正确处理我们文字溢出的场景。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/a4fa974e.webp"/><br/></p>
+</li>
+<li>
+<p>接下来的需求就是，这个 <code>autoEllipsis</code> 函数如何去实现。别着急写代码，我知道你现在有可能还是一头雾水无从下手，让我先带你理清思路然后再开始写代码。</p>
+</li>
+</ol>
+<h2>四. 理清思路</h2>
+<ol>
+<li>
+<p>首先我们因为要做到通用性所以， <code>container</code> 的宽度是不能确定的，它的宽度需要根据它外层的父元素来决定，也就是上文中我们提到的有一个最大值最小值宽度的元素。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/bc340f4e.webp"/><br/>
+换句话说，我们这个 <strong>container</strong> 要去动态的拿到外层父元素的宽度。</p>
+</li>
+<li>
+<p>我们先不讲代码如何实现，我们假设现在我们已经拿到了，就叫做 <code>fatherWidth</code>。然后我们再通过刚刚的 <code>ref</code> 获取到的 <code>text</code> <strong>dom</strong> 元素去拿到外面传进来的文字内容。通过拿到这个 <code>span</code> 元素的 <strong>offsetWidth</strong> ，就可以拿到文字的长度。通过判断文字的 <strong>offsetWidth</strong> 是否大于 <strong>fatherWidth</strong> 。然后我们通过两个<strong>宽度</strong>相减，可以得出我们到底溢出的文字宽度为多少。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/5e672d47.webp"/><br/></p>
+</li>
+<li>
+<p>拿到溢出的宽度以后，那么我们就可以用溢出宽度来除以文字大小，<strong>(overWidth/fontSize)</strong> ，就可以算出我们到底溢出了多少文字。</p>
+</li>
+<li>
+<p>假设现在我们现在<strong>溢出</strong>宽度为 <strong>200px</strong>。我们的文字大小为 <code>20px</code>，那么 <strong>200/20</strong> 就算出我们现在溢出了 <strong>10</strong> 个字。</p>
+</li>
+<li>
+<p>我们并且一开始就拿到了总的文字内容，假如我们之前的文字总数为 <strong>30</strong> 个。那么在这个情况下我们屏幕上只展示了 <strong>20</strong> 个文字，因为有 <strong>10</strong> 个字溢出被我们忽略了。</p>
+</li>
+<li>
+<p>到这里之后，我们要做的事情就非常简单了，我们只需要从原来 30 个字的中间开始做切割。一边去掉 5 个，那么此时容器恰好可以容下 20 个字。中间我们再手动加上 <strong>“...”</strong> 省略号不就完美达成了吗？</p>
+</li>
+<li>
+<p>上面想表达的意思用大白话来讲，其实也就是去掉中间的<strong>10</strong>个文字，然后随便再找一个字替换成字符串三个点 <code>...</code> 。</p>
+</li>
+</ol>
+<h2>五. 完成 autoEllipsis 函数</h2>
+<ol>
+<li>
+<p>第一步就是为了拿到我们放入的文字宽度。注释已经写的很清楚了，就不过多赘述。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/604d135c.webp"/></p>
+</li>
+<li>
+<p>然后我们再去拿外面父元素的宽度。此时会出现第一个分支， <code>container</code> 的宽度<strong>小于</strong>父元素的宽度，很容易可以猜到现在我们的文字内容是完全可以容纳的，不需要做特殊处理。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/70493c26.webp"/></p>
+</li>
+<li>
+<p>第二个分支，当我们的 <strong>container</strong> 宽度大于了父亲元素的宽度，那么我们可以通过传递 props 来区分是否需要保留后缀，如果不需要保留后缀，我们直接给 <code>container</code>设置我们<strong>第二个标题</strong>讲解的知识就OK了。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/6f08f878.webp"/></p>
+</li>
+</ol>
+<h2>六. 保留后缀的实现</h2>
+<ol>
+<li>
+<p>如果看到这里，你还没有正确的保留后缀思路，我建议你重新去观看一下<strong>标题四</strong>，这里我们大致的思路就是为了拿到父元素可以容纳多少文字。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/617ada41.webp"/></p>
+</li>
+<li>
+<p>这里我们的思路其实就是计算出得出我们<strong>需要删除多少个文字</strong>。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9086664e.webp"/></p>
+</li>
+<li>
+<p>很简单的思路，就是字符串使用 <code>slice</code> 切割我们上面计算得出的，两边需要删除多少文字。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9e047962.webp"/></p>
+</li>
+<li>
+<p>最后的关键一步，我们需要把 <code>container</code> 的 <code>white-space</code> 属性设置为 <code>normal</code>，因为我们已经正确的处理了文字数量，现在的 <code>container</code> 已经不会溢出了。<br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/db1b3b7e.webp"/></p>
+</li>
+</ol>
+<h2>七. 源码</h2>
+<p>下面是本组件的核心代码 <code>autoEllipsis</code> 函数的源码</p>
+<pre><code class="hljs language-ts copyable code-block-extension-codeShowNum">function autoEllipsis(container: HTMLElement, textNode: HTMLSpanElement) {
+  const str = premitiveText; //1.拿到的所有文字信息
+  textNode.textContent = str; //2.将所有文字放入到我们的 span 标签中
+  container.style.whiteSpace = &#34;nowrap&#34;; //3.先将文字全部放入到《一行》中，为了计算整体宽度
+  container.style.width = &#34;fit-content&#34;; //4. 给 container 设置 fit-content 属性，就可以拿到正确的内容宽度
+  const containerWidth = container.clientWidth; //5. 拿到了 container 的宽度
+
+  const parent = container.parentElement; // 拿到外部父元素的宽度
+  const parentWidth = parent!.clientWidth || parent!.offsetWidth;
+  if (containerWidth &lt;= parentWidth) {
+    //如果container 的宽度《小于》父元素的宽度，不做任何处理
+    textNode.textContent = str;
+    return;
+  } else if (cssEntirely.value) {
+    container.style.width = parentWidth + &#34;px&#34;;
+    container.style.whiteSpace = &#34;nowrap&#34;;
+    container.style.textOverflow = &#34;ellipsis&#34;;
+    container.style.overflow = &#34;hidden&#34;;
+    return;
+  } else {
+    const textWidth = textNode.offsetWidth; //1. 拿到文字节点的宽度
+    const strNumer = str.length; //2. 拿到文字的数量
+    const avgStrWidth = textWidth / strNumer; //3. 拿到平均每个文字多少宽度
+    const canFitStrNumber = Math.floor(
+      (parentWidth * props.startEllipsisLine) / avgStrWidth //4. 根据父元素的宽度来计算出可以容纳多少文字
+    );
+
+    const shouldDelNumber = strNumer - canFitStrNumber + 1.5; //1. 算出需要删除几个文字（1.5是为了省略号的宽度
+    const delEachSide = shouldDelNumber / 2; //2. 因为要保留中间,所以我们不能只从开头删除，也需要从两头删除
+    const endLeft = Math.floor(strNumer / 2 - delEachSide); //3. 因为下面要用到 slice 所以需要计算出 index
+    const startRight = Math.ceil(strNumer / 2 + delEachSide); //4. 和上面同理
+
+    switch (props.suffix) {
+      case true: {
+        textNode.textContent =
+          str.slice(0, endLeft) + &#34;...&#34; + str.slice(startRight);
+        break;
+      }
+      case false: {
+        textNode.textContent = str.slice(0, -shouldDelNumber) + &#34;...&#34;;
+
+        break;
+      }
+    }
+    container.style.wordBreak = &#34;break-all&#34;;
+    container.style.whiteSpace = &#34;normal&#34;;
+  }
+}
+
+</code></pre>
+<h2>八. 优化点</h2>
+<p>这个组件目前在 <code>...</code> 省略号的文字占用上，并不能准确的根据文字大小调整所需的字数。也就是下面的 <strong>1.5</strong> 这个数字无法精确的算出，但是目前我们项目的文字大小是确定的，所以我也就没有再优化了，还希望各位可以提交 <strong>Pr</strong> 来一起完善这个组件。 <br/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/d0850456.webp"/></p>
+<p>原仓库地址： <a href="https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fhanzhenfang%2Fauto-ellipsis-text">🫱AutoEllipsisTxt自动省略文字</a></p>
+<h2>九. 临时解决方案（2023/5/8）</h2>
+<p>我在组件 0.0.14 版本中新增了一个 <strong>props</strong> 叫做 <strong>boundary-value</strong> ，它需要用户手动去添加一个 <strong>number</strong>类型的数字，这个数字会添加到需要删除的文字数量中，用来帮助组件调整一些溢出的问题。如下图，这是一个宽度为 <strong>200px</strong> ，高度为 <strong>30px</strong> 的 字体大小为 <strong>12px</strong> 的 <strong>div</strong> ，这是使用 <strong>boundary-value</strong> 之前。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/270ea6c0.webp"/></p>
+<p>当我们多删除一个文字的宽度以后。</p>
+<pre><code class="hljs language-ruby copyable code-block-extension-codeShowNum">         SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_SomelongWord_.jpg
+        
+
+</code></pre>
+<p>效果如下：</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/fbb4ede6.webp"/></p>
+<p>评论区各位提出了很好的意见，比如 <code>canvans</code> 或者字节数量，但是都是不能达到完美的预期，我会和大家一起学习，以求最佳效果。再次感谢各位的意见和指导。🎁</p></div></div></article></div></div></main></div></div></div></div>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://juejin.cn/post/7218411904699924540" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-05-14 15:24:24</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
