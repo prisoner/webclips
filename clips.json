@@ -25,8 +25,14 @@
   },
   {
     "ID": "586872ff68829d5741bb203c0c5cdb1a35c4cebd",
-    "Title": "Pipenv – 超好用的 Python 包管理工具 - 个人文章 - SegmentFault 思否",
+    "Title": "Pipenv – 超好用的 Python 包管理工具",
     "Link": "https://segmentfault.com/a/1190000015389565",
     "Time": "2023-05-14T15:45:50.527470818+08:00"
+  },
+  {
+    "ID": "0dd5f1d6814fe845867b38521b39468e5b2b7229",
+    "Title": "万字长文，带你从零学习Webpack - 掘金",
+    "Link": "https://juejin.cn/post/6994346951739179039",
+    "Time": "2023-05-14T16:14:17.091592673+08:00"
   }
 ]
