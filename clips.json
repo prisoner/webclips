@@ -19,8 +19,14 @@
   },
   {
     "ID": "cd382feca5ebb6ad4abf0c5778093bd03f666cf9",
-    "Title": "一文吃透 TypeScript 类型编程（含精选类型体操编程题） - 掘金",
+    "Title": "一文吃透 TypeScript 类型编程",
     "Link": "https://juejin.cn/post/7230469903122284599",
     "Time": "2023-05-14T15:39:20.537243954+08:00"
+  },
+  {
+    "ID": "586872ff68829d5741bb203c0c5cdb1a35c4cebd",
+    "Title": "Pipenv – 超好用的 Python 包管理工具 - 个人文章 - SegmentFault 思否",
+    "Link": "https://segmentfault.com/a/1190000015389565",
+    "Time": "2023-05-14T15:45:50.527470818+08:00"
   }
 ]
