@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedding和如何借助Embedding做PDF问答</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>Embedding和如何借助Embedding做PDF问答</h1>
+</header>
+<main class="typo"><div><div><section><div><div><div><div>
+
+      <div>
+        <!--  ngRepeat: (k, th) in tweets  --><div>
+
+          <div>这篇文章大致讲清楚了Embedding和如何借助Embedding做PDF问答，原文翻译如下（略有删改）：
+
+向量数据库和Embedding是现在 AI 领域的热门话题。
+
+Pinecone 是一家向量数据库公司，估值约为 10 亿美元，刚刚融资 1 亿美元。Shopify、Brex、Hubspot 等公司都在他们的 AI…</div>
+
+          <!--  ngIf: th.tweet.media != null &amp;&amp; th.tweet.media.length > 0  --><div>
+            <!--  ngRepeat: med in th.tweet.media  --><div>
+
+              <div>
+
+              <img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/7799468e.jpe"/></div>
+
+             
+              <!--  ngIf: med.type == 1  -->
+                 
+            </div><!--  end ngRepeat: med in th.tweet.media  --><div>
+
+              <div>
+
+              <img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/f2e03c36.jpe"/></div>
+
+             
+              <!--  ngIf: med.type == 1  -->
+                 
+            </div><!--  end ngRepeat: med in th.tweet.media  --><div>
+
+              <div>
+
+              <img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/71d02374.png"/></div>
+
+             
+              <!--  ngIf: med.type == 1  -->
+                 
+            </div><!--  end ngRepeat: med in th.tweet.media  --><div>
+
+              <div>
+
+              <img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/76287559.jpe"/></div>
+
+             
+              <!--  ngIf: med.type == 1  -->
+                 
+            </div><!--  end ngRepeat: med in th.tweet.media  -->
+          </div><!--  end ngIf: th.tweet.media != null &amp;&amp; th.tweet.media.length > 0  -->
+
+          <!--  ngIf: th.tweet.info.retweeted_status_id != null  --><div>
+            <div>
+              
+            <div><iframe src="frames/1684120240-c6a9c2caed22a5a6155864ebba2e323b.frame.html"></iframe></div></div>
+          </div><!--  end ngIf: th.tweet.info.retweeted_status_id != null  -->
+
+          <!--  ngRepeat: url in th.tweet.urls  -->
+        </div><!--  end ngRepeat: (k, th) in tweets  --><div>
+
+          <div>推荐看OpenAI的官方文档《Introducing text and code embeddings》的介绍：
+
+<a href="https://en.rattibha.com/thread/target="> openai.com </a>
+
+另外还有OpenAI的系列Embedding相关的Cookbook，例如：
+
+<a href="https://github.com/openai/open"> github.com </a></div>
+
+          <!--  ngIf: th.tweet.media != null &amp;&amp; th.tweet.media.length > 0  -->
+
+          <!--  ngIf: th.tweet.info.retweeted_status_id != null  -->
+
+          <!--  ngRepeat: url in th.tweet.urls  --><div>
+            <div><div><div><a href="https://openai.com/blog/introducing-text-and-code-embeddings"><div><div>Introducing text and code embeddings</div><div> <i></i> https://openai.com</div></div></a></div></div></div>
+           
+          </div><!--  end ngRepeat: url in th.tweet.urls  --><div>
+            <div><div><div><a href="https://github.com/openai/openai-cookbook/blob/main/examples/Question_answering_using_embeddings.ipynb"><div><div>openai-cookbook/Question_answering_using_embeddings.ipynb at main · openai/openai-cookbook</div><div> <i></i> https://github.com</div></div></a></div></div></div>
+           
+          </div><!--  end ngRepeat: url in th.tweet.urls  -->
+        </div><!--  end ngRepeat: (k, th) in tweets  --><div>
+
+          <div>另外我以前写的这篇也可以作为一个参考<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/feab7583.png"/></div>
+
+          <!--  ngIf: th.tweet.media != null &amp;&amp; th.tweet.media.length > 0  -->
+
+          <!--  ngIf: th.tweet.info.retweeted_status_id != null  --><div>
+            <div>
+              
+            <div><iframe src="frames/1684120240-61ea3453baf80c60e8f7c40a1eb2b4a0.frame.html"></iframe></div></div>
+          </div><!--  end ngIf: th.tweet.info.retweeted_status_id != null  -->
+
+          <!--  ngRepeat: url in th.tweet.urls  -->
+        </div><!--  end ngRepeat: (k, th) in tweets  --><div>
+
+          <div>不是说一定要用Embedding做搜索，而是Embedding相对更适合文档对话这种场景： 
+1. 自然语言检索，因为对话时问问题会用自然语言而不是关键字提问 
+2. 匹配范围更广，不需要精准的关键字也可以找到相关内容 
+3. 支持多语言，中文也能检索英文文档</div>
+
+          <!--  ngIf: th.tweet.media != null &amp;&amp; th.tweet.media.length > 0  -->
+
+          <!--  ngIf: th.tweet.info.retweeted_status_id != null  --><div>
+            <div>
+              
+            <div><iframe src="frames/1684120240-f4c0bffc143594126e3395edcc91927f.frame.html"></iframe></div></div>
+          </div><!--  end ngIf: th.tweet.info.retweeted_status_id != null  -->
+
+          <!--  ngRepeat: url in th.tweet.urls  -->
+        </div><!--  end ngRepeat: (k, th) in tweets  --><div>
+
+          <div>Embedding也有缺点就是有时候搜索结果的准确度不高，可以参考LangChain的Contextual Compression方案先用Embedding搜索出来前n条，然后再对结果做一次过滤
+
+<a href="https://blog.langchain.dev/imp"> blog.langchain.dev </a></div>
+
+          <!--  ngIf: th.tweet.media != null &amp;&amp; th.tweet.media.length > 0  --><div>
+            <!--  ngRepeat: med in th.tweet.media  --><div>
+
+              <div>
+
+              <img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/080ad207.jpe"/></div>
+
+             
+              <!--  ngIf: med.type == 1  -->
+                 
+            </div><!--  end ngRepeat: med in th.tweet.media  -->
+          </div><!--  end ngIf: th.tweet.media != null &amp;&amp; th.tweet.media.length > 0  -->
+
+          <!--  ngIf: th.tweet.info.retweeted_status_id != null  -->
+
+          <!--  ngRepeat: url in th.tweet.urls  --><div>
+            <div><div><div><a href="https://blog.langchain.dev/improving-document-retrieval-with-contextual-compression/"><div><div>Improving Document Retrieval with Contextual Compression</div><div> <i></i> https://blog.langchain.dev</div></div></a></div></div></div>
+           
+          </div><!--  end ngRepeat: url in th.tweet.urls  -->
+        </div><!--  end ngRepeat: (k, th) in tweets  --><div>
+
+          <div>关于Fine-Tuning</div>
+
+          <!--  ngIf: th.tweet.media != null &amp;&amp; th.tweet.media.length > 0  -->
+
+          <!--  ngIf: th.tweet.info.retweeted_status_id != null  --><div>
+            <div>
+              
+            <div><iframe src="frames/1684120240-87382ef450195b7c5d8d9cb81fe1ef6e.frame.html"></iframe></div></div>
+          </div><!--  end ngIf: th.tweet.info.retweeted_status_id != null  -->
+
+          <!--  ngRepeat: url in th.tweet.urls  -->
+        </div><!--  end ngRepeat: (k, th) in tweets  -->
+
+        <!--  ngRepeat: tag in hashtags  -->
+
+      </div>
+
+      
+      <div>
+        Some tweets missing
+
+        <div>
+          Refresh the Thread
+          
+        </div>
+      </div>
+
+      
+
+      
+
+    </div></div></div></div></section></div></div>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://en.rattibha.com/thread/1655764420675399681" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-05-15 11:10:40</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
