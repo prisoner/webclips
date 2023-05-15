@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>50-Chat-GPT-Prompts-Every-Software-Developer-Should-Know</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>50-Chat-GPT-Prompts-Every-Software-Developer-Should-Know</h1>
+</header>
+<main class="typo"><div><div><div><main><article><div><section><div><div><div><p>In this article, we&#39;ll explore some awesome ChatGPT-4 prompts specifically tailored for software developers. These prompts can assist with tasks such as code generation, code completion, bug detection, code review, API documentation generation, and more.</p>
+<h3><strong>Code Generation</strong></h3>
+<ul>
+<li><p>Generate a boilerplate <code>[language]</code> code for a <code>[class/module/component]</code> named [name] with the following functionality: <code>[functionality description].</code></p>
+</li>
+<li><p>Create a [language] function to perform <code>[operation]</code> on <code>[data structure]</code> with the following inputs: [input variables] and expected output: <code>[output description]</code>.</p>
+</li>
+<li><p>Generate a <code>[language]</code> class for a <code>[domain]</code> application that includes methods for <code>[methods list]</code> and properties <code>[properties list]</code>.</p>
+</li>
+<li><p>Based on the [design pattern], create a code snippet in [language] that demonstrates its implementation for a [use case].</p>
+</li>
+</ul>
+<p><strong>Example:</strong></p>
+<p>Generate a boilerplate Python code for a shopping cart module named &#34;ShoppingCart&#34; with the following functionality:</p>
+<ul>
+<li><p>A constructor that initializes an empty list to store cart items.</p>
+</li>
+<li><p>A method called &#34;add_item&#34; that takes in an item object and adds it to the cart.</p>
+</li>
+<li><p>A method called &#34;remove_item&#34; that takes in an item object and removes it from the cart if it exists.</p>
+</li>
+<li><p>A method called &#34;get_items&#34; that returns the list of items in the cart.</p>
+</li>
+<li><p>A method called &#34;get_total&#34; that calculates and returns the total price of all items in the cart.</p>
+</li>
+</ul>
+<h3><strong>Code Completion</strong></h3>
+<ul>
+<li><p>In <code>[language]</code>, complete the following code snippet that initializes a [data structure] with <code>[values]</code>: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Finish the <code>[language]</code> function that calculates [desired output] given the following input parameters: <code>[function signature]</code>.</p>
+</li>
+<li><p>Complete the <code>[language]</code> code to make an API call to <code>[API endpoint]</code> with [parameters] and process the response: <code>[code snippet]</code>.</p>
+</li>
+</ul>
+<p><strong>Example</strong>: Finish the Python function that calculates the average of a list of numbers given the following input parameters:</p>
+<div><div><button><span><span>Copy</span><svg><path></path></svg></span></button></div><pre><code class="lang-python">def calculate_average(num_list)
+</code></pre></div>
+<h3><strong>Bug Detection</strong></h3>
+<ul>
+<li><p>Identify any potential bugs in the following [language] code snippet: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Analyze the given [language] code and suggest improvements to prevent [error type]: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Find any memory leaks in the following [language] code and suggest fixes: <code>[code snippet]</code>.</p>
+</li>
+</ul>
+<p><strong>Example</strong>: Identify any potential bugs in the following Python code snippet:</p>
+<div><div><button><span><span>Copy</span><svg><path></path></svg></span></button></div><pre><code class="lang-python">def calculate_sum(num_list):
+    sum = 0
+    for i in range(len(num_list)):
+        sum += num_list[i]
+    return sum
+</code></pre></div>
+<h3><strong>Code Review</strong></h3>
+<ul>
+<li><p>Review the following <code>[language]</code> code for best practices and suggest improvements: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Analyze the given <code>[language]</code> code for adherence to <code>[coding style guidelines]</code>: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Check the following [language] code for proper error handling and suggest enhancements: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Evaluate the modularity and maintainability of the given <code>[language]</code> code: <code>[code snippet]</code>.</p>
+</li>
+</ul>
+<p><strong>Example</strong>: Review the following Python code for best practices and suggest improvements:</p>
+<div><div><button><span><span>Copy</span><svg><path></path></svg></span></button></div><pre><code class="lang-python">def multiply_list(lst):
+    result = 1
+    for num in lst:
+        result *= num
+    return result
+</code></pre></div>
+<h3><strong>API Documentation Generation</strong></h3>
+<ul>
+<li><p>Generate API documentation for the following <code>[language]</code> code: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Create a concise API reference for the given <code>[language]</code> class: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Generate usage examples for the following <code>[language]</code> API: <code>[code snippet]</code>.</p>
+</li>
+</ul>
+<p><strong>Example</strong>: Generate API documentation for the following JavaScript code:</p>
+<div><div><button><span><span>Copy</span><svg><path></path></svg></span></button></div><pre><code class="lang-javascript">/**
+ * Returns the sum of two numbers.
+ * @param {number} a - The first number to add.
+ * @param {number} b - The second number to add.
+ * @returns {number} The sum of a and b.
+ */
+function sum(a, b) {
+  return a + b;
+}
+</code></pre></div>
+<h3><strong>Query Optimization</strong></h3>
+<ul>
+<li><p>Optimize the following SQL query for better performance: <code>[SQL query]</code>.</p>
+</li>
+<li><p>Analyze the given SQL query for any potential bottlenecks: <code>[SQL query]</code>.</p>
+</li>
+<li><p>Suggest indexing strategies for the following SQL query: <code>[SQL query]</code>.</p>
+</li>
+<li><p>Optimize the following NoSQL query for better performance and resource usage: <code>[NoSQL query]</code>.</p>
+</li>
+</ul>
+<p><strong>Example</strong>: Optimize the following SQL query for better performance:</p>
+<div><div><button><span><span>Copy</span><svg><path></path></svg></span></button></div><pre><code class="lang-sql">SELECT *
+FROM orders
+WHERE order_date BETWEEN &#39;2022-01-01&#39; AND &#39;2022-12-31&#39;
+ORDER BY order_date DESC
+LIMIT 100;
+</code></pre></div>
+<h3><strong>User Interface Design</strong></h3>
+<ul>
+<li><p>Generate a UI mockup for a <code>[web/mobile]</code> application that focuses on [<code>user goal or task]</code>.</p>
+</li>
+<li><p>Suggest improvements to the existing user interface of <code>[app or website]</code> to enhance <code>[usability, accessibility, or aesthetics]</code>.</p>
+</li>
+<li><p>Design a responsive user interface for a <code>[web/mobile]</code> app that adapts to different screen sizes and orientations.</p>
+</li>
+</ul>
+<p><strong>Example</strong>: Generate a UI mockup for a mobile application that focuses on managing personal finances.</p>
+<h3><strong>Automated Testing</strong></h3>
+<ul>
+<li><p>Generate test cases for the following [language] function based on the input parameters and expected output: <code>[function signature]</code>.</p>
+</li>
+<li><p>Create a test script for the given [language] code that covers [unit/integration/system] testing: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Generate test data for the following [language] function that tests various edge cases: <code>[function signature]</code>.</p>
+</li>
+<li><p>Design a testing strategy for a [web/mobile] app that includes [unit, integration, system, and/or performance] testing.</p>
+</li>
+</ul>
+<p><strong>Example:</strong> Generate test cases for the following Python function based on the input parameters and expected output:</p>
+<div><div><button><span><span>Copy</span><svg><path></path></svg></span></button></div><pre><code class="lang-python">def divide(a: float, b: float) -&gt; float:
+    if b == 0:
+        raise ZeroDivisionError(&#39;division by zero&#39;)
+    return a / b
+</code></pre></div>
+<h3><strong>Code refactoring</strong></h3>
+<ul>
+<li><p>Suggest refactoring improvements for the following [language] code to enhance readability and maintainability: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Identify opportunities to apply [design pattern] in the given [language] code: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Optimize the following [language] code for better performance: <code>[code snippet]</code>.</p>
+</li>
+</ul>
+<p><strong>Example</strong>: Optimize the following Python code for better performance:</p>
+<div><div><button><span><span>Copy</span><svg><path></path></svg></span></button></div><pre><code class="lang-python">def find_max(numbers):
+    max_num = numbers[0]
+    for num in numbers:
+        if num &gt; max_num:
+            max_num = num
+    return max_num
+</code></pre></div>
+<h3><strong>Design pattern suggestions</strong></h3>
+<ul>
+<li><p>Based on the given [language] code, recommend a suitable design pattern to improve its structure: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Identify opportunities to apply the [design pattern] in the following [language] codebase: <code>[repository URL or codebase description]</code>.</p>
+</li>
+<li><p>Suggest an alternative design pattern for the given [language] code that may provide additional benefits: <code>[code snippet]</code>.</p>
+</li>
+</ul>
+<p><strong>Example:</strong> Based on the given Python code, recommend a suitable design pattern to improve its structure:</p>
+<div><div><button><span><span>Copy</span><svg><path></path></svg></span></button></div><pre><code class="lang-python">class TotalPriceCalculator:
+    def calculate_total(self, items):
+        pass
+
+class NormalTotalPriceCalculator(TotalPriceCalculator):
+    def calculate_total(self, items):
+        total = 0
+        for item in items:
+            total += item.price * item.quantity
+        return total
+
+class DiscountedTotalPriceCalculator(TotalPriceCalculator):
+    def calculate_total(self, items):
+        total = 0
+        for item in items:
+            total += item.price * item.quantity * 0.9 # apply 10% discount
+        return total
+
+class Order:
+    def __init__(self, items, total_price_calculator):
+        self.items = items
+        self.total_price_calculator = total_price_calculator
+
+    def calculate_total(self):
+        return self.total_price_calculator.calculate_total(self.items)
+
+class Item:
+    def __init__(self, name, price, quantity):
+        self.name = name
+        self.price = price
+        self.quantity = quantity
+</code></pre></div>
+<h3><strong>Algorithm development</strong></h3>
+<ul>
+<li><p>Suggest an optimal algorithm to solve the following problem: <code>[problem description]</code>.</p>
+</li>
+<li><p>Improve the efficiency of the given algorithm for <code>[specific use case]</code>: <code>[algorithm or pseudocode]</code>.</p>
+</li>
+<li><p>Design an algorithm that can handle <code>[large-scale data or high-throughput]</code> for <code>[specific task or operation]</code>.</p>
+</li>
+<li><p>Propose a parallel or distributed version of the following algorithm to improve performance: <code>[algorithm or pseudocode]</code>.</p>
+</li>
+</ul>
+<h3><strong>Code translation</strong></h3>
+<ul>
+<li><p>Translate the following <code>[source language]</code> code to <code>[target language]</code>: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Convert the given <code>[source language]</code> class or module to <code>[target language]</code> while preserving its functionality and structure: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Migrate the following <code>[source language]</code> code that uses <code>[library or framework]</code> to [target language] with a similar library or framework: <code>[code snippet]</code>.</p>
+</li>
+</ul>
+<p><strong>Example:</strong> Translate the following Python code to JavaScript:</p>
+<div><div><button><span><span>Copy</span><svg><path></path></svg></span></button></div><pre><code class="lang-python">def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+</code></pre></div>
+<h3><strong>Personalized learning</strong></h3>
+<ul>
+<li><p>Curate a list of resources to learn <code>[programming language or technology]</code> based on my current skill level: <code>[beginner/intermediate/advanced]</code>.</p>
+</li>
+<li><p>Recommend a learning path to become proficient in <code>[specific programming domain or technology]</code> considering my background in <code>[existing skills or experience]</code>.</p>
+</li>
+<li><p>Suggest project ideas or coding exercises to practice and improve my skills in <code>[programming language or technology]</code>.</p>
+</li>
+</ul>
+<h3><strong>Code visualization</strong></h3>
+<ul>
+<li><p>Generate a UML diagram for the following <code>[language]</code> code: <code>[code snippet]</code>.</p>
+</li>
+<li><p>Create a flowchart or visual representation of the given <code>[language]</code> algorithm: <code>[algorithm or pseudocode]</code>.</p>
+</li>
+<li><p>Visualize the call graph or dependencies of the following <code>[language]</code> code: <code>[code snippet]</code>.</p>
+</li>
+</ul>
+<p><strong>Example</strong>: Generate a UML diagram for the following Java code:</p>
+<div><div><button><span><span>Copy</span><svg><path></path></svg></span></button></div><pre><code class="lang-java">public abstract class Vehicle {
+    private String model;
+
+    public Vehicle(String model) {
+        this.model = model;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public abstract void start();
+
+    public abstract void stop();
+}
+
+public class Car extends Vehicle {
+    public Car(String model) {
+        super(model);
+    }
+    @Override
+    public void start() {
+        System.out.println(&#34;Starting car engine&#34;);
+    }
+    @Override
+    public void stop() {
+        System.out.println(&#34;Stopping car engine&#34;);
+    }
+}
+public class Motorcycle extends Vehicle {
+    public Motorcycle(String model) {
+        super(model);
+    }
+    @Override
+    public void start() {
+        System.out.println(&#34;Starting motorcycle engine&#34;);
+    }
+    @Override
+    public void stop() {
+        System.out.println(&#34;Stopping motorcycle engine&#34;);
+    }
+}
+</code></pre></div>
+<h3><strong>Data visualization</strong></h3>
+<ul>
+<li><p>Generate a bar chart that represents the following data: <code>[data or dataset description]</code>.</p>
+</li>
+<li><p>Create a line chart that visualizes the trend in the following time series data: <code>[data or dataset description]</code>.</p>
+</li>
+<li><p>Design a heatmap that represents the correlation between the following variables: <code>[variable list]</code>.</p>
+</li>
+</ul>
+<p></p>
+
+
+
+</div></div></div></section></div></article></main></div></div></div>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://blog.hackertab.dev/50-chat-gpt-prompts-every-software-developer-should-know-tested" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-05-15 08:36:16</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
