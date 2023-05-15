@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM中的各种距离</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>DOM中的各种距离</h1>
+</header>
+<main class="typo"><div><div><div><div><main><div><div><article><div><div><h3>背景</h3>
+<p>最近在项目中要实现一个拖拽头像的移动效果，一直对JS Dom拖拽这一块不太熟悉，甚至在网上找一个示例，都看得云里雾里的，发现遇到最大的拦路虎就是JS Dom各种各样的距离，让人头晕眼花，看到一个距离属性，大脑中的印象极其模糊，如同有一团雾一样，不知其确切含义。果然是基础不牢，地动山摇。今天决心夯实一下基础，亲自动手验证一遍dom各种距离的含义。</p>
+<h3>JS Dom各种距离释义</h3>
+<p>下面我们进入正题, 笔者不善于画图, 主要是借助浏览器开发者工具，通过获取的数值给大家说明一下各种距离的区别。</p>
+<h4>第一个发现 window.devicePixelRatio 的存在</h4>
+<p>本打算用截图软件丈量尺寸，结果发现截图软件显示的屏幕宽度与浏览器开发者工具获取的宽度不一致，这是为什么呢?</p>
+<ul>
+<li>截图软件显示的屏幕宽度是1920</li>
+</ul>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/d80fbe0c.webp"/></p>
+<ul>
+<li>window.screen.width显示的屏幕宽度是1536</li>
+</ul>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/0ad8e113.webp"/></p>
+<p>这是怎么回事？原来在PC端，也存在一个设备像素比的概念。它告诉浏览器一个css像素应该使用多少个物理像素来绘制。要说设备像素比，得先说一下像素和分辨率这两个概念。</p>
+<ul>
+<li><strong>像素</strong>
+屏幕中最小的色块，每个色块称之为一个像素（Pixel）</li>
+</ul>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/b2840b16.webp"/></p>
+<ul>
+<li><strong>分辨率</strong> 分辨率=屏幕水平方向的像素点数 * 屏幕垂直方向的像素点数;
+另外说一下,关于分辨率有多种定义,可以细分为<a href="https://link.juejin.cn/?target=https%3A%2F%2Fbaike.baidu.com%2Fitem%2F%25E6%2598%25BE%25E7%25A4%25BA%25E5%2588%2586%25E8%25BE%25A8%25E7%258E%2587%2F3431933%3FfromModule%3Dlemma_inlink">显示分辨率</a>、<a href="https://link.juejin.cn/?target=https%3A%2F%2Fbaike.baidu.com%2Fitem%2F%25E5%259B%25BE%25E5%2583%258F%25E5%2588%2586%25E8%25BE%25A8%25E7%258E%2587%2F872374%3FfromModule%3Dlemma_inlink">图像分辨率</a>、<a href="https://link.juejin.cn/?target=https%3A%2F%2Fbaike.baidu.com%2Fitem%2F%25E6%2589%2593%25E5%258D%25B0%25E5%2588%2586%25E8%25BE%25A8%25E7%258E%2587%2F9560832%3FfromModule%3Dlemma_inlink">打印分辨率</a>和<a href="https://link.juejin.cn/?target=https%3A%2F%2Fbaike.baidu.com%2Fitem%2F%25E6%2589%25AB%25E6%258F%258F%25E5%2588%2586%25E8%25BE%25A8%25E7%258E%2587%2F7122498%3FfromModule%3Dlemma_inlink">扫描分辨率</a>等，此处是指显示分辨率。</li>
+</ul>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/e32d913a.webp"/></p>
+<ul>
+<li><strong>设备像素比</strong></li>
+</ul>
+<p>设备像素比的定义是：</p>
+<p><code>window.devicePixelRatio</code> =<span><span><span><math><semantics><mrow><mfrac><mtext>显示设备物理像素分辨率</mtext><mrow><mtext>显示设备</mtext><mi>C</mi><mi>S</mi><mi>S</mi><mtext>像素分辨率</mtext></mrow></mfrac></mrow><annotation>\frac{显示设备物理像素分辨率}{显示设备CSS像素分辨率}</annotation></semantics></math></span><span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>显示设备</span><span>CSS</span><span>像素分辨率</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>显示设备物理像素分辨率</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span></span></span></span></span></p>
+<p>根据设备像素比的定义, 如果知道显示设备横向的css像素值，根据上面的公式，就能计算出显示设备横向的物理像素值。</p>
+<pre><code class="hljs language-javascript copyable code-block-extension-codeShowNum">显示设备宽度物理像素值= window.screen.width * window.devicePixelRatio;
+</code></pre>
+<p>设备像素比在我的笔记本电脑上显示的数值是1.25, 代表一个css逻辑像素对应着1.25个物理像素。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/94089348.webp"/></p>
+<p>我前面的公式计算了一下，与截图软件显示的像素数值一致。这也反过来说明，截图软件显示的是物理像素值。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/dc87d81b.webp"/></p>
+<ul>
+<li>window.devicePixelRatio 是由什么决定的 ?</li>
+</ul>
+<p>发现是由笔记本电脑屏幕的缩放设置决定的，如果设置成100%, 此时window.screen.width与笔记本电脑的显示器分辨率X轴方向的数值一致,都是1920(如右侧图所示), 此时屏幕上的字会变得比较小,比较伤视力。</p>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/67bd8b30.webp" width="40%"/>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/01b678b0.webp" width="50%"/>
+<ul>
+<li>逻辑像素是为了解决什么问题?</li>
+</ul>
+<p>逻辑像素是为了解决屏幕相同，分辨率不同的两台显示设备， 显示同一张图片大小明显不一致的问题。比如说两台笔记本都是15英寸的，一个分辨率是<code>1920*1080</code>,一个分辨率是<code>960*540</code>, 在<code>1920*1080</code>分辨率的设备上，每个格子比较小，在<code>960*540</code>分辨率的设备上，每个格子比较大。一张<code>200*200</code>的图片，在高分率的设备上看起来会比较小，在低分辨率的设备上，看起来会比较大。观感不好。为了使同样尺寸的图片，在两台屏幕尺寸一样大的设备上，显示尺寸看起来差不多一样大，发明了逻辑像素这个概念。规定所有电子设备呈现的图片等资源尺寸统一用逻辑像素表示。然后在高分辨率设备上，提高devicePixelRatio, 比如说设置<code>1920*1080</code>设备的devicePixelRatio(dpr)等于2, 一个逻辑像素占用两个格子,在低分辨率设备上，比如说在<code>960*540</code>设备上设置dpr=1, 一个css逻辑像素占一个格子, 这样两张图片在同样的设备上尺寸大小就差不多了。通常设备上的逻辑像素是等于物理像素的，在高分辨率设备上，物理像素是大于逻辑像素数量的。由此也可以看出，物理像素一出厂就是固定的，而设备的逻辑像素会随着设备像素比设置的值不同而改变。但图片的逻辑像素值是不变的。</p>
+<h4>document.body、document.documentElement和window.screen的宽高区别</h4>
+<p>差别是很容易辨别的，如下图所示：</p>
+<ul>
+<li>document.body -- body标签的宽高</li>
+<li>document.documentElement -- 网页可视区域的宽高(<strong>不包括滚动条</strong>)</li>
+<li>window.screen -- 屏幕的宽高</li>
+</ul>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/7c8d463d.webp"/></p>
+<ul>
+<li>网页可视区域不包括滚动条</li>
+</ul>
+<p>如下图所示，截图时在未把网页可视区域的滚动条高度计算在内的条件下, 截图工具显示的网页可视区域高度是168, 浏览器显示的网页可视区域的高度是167.5, 误差0.5，由于截图工具是手动截图，肯定有误差，结果表明，网页可视区域的高度 <strong>不包括滚动条高度</strong>。宽度同理。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/23c02ddb.webp"/></p>
+<ul>
+<li>屏幕和网页可视区域的宽高区别如下：</li>
+</ul>
+<p>屏幕宽高是个固定值，网页可视区域宽高会受到缩放窗口影响。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9bea1e58.webp"/></p>
+<ul>
+<li>屏幕高度和屏幕可用高度区别如下：</li>
+</ul>
+<p>屏幕可用高度=屏幕高度-屏幕下方任务栏的高度，也就是：</p>
+<pre><code class="hljs language-ini copyable code-block-extension-codeShowNum">window.screen.availHeight = window.screen.height - 系统任务栏高度
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/0b5dab52.webp"/></p>
+<h4>scrollWidth, scrollLeft, clientWidth关系</h4>
+<pre><code class="hljs language-scss copyable code-block-extension-codeShowNum">scrollWidth(滚动宽度,包含滚动条的宽度)=scrollLeft(左边卷去的距离)+clientWidth(可见部分宽度);
+// 同理
+scrollHeight(滚动高度,包含滚动条的高度)=scrollTop(上边卷去的距离)+clientHeight(可见部分高度);
+</code></pre>
+<p>需要注意的是，上面这三个属性，都取的是溢出元素的<strong>父级元素属性</strong>。而不是溢出元素本身。本例中溢出元素是body(document.body),其父级元素是html(document.documentElement)。另外，</p>
+<pre><code class="hljs language-javascript copyable code-block-extension-codeShowNum">溢出元素的宽度(document.body.scrollWidth）=父级元素的宽度(document.documentElement.scrollWidth) - 滚动条的宽度(在谷歌浏览器上滚动条的宽度是19px)
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/0a75430e.webp"/></p>
+<pre><code class="hljs language-html copyable code-block-extension-codeShowNum">
+
+
+
+    
+    
+    
+    JS Dom各种距离
+    
+        html,
+        body {
+            margin: 0;
+        }
+
+        body {
+            width: 110%;
+            border: 10px solid blue;
+        }
+
+        .rect {
+            height: 50px;
+            background-color: green;
+        }
+    
+
+
+
+    
+
+
+
+</code></pre>
+<h4>元素自身和父级元素的scrollWidth和scrollLeft关系?</h4>
+<p>从下图可以看出:</p>
+<ul>
+<li>元素自身没有X轴偏移量，元素自身的滚动宽度不包含滚动条</li>
+<li>父级元素有X轴便宜量, 父级元素滚动宽度包含滚动条
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/c659d463.webp"/></li>
+</ul>
+<pre><code class="hljs language-xml copyable code-block-extension-codeShowNum">
+
+
+    
+    
+    
+    JS Dom各种距离
+    
+        div {
+            border: 1px solid #000;
+            width: 200px;
+            height: 600px;
+            padding: 10px;
+            background-color: green;
+            margin: 10px;
+        }
+    
+
+
+
+        111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
+    
+
+
+
+
+</code></pre>
+<h4>offsetWidth和clientWidth的关系?</h4>
+<p>offsetWidth和clientWidth的共同点是都包括 自身宽度+padding , 不同点是<strong>offsetWidth包含border</strong>。</p>
+<p>如下图所示:</p>
+<ul>
+<li>rect元素的clientWidth=200px(自身宽度) + 20px(左右padding) = 220px</li>
+<li>rect元素的offsetWidth=200px(自身宽度) + 20px(左右padding) + 2px(左右boder) = 222px</li>
+</ul>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/01fc190f.webp"/></p>
+<pre><code class="hljs language-xml copyable code-block-extension-codeShowNum">
+
+
+
+    
+    
+    
+    JS Dom各种距离
+    
+        div {
+            border: 1px solid #000;
+            width: 200px;
+            height: 100px;
+            padding: 10px;
+            background-color: green;
+            margin: 10px;
+        }
+    
+
+
+
+    111111111111111111111111111111111111111111111111
+
+
+
+
+
+
+
+</code></pre>
+<h4>event.clientX，event.clientY, event.offsetX 和 event.offsetY 关系</h4>
+<p>代码如下，给rect元素添加一个mousedown事件，打印出事件源的各种位置值。</p>
+<pre><code class="hljs language-xml copyable code-block-extension-codeShowNum">
+
+
+
+    
+    
+    
+    JS Dom各种距离
+    
+        html,
+        body {
+            margin: 0;
+        }
+
+        body {
+            width: 200px;
+            padding: 10px;
+            border: 10px solid blue;
+        }
+
+        .rect {
+            height: 50px;
+            background-color: green;
+        }
+    
+
+
+
+
+    
+
+
+
+
+    const rectDom = document.querySelector(&#39;#rect&#39;);
+
+    rectDom.addEventListener(&#39;mousedown&#39;, ({ offsetX, offsetY, clientX, clientY, pageX, pageY, screenX, screenY }) =&gt; {
+        console.log({ offsetX, offsetY, clientX, clientY, pageX, pageY, screenX, screenY });
+    })
+
+
+
+</code></pre>
+<p>我们通过y轴方向的高度值,了解一下这几个属性的含义。 绿色块的高度是50px, 我们找个特殊的位置（绿色块的右小角）点击一下，如下图所示:</p>
+<ul>
+<li>offsetY=49, 反推出这个值是相对于元素自身的顶部的距离</li>
+<li>clientY=69, body标签的border-top是10，paiding是10, 反推出这个值是相对网页可视区域顶部的距离</li>
+<li>screenY=140，目测肯定是基于浏览器窗口，</li>
+</ul>
+<p>所以它们各自的含义,就很清楚了。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/16663215.webp"/></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>事件源属性</th><th>表示的距离</th></tr></thead><tbody><tr><td><strong>event.offsetX、event.offsetY</strong></td><td>鼠标相对于事件源元素（srcElement）的X,Y坐标，</td></tr><tr><td><strong>event.clientX、event.clientY</strong></td><td>鼠标相对于浏览器窗口可视区域的X，Y坐标（窗口坐标），可视区域不包括工具栏和滚动偏移量。</td></tr><tr><td><strong>event.pageX、event.pageY</strong></td><td>鼠标相对于文档坐标的x,y坐标，文档坐标系坐标 ＝ 视口坐标系坐标 ＋ 滚动的偏移量</td></tr><tr><td><strong>event.screenX、event.screenY</strong></td><td>鼠标相对于用户显示器屏幕左上角的X,Y坐标</td></tr></tbody></table>
+<ul>
+<li>pageX和clientX的关系</li>
+</ul>
+<p>我们点击下图绿色块的右下角，把pageX和clientX值打印出来。如下图所示:</p>
+<ul>
+<li>可视区域的宽度是360，点击点的clientX=359(由于是手动点击,有误差也正常)</li>
+<li>水平方向的偏移量是56</li>
+<li>pageX是415，360+56=416,考虑到点击误差，可以推算出 <code>ele.pageX = ele.clientX  +  ele.scrollLeft</code></li>
+</ul>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/42870889.webp"/></p>
+<h4>getBoundingClientRect获取的top,bottom,left,right的含义</h4>
+<p>从下图可以看出，上下左右这四个属性，都是相对于浏览器可视区域左上角而言的。</p>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/d5d8d8c2.webp" width="50%"/>
+<p>从下图可以看出，当有滚动条出现的时候，right的值是359.6，而不是360+156(x轴的偏移量), 说明通过getBoundingClientRect获取的属性值是<strong>不计算滚动偏移量的</strong>，是相对浏览器可视区域而言的。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/3b14f981.webp"/></p>
+<h4>movementX和movementY的含义?</h4>
+<p>MouseEvent.movementX/movementX是一个相对偏移量。返回当前位置与上一个mousemove事件之间的水平/垂直距离。以当前位置为基准, 鼠标向左移动, movementX就是负值，向右移动，movementX就是正值。鼠标向上移动,movementY就是负值，向下移动，movementY就是正值。数值上，它们等于下面的计算公式。 这两个值在设置拖拽距离的时候高频使用，用起来很方便。</p>
+<pre><code class="hljs language-ini copyable code-block-extension-codeShowNum">curEvent.movementX = curEvent.screenX - prevEvent.screenX;
+curEvent.movementY = curEvent.screenY - prevEvent.screenY;
+</code></pre>
+<h3>想移动元素，mouse和drag事件怎么选?</h3>
+<p>mouse事件相对简单，只有mousedown(开始),mousemove(移动中),mouseup(结束)三种。与之对应的移动端事件是touch事件，也是三种touchstart(手指触摸屏幕), touchmove(手指在屏幕上移动), touchend(手指离开屏幕)。</p>
+<p>相对而言, drag事件就要丰富一些。</p>
+<ul>
+<li>被拖拽元素事件</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>事件名</th><th>触发时机</th><th>触发次数</th></tr></thead><tbody><tr><td>dragstart</td><td>拖拽开始时触发一次</td><td>1</td></tr><tr><td>drag</td><td>拖拽开始后反复触发</td><td>多次</td></tr><tr><td>dragend</td><td>拖拽结束后触发一次</td><td>1</td></tr></tbody></table>
+<ul>
+<li>目标容器事件</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>事件名</th><th>触发时机</th><th>触发次数</th></tr></thead><tbody><tr><td>dragenter</td><td>被拖拽元素进入目标时触发一次</td><td>1</td></tr><tr><td>dragover</td><td>被拖拽元素在目标容器范围内时反复触发</td><td>多次</td></tr><tr><td>drop</td><td>被拖拽元素在目标容器内释放时(前提是设置了dropover事件)</td><td>1</td></tr></tbody></table>
+<p>想要移动一个元素，该如何选择这两种事件类型呢？ 选择依据是:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>类型</th><th>选择依据</th></tr></thead><tbody><tr><td>mouse事件</td><td>1. 要求丝滑的拖拽体验 2. 无固定的拖拽区域 3. 无需传数据</td></tr><tr><td>drag事件</td><td>1. 拖拽区域有范围限制 2. 对拖拽流畅性要求不高 3. 拖拽时需要传数据</td></tr></tbody></table>
+<h3>现在让我们写个拖拽效果</h3>
+<p>光说不练假把式, 扫清了学习障碍后，让我们自信满满地写一个兼容PC端和移动端的拖动效果。不积跬步无以至千里，幻想一口吃个胖子，是不现实的。这一点在股市上体现的淋漓尽致。都是有耐心的人赚急躁的人的钱。所以，要我们沉下心来，打牢基础，硬骨头啃一点就会少一点，步步为营，稳扎稳打，硬骨头也会被啃成渣。</p>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/80c13151.webp" width="40%"/>
+<pre><code class="hljs language-xml copyable code-block-extension-codeShowNum">
+
+
+
+        
+        
+       
+    移动小鸟
+    
+        body {
+            margin: 0;
+            font-size: 0;
+            position: relative;
+            height: 100vh;
+        }
+
+        .bird {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            cursor: grab;
+            z-index: 10;
+        }
+    
+
+
+
+      
+
+
+
+    let evtName = getEventName();
+    // 鼠标指针相对于浏览器可视区域的偏移
+    let offsetX = 0, offsetY = 0;
+    // 限制图片可以X和Y轴可以移动的最大范围，防止溢出
+    let limitX = 0, limitY = 0;
+
+    // 确保图片加载完
+    window.onload = () =&gt; {
+        const bird = document.querySelector(&#34;.bird&#34;);
+        const { width, height } = bird;
+
+        limitX = document.documentElement.clientWidth - width;
+        limitY = document.documentElement.clientHeight - height;
+
+        bird.addEventListener(evtName.start, (event) =&gt; {
+            // 监听鼠标指针相对于可视窗口移动的距离
+            // 注意移动事件要绑定在document元素上，防止移动过快,位置丢失
+            document.addEventListener(evtName.move, moveAt);
+        });
+
+        // 鼠标指针停止移动时,释放document上绑定的移动事件
+        // 不然白白产生性能开销
+        document.addEventListener(evtName.end, () =&gt; {
+            document.removeEventListener(evtName.move, moveAt);
+        })
+
+        // 移动元素
+        function moveAt({ movementX, movementY }) {
+            const { offsetX, offsetY } = getSafeOffset({ movementX, movementY });
+
+            window.requestAnimationFrame(() =&gt; {
+                bird.style.cssText = `left:${offsetX}px;top:${offsetY}px;`;
+            });
+        };
+    };
+
+    // 获取安全的偏移距离
+    const getSafeOffset = ({ movementX, movementY }) =&gt; {
+        // //距上次鼠标位置的X,Y方向的偏移量
+        offsetX += movementX;
+        offsetY += movementY;
+
+        // 防止拖拽元素被甩出可视区域
+        if (offsetX &gt; limitX) {
+            offsetX = limitX;
+        }
+
+        if (offsetX &lt; 0) {
+            offsetX = 0;
+        }
+
+        if (offsetY &gt; limitY) {
+            offsetY = limitY;
+        }
+
+        if (offsetY &lt; 0) {
+            offsetY = 0;
+        }
+
+        // console.log({ movementX, movementY, offsetX, offsetY });
+        return { offsetX, offsetY };
+    }
+
+    // 区分是移动端还是PC端移动事件
+    function getEventName() {
+        if (&#34;ontouchstart&#34; in window) {
+            return {
+                start: &#34;touchstart&#34;,
+                move: &#34;touchmove&#34;,
+                end: &#34;touchend&#34;,
+            };
+        } else {
+            return {
+                start: &#34;pointerdown&#34;,
+                move: &#34;pointermove&#34;,
+                end: &#34;pointerup&#34;,
+            };
+        }
+    }
+
+
+
+</code></pre>
+<h3>彩蛋</h3>
+<p>在chrome浏览器上发现一个奇怪的现象,设置的border值是整数，计算出来的值却带有小数</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/eaa9d2f5.webp"/></p>
+<p>而当border值是4的整数倍的时候,计算值是正确的</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/bc5c95a2.webp"/></p>
+<p>看了<a href="https://link.juejin.cn/?target=https%3A%2F%2Fwww.w3.org%2FTR%2FCSS22%2Fcascade.html%23specified-value">这篇文章</a>解释说，浏览器可能只能渲染具有整数物理像素的border值，不是整数物理像素的值时，计算出的是近似border值。这个解释似乎讲得通，在设备像素比是window.devicePixelRatio=1.25的情况下, 1px对应的是1.25物理像素, <code>1.25*4的倍数</code>才是整数，所以设置的逻辑像素是4的整数倍数，显示的渲染计算值与设置值一致,唯一让人不理解的地方，为什么padding,margin，width/height却不遵循同样的规则。</p></div></div></article></div></div></main></div></div></div></div>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://juejin.cn/post/7225206098692407355" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-05-15 17:31:08</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
