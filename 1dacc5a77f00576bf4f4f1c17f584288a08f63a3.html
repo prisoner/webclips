@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于-ChatGLM-6B-搭建个人专属知识库</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>基于-ChatGLM-6B-搭建个人专属知识库</h1>
+</header>
+<main class="typo"><div><div><main><div><article><div><div><div><div><p>之前树先生教过大家如何利用微调打造一个垂直领域的 LLM 专属模型。但是微调一方面需要专业知识，通常需要很多计算资源和时间，以便在不同的超参数设置上训练多个模型并选择最佳的一个，另一方面动态扩展比较差，新增和修改原有的数据都要重新微调一次。总得来说对非专业人员不友好。</p><div><a href="https://zhuanlan.zhihu.com/p/627168140"><span><span>树先生：ChatGLM-6B 部署与 P-Tuning 微调实战</span><span>0 赞同 · 2 评论<span>文章</span></span></span><span><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9ac7859d.jpe"/></span></a></div><p>今天树先生教大家无需微调就能实现垂直领域的专业问答，利用 <a href="https://github.com/THUDM/ChatGLM-6B">ChatGLM-6B</a> + <a href="https://github.com/hwchase17/langchain">langchain</a> 实现个人专属知识库，非常简单易上手。</p><h2><b>技术原理</b></h2><p>项目实现原理如下图所示，过程包括加载文件 -&gt; 读取文本 -&gt; 文本分割 -&gt; 文本向量化 -&gt; 问句向量化 -&gt; 在文本向量中匹配出与问句向量最相似的<code>top k</code>个 -&gt; 匹配出的文本作为上下文和问题一起添加到 prompt 中 -&gt; 提交给 LLM 生成回答。</p><figure><noscript>&lt;img src="https://pic4.zhimg.com/v2-ff99a0e74606c6e8633649862c750cab_b.jpg" data-caption="" data-size="normal" data-rawwidth="851" data-rawheight="544" class="origin_image zh-lightbox-thumb" width="851" data-original="https://pic4.zhimg.com/v2-ff99a0e74606c6e8633649862c750cab_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/de0d27a9.jpe" width="851" height="544"/></div></figure><figure><noscript>&lt;img src="https://pic4.zhimg.com/v2-dd7fc70247cf9776fde41d625442f95b_b.jpg" data-caption="" data-size="normal" data-rawwidth="790" data-rawheight="415" class="origin_image zh-lightbox-thumb" width="790" data-original="https://pic4.zhimg.com/v2-dd7fc70247cf9776fde41d625442f95b_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/3988b607.jpe" width="790" height="415"/></div></figure><p>从上面就能看出，其核心技术就是向量 embedding，将用户知识库内容经过 embedding 存入向量知识库，然后用户每一次提问也会经过 embedding，利用向量相关性算法（例如余弦算法）找到最匹配的几个知识库片段，将这些知识库片段作为上下文，与用户问题一起作为 promt 提交给 LLM 回答，很好理解吧。一个典型的 prompt 模板如下：</p><div><pre><code class="language-python">&#34;&#34;&#34;
+已知信息：
+{context} 
+​
+根据上述已知信息，简洁和专业的来回答用户的问题。如果无法从中得到答案，请说 “根据已知信息无法回答该问题” 或 “没有提供足够的相关信息”，不允许在答案中添加编造成分，答案请使用中文。 
+问题是：{question}
+&#34;&#34;&#34;</code></pre></div><p>更多关于向量 embedding 的内容可以参考我之前写的一篇文章。</p><div><a href="https://zhuanlan.zhihu.com/p/628349159"><span><span>树先生：ChatGPT 引爆向量数据库赛道</span><span>1 赞同 · 0 评论<span>文章</span></span></span><span><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/60dd013f.jpe"/></span></a></div><h2><b>使用场景</b></h2><p>可以调整 prompt，匹配不同的知识库，让 LLM 扮演不同的角色</p><ul><li>上传公司财报，充当财务分析师</li><li>上传客服聊天记录，充当智能客服</li><li>上传经典Case，充当律师助手</li><li>上传医院百科全书，充当在线问诊医生</li></ul><p>等等等等。。。。</p><h2><b>实战</b></h2><p>这里我们选用 <a href="https://github.com/imClumsyPanda/langchain-ChatGLM">langchain-ChatGLM</a> 项目示例，其他的 LLM 模型对接知识库也是一个道理。</p><h3><b>准备工作</b></h3><p>我们还是白嫖阿里云的机器学习 PAI 平台，使用 A10 显卡，这部分内容之前文章中有介绍。</p><div><a href="https://zhuanlan.zhihu.com/p/624490276"><span><span>树先生：免费部署一个开源大模型 MOSS</span><span>5 赞同 · 2 评论<span>文章</span></span></span><span><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/2b76078c.png"/></span></a></div><h3><b>项目部署</b></h3><p>环境准备好了以后，就可以开始准备部署工作了。</p><p><b>下载源码</b></p><div><pre><code class="language-bash">git clone https://github.com/imClumsyPanda/langchain-ChatGLM.git</code></pre></div><p><b>安装依赖</b></p><div><pre><code class="language-bash">cd langchain-ChatGLM
+pip install -r requirements.txt</code></pre></div><p><b>下载模型</b></p><div><pre><code class="language-bash"># 安装 git lfs
+git lfs install
+​
+# 下载 LLM 模型
+git clone https://huggingface.co/THUDM/chatglm-6b /your_path/chatglm-6b
+​
+# 下载 Embedding 模型
+git clone https://huggingface.co/GanymedeNil/text2vec-large-chinese /your_path/text2vec
+​
+# 模型需要更新时，可打开模型所在文件夹后拉取最新模型文件/代码
+git pull</code></pre></div><p><b>参数调整</b></p><p>模型下载完成后，请在 <code>configs/model_config.py</code> 文件中，对<code>embedding_model_dict</code>和<code>llm_model_dict</code>参数进行修改。</p><div><pre><code class="language-python">embedding_model_dict = {
+    &#34;ernie-tiny&#34;: &#34;nghuyong/ernie-3.0-nano-zh&#34;,
+    &#34;ernie-base&#34;: &#34;nghuyong/ernie-3.0-base-zh&#34;,
+    &#34;text2vec&#34;: &#34;/your_path/text2vec&#34;
+}
+​
+llm_model_dict = {
+    &#34;chatyuan&#34;: &#34;ClueAI/ChatYuan-large-v2&#34;,
+    &#34;chatglm-6b-int4-qe&#34;: &#34;THUDM/chatglm-6b-int4-qe&#34;,
+    &#34;chatglm-6b-int4&#34;: &#34;THUDM/chatglm-6b-int4&#34;,
+    &#34;chatglm-6b-int8&#34;: &#34;THUDM/chatglm-6b-int8&#34;,
+    &#34;chatglm-6b&#34;: &#34;/your_path/chatglm-6b&#34;,
+}</code></pre></div><h3><b>项目启动</b></h3><p><b>Web 模式启动</b></p><div><pre><code class="language-bash">pip install gradio
+python webui.py</code></pre></div><figure><noscript>&lt;img src="https://pic2.zhimg.com/v2-1335a4b7c6885c9a5e108b6b75c29155_b.png" data-caption="" data-size="normal" data-rawwidth="1409" data-rawheight="106" class="origin_image zh-lightbox-thumb" width="1409" data-original="https://pic2.zhimg.com/v2-1335a4b7c6885c9a5e108b6b75c29155_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/ff24ea1e.png" width="1409" height="106"/></div></figure><p><b>模型配置</b></p><figure><noscript>&lt;img src="https://pic2.zhimg.com/v2-1827d94801b686aee033ea04d61fe33d_b.jpg" data-caption="" data-size="normal" data-rawwidth="1560" data-rawheight="614" class="origin_image zh-lightbox-thumb" width="1560" data-original="https://pic2.zhimg.com/v2-1827d94801b686aee033ea04d61fe33d_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/944a6bed.jpe" width="1560" height="614"/></div></figure><p><b>上传知识库</b></p><figure><noscript>&lt;img src="https://pic4.zhimg.com/v2-ef83ca9bca61221c29b9cb40f9a2c7bf_b.jpg" data-caption="" data-size="normal" data-rawwidth="529" data-rawheight="489" class="origin_image zh-lightbox-thumb" width="529" data-original="https://pic4.zhimg.com/v2-ef83ca9bca61221c29b9cb40f9a2c7bf_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/af8f3547.jpe" width="529" height="489"/></div></figure><p><b>知识库问答</b></p><figure><noscript>&lt;img src="https://pic4.zhimg.com/v2-521676486a7b1481596b109045b90eb3_b.jpg" data-caption="" data-size="normal" data-rawwidth="1485" data-rawheight="673" class="origin_image zh-lightbox-thumb" width="1485" data-original="https://pic4.zhimg.com/v2-521676486a7b1481596b109045b90eb3_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/41c1636f.jpe" width="1485" height="673"/></div></figure><p><b>API</b> <b>模式启动</b></p><div><pre><code class="language-bash">python api.py</code></pre></div><p><b>命令行模式启动</b></p><div><pre><code class="language-bash">python cli_demo.py</code></pre></div><h2><b>改进</b></h2><p>Gradio 页面太过于简陋，可作为后台管理员操作页面，如果要开放给用户使用就不合适了，树先生在 Chatgpt-Next-Web 项目基础上进行了适配修改，打造了一款面向用户使用的本地知识库前端。</p><p><b>授权码控制</b></p><figure><noscript>&lt;img src="https://pic2.zhimg.com/v2-1598c899c3a11c8488abff0f46b4c3f9_b.jpg" data-caption="" data-size="normal" data-rawwidth="1215" data-rawheight="839" class="origin_image zh-lightbox-thumb" width="1215" data-original="https://pic2.zhimg.com/v2-1598c899c3a11c8488abff0f46b4c3f9_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/54aa6e48.jpe" width="1215" height="839"/></div></figure><p><b>选择知识库</b></p><figure><noscript>&lt;img src="https://pic2.zhimg.com/v2-2935726c82ad00838e86c2ecd461f869_b.jpg" data-caption="" data-size="normal" data-rawwidth="1317" data-rawheight="846" class="origin_image zh-lightbox-thumb" width="1317" data-original="https://pic2.zhimg.com/v2-2935726c82ad00838e86c2ecd461f869_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/1b97aa89.jpe" width="1317" height="846"/></div></figure><p><b>基于知识库问答</b></p><figure><noscript>&lt;img src="https://pic4.zhimg.com/v2-1c71d127eacfe4a0c29f04e984a51237_b.jpg" data-caption="" data-size="normal" data-rawwidth="1217" data-rawheight="847" class="origin_image zh-lightbox-thumb" width="1217" data-original="https://pic4.zhimg.com/v2-1c71d127eacfe4a0c29f04e984a51237_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9ac61492.jpe" width="1217" height="847"/></div></figure><p><b>显示答案来源</b></p><figure><noscript>&lt;img src="https://pic4.zhimg.com/v2-2f11e51df28172b07e5606be5fc64523_b.jpg" data-caption="" data-size="normal" data-rawwidth="883" data-rawheight="471" class="origin_image zh-lightbox-thumb" width="883" data-original="https://pic4.zhimg.com/v2-2f11e51df28172b07e5606be5fc64523_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/00d381da.jpe" width="883" height="471"/></div></figure><figure><noscript>&lt;img src="https://pic3.zhimg.com/v2-b2a085d507a4f4aa7e8394a2c01be266_b.jpg" data-caption="" data-size="normal" data-rawwidth="1210" data-rawheight="837" class="origin_image zh-lightbox-thumb" width="1210" data-original="https://pic3.zhimg.com/v2-b2a085d507a4f4aa7e8394a2c01be266_r.jpg"/&gt;</noscript><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/dc1ca820.jpe" width="1210" height="837"/></div></figure><p><i>PS：这个知识库是我上传的原始知识库，所以来源这块数据展示效果不好，更好的做法是经过一遍数据治理再上传。</i></p><p>感兴趣的朋友可以私信我，我会免费给大家提供知识库体验地址。</p></div></div></div></div></article></div></main></div></div>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://zhuanlan.zhihu.com/p/629558941" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-05-16 17:08:21</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
