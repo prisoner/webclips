@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>解析-Web-Worker</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>解析-Web-Worker</h1>
+</header>
+<main class="typo"><div><div><div><div><main><div><div><article><div><div><p><strong><del>本专栏内容在未来较长一段时间内不会涉及基础，本文内容需要建立在本主题有一定了解基础之上。</del></strong></p>
+<p>提高应用可靠性和用户体验，是开发中最重要的一环之一。</p>
+<p>随着时代的发展，Web 从简单样式的静态图文形式转变为了复杂的动态应用。JavaScript 仍然存在的障碍实际上是语言本身。 JavaScript 是单线程环境，这意味着多个脚本不能同时运行。然而从最初到现在保持一致的是：每一个页面应用都只使用一个单独的进程来处理当前页面的运行（当然这并不绝对，Google、Alibaba等大型互联网公司通常会使用多个进程和服务器来处理它们的服务）。</p>
+<p>单一的处理进程导致了工作负荷变的繁重，随着应用的复杂性的增加，主线程（进程：一主多辅）成为了性能上限制上的重要瓶颈。加上对于用户因为设备性能影响，应用的呈现效果几乎不可预测，且这种现象会因为用户的增加以及设备的多样化不断递增。</p>
+<p>开发人员通过使用 <code>setTimeout()</code> 、 <code>setInterval()</code> 、 <code>XMLHttpRequest</code> 和事件处理程序等技术来模拟“并发”。可以看到这些事件存在的统一的特性：异步运行，但是非阻塞并不一定就意味着并发。异步事件在当前执行的脚本产生后处理。（关于异步可以看本文搜录专栏：<a href="https://juejin.cn/column/7205606111616548922">什么是 Js ？</a> 事件环篇）</p>
+<h2>WebWorker</h2>
+<p>Web Worker 将线程引入了 JavaScript，为 Web 内容在后台线程中运行脚本提供了一种简单的方法.将繁重的工作卸载到工作线程（辅助线程），避免阻塞 UI。 某种程度上，它帮我们解决了上面的负面影响。</p>
+<p>Web Workers 在独立的线程中工作，因此，需要单独的执行代码文件。
+<strong>workers 和主线程间的数据传递通过这样的消息机制进行 —— 双方都使用 postMessage() 方法发送各自的消息</strong>，使用 onmessage 事件处理函数来响应消息（消息被包含在<a href="https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fzh-CN%2Fdocs%2FWeb%2FAPI%2FBroadcastChannel%2Fmessage_event"><code>message</code></a>事件的 data 属性中）。这个过程中数据并不是被共享而是被复制。</p>
+<p>创建工作线程实例：</p>
+<pre><code class="hljs language-js code-block-extension-codeShowNum">// mian 
+
+const worker = new Worker(&#39;worker_thread.js&#39;)
+</code></pre>
+<p>如果指定的工作线程文件存在，浏览器将生成一个新的线程且以异步的方式工作。整个线程被加载完毕之后，工作线程便开始工作，但如果该线程路径无法解析或返回 404，那么它会通过静默方式失败。</p>
+<p>通过 <code>postMessage</code> 发送消息：</p>
+<pre><code class="hljs language-js code-block-extension-codeShowNum">// worker_thread.js
+
+worker.postMessage(/** */);
+</code></pre>
+<p>我们说到线程之间的通信数据是复制而不是共享的，因此每次传递时都会创建一个副本。<strong>数据在传递给工作线程的过程中被序列化，在另一端被反序列化。</strong></p>
+<p>我们来通过自包含的方式创建工作线程，来尝试传递 JSON 数据：</p>
+<pre><code class="hljs language-js code-block-extension-codeShowNum">do worker
+stop worker
+
+
+
+    if (window.Worker) {
+        // 工作线程脚本
+        const str = `
+            self.addEventListener(&#39;message&#39;, function(e) {
+                var data = e.data;
+                switch (data.cmd) {
+                case &#39;start&#39;:
+                    self.postMessage(&#39;Worker Stopped: &#39; + data.msg);
+                    break;
+                case &#39;stop&#39;:
+                    self.postMessage(&#39;Worker Stopped: &#39; + data.msg );
+                    self.close(); 
+                    // 停止一个 worker: 从主页面调用 worker.terminate () ，或者在 worker 本身内部调用 self. close ()。
+                    break;
+            }, false);
+       `;
+        const blob = new Blob([str]),
+            el = document.getElementById(&#39;result&#39;);
+        // 加载 Worker 脚本
+        this.worker = new Worker(window.URL.createObjectURL(blob));
+
+        function start() {
+            worker.postMessage({ &#39;cmd&#39;: &#39;start&#39;, &#39;msg&#39;: &#39;do worker ...&#39; });
+        }
+
+        function stop() {
+            worker.postMessage({ &#39;cmd&#39;: &#39;stop&#39;, &#39;msg&#39;: &#39;stop worker ...&#39; });
+        }
+
+        worker.addEventListener(&#39;message&#39;, function (e) {
+            el.textContent = e.data
+        }, false);
+
+        // 错误事件
+        worker.onerror = function (e) {
+            el.textContent = &#34;Error occured!&#34;;
+        };
+    } else {
+        el.textContent = &#34;Not supprot Web Worker!&#34;;
+    }
+
+
+</code></pre>
+<p>我们在结果上可以拿到正确的数据。这好像并不能证明数据通信就是经历了 <em>序列化和反序列化</em> 这一过程（我们会在下面的 structuredClone 部分提到 ）。</p>
+<p><strong>关于序列化</strong>：其实引擎在处理数据时，对于 JSON字符串 的处理要比 Js 代码要有大量的优势：<a href="https://juejin.cn/post/7232239024106176571">JSON.parse 使应用构建更快捷</a>。
+<em>（但是尽管在某些方面会有优势，序列化依旧会阻塞发送领域，而反序列化会阻塞接收领域。）</em></p>
+<p>上面代码中，我们通过 <code>window.URL.createObjectURL()</code> 方法创建一个 URL 字符串，用于引用存储在 DOM <code>File</code> 或 <code>Blob</code> 对象中的数据。<strong>Blob URL 是唯一的，在应用程序的生存期内持续存在（直到卸载 <code>document</code> ）。</strong></p>
+<p>如果要创建许多 <em>Blob URL</em>，需要释放不需要的引用。通过将 <em>Blob URL</em> 传递给 <code>window.URL.revokeObjectURL()</code> 释放 URL：</p>
+<pre><code class="hljs language-js code-block-extension-codeShowNum">window.URL.revokeObjectURL(blobURL);
+</code></pre>
+<p><em>Chrome 中，可以通过  <code>chrome://blob-internals/</code> 查看所有创建的 blob URL。</em></p>
+<p>同样的为了代码的健壮性，我们需要处理 Web Worker 中抛出的所有错误。在工作线程执行时发生错误，会触发 <code>ErrorEvent</code> ，会返回一些信息用于错误位置： <code>filename</code> - 导致错误脚本名称， <code>lineno</code> - 发生错误的行号，以及 <code>message</code> - 对错误信息的描述。简单看：</p>
+<pre><code class="hljs language-js code-block-extension-codeShowNum">function onError(e) {  
+ return [  
+    &#39;ERROR: Line &#39;, e.lineno, &#39; in &#39;, e.filename, &#39;: &#39;, e.message  
+    ].join(&#39;&#39;);  
+}
+
+worker.addEventListener(&#39;error&#39;, onError, false)
+</code></pre>
+<h3>ImportScripts()</h3>
+<p>可以通过 ImportScripts() 函数方法将外部脚本文件或库加载到工作线程中。简单看下语法：</p>
+<pre><code class="hljs language-js code-block-extension-codeShowNum">importScripts(&#39;script1.js&#39;);  
+importScripts(&#39;script2.js&#39;);
+
+// 可以将多个外部脚本同时引入
+importScripts(&#39;script1.js&#39;, &#39;script2.js&#39;);
+</code></pre>
+<p>需要注意的是使用该方法，仅在提供绝对 URL 时才有效。因为 worker 会对 blob URL 以 <code>blob:</code> 前缀进行解析，而应用是以不同的（大概是 <code>https://</code> ）方案运行的。所以会因为跨域问题导致失败。</p>
+<p>在内联的工作线程中使用 <code>importScripts()</code> 的一种方法是在主脚本中 “注入” url，将其传递给内联工作线程并手动构造绝对 URL。确保从同一源导入外部脚本：</p>
+<pre><code class="hljs language-js code-block-extension-codeShowNum">...  
+  
+self.onmessage = function(e) {  
+    const data = e.data;  
+
+    if (data.url) {  
+        var url = data.url.href;  
+        var index = url.indexOf(&#39;index.html&#39;);  
+        if (index != -1)   
+            url = url.substring(0, index);  
+
+        importScripts(url + &#39;engine.js&#39;);  
+    }  
+...  
+};  
+  
+  
+    var worker = new Worker(window.URL.createObjectURL(/** blob */));  
+    worker.postMessage({url: document.location});  
+
+</code></pre>
+<h2>postMessage</h2>
+<p>我们说到，主辅线程之间通过 <code>postMessage()</code> 来沟通消息，在实现上：postMessage 依靠 <em>structuredClone （结构化克隆）</em> 将消息从一个 JavaScript 工作上下文复制到另一个工作上下文。</p>
+<h3>structuredClone</h3>
+<p>structuredClone 算法的核心：</p>
+<ol>
+<li>Run <code>StructuredSerialize()</code> on the message.</li>
+<li>Queue a task in the receiving realm, that will execute the following steps:
+<ol>
+<li>Run <code>StructuredDeserialize()</code> on the serialized message</li>
+<li>Create a <code>MessageEvent</code> and dispatch a <code>MessageEvent</code> with the deserialized message on the receiving port</li>
+</ol>
+</li>
+</ol>
+<p>这其中，<code>StructuredSerialize()</code> 和 <code>StructuredDeserialize()</code> 不是真实的函数，它们还没有通过JavaScript 公开。那这两个函数实际上是做什么的？我们可以将 <code>StructuredSerialize()</code> 和 <code>StructuredDeserialize()</code> 分别视为 <code>JSON.stringify()</code> 和 <code>JSON.parse()</code> 的优化版（但是两组方法之间是没有任何关系的），它们可以处理循环数据结构、内置类型，如：Map、Set、ArrayBuffer 等。</p>
+<p>Chrome（Safari）对 StructuredDeserialize 会延迟执行，直到我们去访问 messageEvent 上的 data 属性。Firefox 在这个调度事件的选择上会在调度之前进行反序列化。</p>
+<p>大部分的浏览器实现了结构化克隆算法 <a href="https://link.juejin.cn/?target=https%3A%2F%2Fcaniuse.com%2F%3Fsearch%3DstructuredClone">caniuse 2023.5</a>。</p>
+<p>该方法将给定的值进行深拷贝（注意：不同于 lodash 的 deepClone）。</p>
+<p>结构化克隆的类型受限，具体查看：<a href="https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FWeb%2FAPI%2FWeb_Workers_API%2FStructured_clone_algorithm">structuredClone</a></p>
+<p><strong>Tip</strong>：如果输入的某一部分不在类型范围之内，则会抛出异常：</p>
+<pre><code class="hljs language-js code-block-extension-codeShowNum">let o = {
+    msg: &#39;test.&#39;,
+    a: [1[2, [3, [4, [5, [6]]]]]],
+    o: {
+        x: {
+            m: &#34;mssaage&#34;
+        }
+    },
+    fn(){} // 不支持的类型
+}
+
+let co = structuredClone(o)
+console.log(&#34;o&#34;, o);
+console.log(&#34;co&#34;, co);
+</code></pre>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/8a2a81b4.webp" width="60%"/>
+<h3>postMessage</h3>
+<p>回到 postMessage，我们说 <code>postMessage()</code> 在消息传递上是一个复制的过程，内部依赖了 <code>structuredClone()</code> 进行序列化反序列化的相关处理，在传递数据的同时的过程中会生成副本（这个复制的过程依旧可能会需要数百毫秒的时间）。这个时间上的消耗其实就是我们在上面所说到的：<em>序列化和反序列化会在传输和接收时的阻塞时间</em>。</p>
+<p>因此，如果要传递一个 50MB 的大文件（例如），则在工作线程和主线程之间获取该文件会产生明显的开销，这也就有了 <strong>postMessage 慢</strong>的一个说法。</p>
+<p>上文提到，<em>不同浏览器在对于序列化的时机是不同的，且在消息在序列化和反序列化上存在阻塞，这一定程度上产生了时间上的消耗。而对象的复杂性是影响序列化和反序列化对象所需时间的重要因素。</em></p>
+<p>序列化和反序列化过程都必须以某种方式遍历整个对象，这不可避免（经验上来说：我们可以根据 JSON 对象的大小来判断除数该对象所需要的时间，对象的 JSON 字符串化大致和它的传输时间成正比。）</p>
+<p>在上文我们提到过 JSON.parse 的优势，是的，JSON.parse 和 JSON.stringify 速度非常快，且 JSON 作为 JavaScript 的一个子集，在解析器需要处理的情况较少。我们在<a href="https://juejin.cn/post/7232239024106176571">JSON.parse 使应用构建更快捷</a>，也提到了对于大对象数据有时可以包装到 JSON.parse 中，以此来减少 Js 的解析时间。但是我们并不能通过 JSON 来加速 postMessage。</p>
+<img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/2f90d191.webp" width="70%"/>
+<p>好像大差不差，其实在 100kb 的大小范围内并保持在 100 ms 的响应式预算，postMessage 并不会有什么影响。</p>
+<p>处理结构化克隆对性能上的影响的另一方式是不去使用它🤣。可以通过可转移类型（又或许采用WebAssembly？）。</p>
+<h2>Transferable Objects</h2>
+<p>转移意味着不复制。</p>
+<p>postMessage 支持了把原始值中的可转移对象转移到新对象。 <em>可转移对象（Transferable Objects）与原始对象分离并附加到新对象；被转移的对象将不可以在原始对象中访问被访问。</em></p>
+<p>可传输对象支持跨代理传输，数据会从一个上下文传输到另一个上下文。<strong>传输实际上是重新创建对象，同时共享对原数据的引用，然后分离要传输的对象。但并非所有对象都是可转移对象，并且作为可转移对象的方方面面在传输时都必须保留。</strong></p>
+<p>上面说过与按引用传递不同，传输是一种不可逆的操作。一旦对象被转移，就不能再次转移或使用。例如，将 ArrayBuffer 从主应用传输到 Worker 时，原始 <code>ArrayBuffer</code> 将被清除，不再可用。它的内容转移到工作线程上下文。</p>
+<p>为了处理可转移对象，postMessage 支持以下这种操作方式（可序列化数据）:</p>
+<pre><code class="hljs language-js code-block-extension-codeShowNum">// 案例中第一个参数是 `ArrayBuffer` 消息，第二个参数是应传输的项目列表。
+// 在可转移列表中指定 `arrayBuffer` 。
+
+worker.postMessage(arrayBuffer, [transferableList]);
+
+// 
+window.postMessage(arrayBuffer, targetOrigin, [transferableList]);
+</code></pre>
+<p><strong>Tip</strong>: 类似 Int32Array 和 Uint8Array 等类型化数组是可序列化的，可是不能转移。
+但是，它们底层缓冲区是一个 ArrayBuffer，是一个可转移对象。</p>
+<p>所以：我们可以在数据参数中发送 uIntArray.buffer，不是 uInt8Array</p>
+<pre><code class="hljs language-ini code-block-extension-codeShowNum">worker.postMessage(uInt8Array, [uInt8Array.buffer]);
+</code></pre>
+<p>由于它们的多线程行为，Web worker 只能访问 JavaScript 功能的一个子集:</p>
+<ul>
+<li>navigator | location(read-only) | XMLHttpRequest | setTimeout()/setInterval() - clearTimeout()/clearInterval | App Cache（感兴趣的可以看这个：<a href="https://link.juejin.cn/?target=https%3A%2F%2Fweb.dev%2Fappcache-beginner%2F">Application Cache</a>）| 使用 <strong>importScripts()</strong> 导入 | ...</li>
+</ul>
+<p>对以下数据对象无权访问，其实我们对于它们很熟悉了：</p>
+<p>DOM | window | document | parent</p>
+<h2>End</h2>
+<p>在文章的开篇，我们就谈到了 Js 作为单线程，在运行上存在的一些弊端。主线程除了运行 Web 应用程序的 JavaScript 之外还有其他职责，这也是为什么我们需要尽可能的避免在主线程上长时间阻塞 JavaScript 代码。</p>
+<p>但是如果我们将一部分 Js 代码移动到一个专门用于执行 Js 的工作线程中，是否可以呢？在这样的场景下，我们不必担心不同的工作环境造成的应用性能差距影响，仍然可以保证能够响应用户交互事件。</p>
+<p>WebWorker 是在 Js 对线程的处理。为减轻应用进程的工作压力，我们通过 webWorker 来进行分担。当然我们可以其他方式：我们定期向代码添加一些 “断点” ，让浏览器有机会停止某些任务，当浏览器完成当前工作，再继续执行断点任务。</p></div></div></article></div></div></main></div></div></div></div>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://juejin.cn/post/7233326040088510521" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-05-16 17:23:17</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
