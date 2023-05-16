@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端安全13条</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>前端安全13条</h1>
+</header>
+<main class="typo"><div><div><div><div><main><div><div><article><div><div><p>大家好，我是沐华。最近面了一些前端，发现每次问到安全相关的问题，一些面试者只能说上来 XSS、CSRF、中间人攻击，就没了，于是写了这篇文章，总结了前端安全相关的点，给大家查缺补漏</p>
+<h2>浏览器</h2>
+<h3>XSS</h3>
+<p><code>XSS</code> 攻击是一种代码注入攻击，通过恶意注入脚本在浏览器运行，然后盗取用户信息。本质上其实是因为网站没有过滤恶意代码，与正常代码混在一起之后，浏览器没有办法分辨哪些是可信的，然后导致恶意代码也被执行</p>
+<p>结果是可能会导致：页面数据或用户信息被窃取、伪造登录窗口或在页面生成浮窗广告、监听键盘事件窃取账号密码、流量被支持到其他网站等</p>
+<p><code>XSS</code> 攻击有三种类型：</p>
+<ol>
+<li><strong>存储型</strong>：通过输入框把恶意代码提交到网站数据库中，然后比如在显示评论的页面就会从数据获取，并直接执行</li>
+<li><strong>反射型</strong>：和存储型不同的是不会储存在服务器里。比如打开包含带恶意脚本的链接，当打开后会向服务器请求后，服务器会获取URL中的数据然后拼接在HTML上返回，然后执行</li>
+<li><strong>基于DOM型</strong>：是通过一些劫持手段，在页面资源传输过程中劫持并修改页面的数据，插入恶意代码</li>
+</ol>
+<p><strong>防范</strong>：比如对输入框内容进行过滤和用转义符进行转码、添加白名单、关闭 Cookie 访问权限、使用验证码防止脚本伪装成用户执行操作等</p>
+<h3>CSRF</h3>
+<p><code>CSRF</code> 就是跨站请求伪造攻击，主要就是利用用户的登录状态发起跨站请求</p>
+<p>比如邮箱里的乱七八糟的链接，打开链接的时候邮箱肯定是处于登录状态，然后黑客就可以用这个登录状态，伪造带有正确 <code>Cookie</code> 的 <code>http</code> 请求，直接绕过后台的登录验证，然后冒充用户执行一些操作，本质是利用 <code>Cookie</code> 在同源请求中携带发送给服务器的特点，来实现冒充用户</p>
+<p>发起 <code>CSRF</code> 攻击有几个必要条件：</p>
+<ol>
+<li>目标网站一定要有 <code>CSRF</code> 漏洞</li>
+<li>用户登录过目标网站，并且浏览器保存了登录状态</li>
+<li>需要用户主动打开第三方站点</li>
+</ol>
+<p><code>CSRF</code> 攻击也有三种类型：</p>
+<ul>
+<li><strong>自动发GET类型</strong>：比如<code>img</code>或<code>iframe</code>标签等，当用户打开这个网站时会自动发起带 <code>Cookie</code> 的资源请求</li>
+<li><strong>自动发POST类型</strong>：比如整一个隐藏的<code>表单</code>，在用户进入页面的时候自动提交表单</li>
+<li><strong>诱导链接型</strong>：就是诱导用户主动点击链接，比如<code>a标签</code></li>
+</ul>
+<p><strong>防范</strong>：比如 <code>Token</code> 验证、双重 <code>Cookie</code>、通过 <code>origin/referer</code> 验证请求来源等</p>
+<h3>CSP</h3>
+<p><code>CSP</code> 就是白名单，作用是可以禁止加载外域的代码，禁止外域的提交，只允许本域下的请求表单提交之类的，简单说就是告诉浏览器哪些资源可以加载执行，让那些真的插入进入的恶意代码也不会被执行；或者允许向哪些第三方站点提交数据，因为攻击者窃取信息的根本还是向外域提交</p>
+<p>开启 <code>CSP</code> 的方式有两种</p>
+<p><strong>1. meta</strong></p>
+<pre><code class="hljs language-html code-block-extension-codeShowNum">
+
+</code></pre>
+<p><strong>2. http request header</strong></p>
+<p>如果不支持 <code>Content-Security-Policy</code>，可以用 <code>X-XSS-Proterction</code> 代替</p>
+<pre><code class="hljs language-sh code-block-extension-codeShowNum"># 所加载的内容必须来自同源站点
+Content-Security-Policy: default-src &#34;self&#34;
+# 添加可信域名
+Content-Security-Policy: *.baidu.com
+# 和上面同理
+Content-Security-Policy-Report-Only: policy
+</code></pre>
+<h3>HSTS</h3>
+<p><code>HSTS</code> 是 <code>HTTP</code> 严格传输安全协议，作用是强制客户端使用 <code>https</code> 与服务器建立连接，以避免因为 <code>http</code> 而被中间人攻击</p>
+<p><code>HSTS</code> 设置须添加在请求头中，如下</p>
+<pre><code class="hljs language-sh code-block-extension-codeShowNum">Strict-Transport-Security: max-age=12345;includeSubDomains;
+</code></pre>
+<p>参数：</p>
+<ul>
+<li><strong>max-age</strong>: 指定该设置过期的时间，单位毫秒</li>
+<li><strong>includeSubDomains</strong>: 可选参数，表示所有子域名也必须通过 <code>https</code> 访问</li>
+<li><strong>preload</strong>: 可选参数，可以设置一个使用 <code>https</code> 的域名列表</li>
+</ul>
+<p>设置 <code>HSTS</code> 后，再使用 <code>http</code> 访问时，只要 <code>max-age</code> 没有过期，客户端内部会进行跳转，会出现 <code>307 Redirect Internel</code> 状态码，变成 <code>https</code> 后，再访问请求的资源服务器</p>
+<h3>X-Frame-Options</h3>
+<p><code>X-Frame-Options</code> 是用于控制当前页面是否可以被嵌入到 <code>iframe</code> 中，以防盗链及点击劫持攻击</p>
+<p><code>X-Frame-Options</code> 设置须添加在请求头中，如下</p>
+<pre><code class="hljs language-sh code-block-extension-codeShowNum">X-Frame-Options: DENY
+</code></pre>
+<p>参数：</p>
+<ul>
+<li><strong>DENY</strong>: 不允许，同域名嵌套也不行</li>
+<li><strong>SAMEORIGIN</strong>: 允许同域名嵌套</li>
+<li><strong>ALLOW_FORM url</strong>: 可以指定允许嵌套访问的来源</li>
+</ul>
+<p>设置 <code>X-Frame-Options</code> 后，可以确保我们的网站没有被嵌入到别人的站点里去（以防内容被恶意嵌套，并且在表面加一个透明层，诱导用户点击)，从而避免点击劫持攻击及恶意盗链</p>
+<h3>SRI</h3>
+<p><code>SRI</code> 指子资源完整性，该方案的作用是确保我们站点的资源文件永远不会被改变，如果被改变，浏览器会拒绝执行</p>
+<p>比如我们打包的时候有一个 <code>xxx.js</code> 文件，被 <code>index.html</code> 引用，并上传 <code>CDN</code>，用户在访问的时候，会去请求 <code>xxx.js</code>，而这个文件可能被劫持篡改，或者由于网络等原因，接收到的文件不完整，怎么办？</p>
+<p>而设置了 <code>SRI</code> 就可以确保当请求的文件被篡改或不完整的时候就拒绝执行该文件，设置如下：</p>
+<pre><code class="hljs language-html code-block-extension-codeShowNum">
+
+</code></pre>
+<p>标签上的 <code>intergrity</code> 属性值的格式是：哈希算法/base64后的哈希值</p>
+<p>原理：</p>
+<p>打包的时候会根据文件内容生成 <code>hash</code>，并且把 <code>hash</code> 作为 <code>intergrity</code> 属性注入到标签上，客户端接收到文件后，根据文件内容生成 <code>hash</code> 与 <code>intergrity</code> 上的进行对比是否一致，如果不一致就会认为是不安全的，拒绝执行</p>
+<h3>Referrer-Policy</h3>
+<p><code>Referrer-Policy</code> 是一种 <code>HTTP</code> 安全方案，用于控制 <code>referer</code> 携带策略，用于监管哪些访问来源信息会在 referer 中发送</p>
+<blockquote>
+<p>注意 referer 实际上是单词 referrer 的错误拼写。而 Referrer-Policy 这个首部并没有延续这个错误拼写</p>
+</blockquote>
+<p>开启 <code>Referrer-Policy</code> 的方式有两种</p>
+<p><strong>1. meta</strong></p>
+<pre><code class="hljs language-html code-block-extension-codeShowNum">
+</code></pre>
+<p><strong>2. http general</strong></p>
+<pre><code class="hljs language-sh code-block-extension-codeShowNum">Referrer-Policy: same-origin
+</code></pre>
+<p>参数：</p>
+<ul>
+<li><strong>no-referrer</strong>：不发送 <code>referer</code></li>
+<li><strong>no-referrer-when-downgrade</strong>：默认值，同安全级别发送 <code>referrer</code> 并且是完整 <code>url</code>，不同安全级别则不发送</li>
+<li><strong>origin</strong>：只发送协议、域名、端口，不发送完整 <code>url</code>，比如 <code>https://juejin.cn/index.html</code>，会变成<code>https//juejin.cn/</code></li>
+<li><strong>origin-when-cross-origin</strong>：同源才发送完整 <code>url</code>，不同源只发送协议、域名、端口</li>
+<li><strong>same-origin</strong>：同源才发送 <code>referer</code>，并且是完整的 <code>url</code></li>
+<li><strong>strict-origin</strong>：同安全级别和 <code>origin</code> 是一样的，比如 <code>https</code> 请求 <code>https</code>，如 <code>https</code> 请求 <code>http</code> 是不同安全级别了，就不发送</li>
+<li><strong>strict-origin-when-cross-origin</strong>：同源发送完整 <code>url</code>，同安全级别才发送协议、域名、端口，不同源或不同安全级别不发送 <code>referer</code></li>
+<li><strong>unsafe-url</strong>：这是最不安全的策略，不管同不同源都发送完整 <code>url</code></li>
+</ul>
+<h3>HTTPS</h3>
+<p>由于 <code>http</code> 是明文传输，是不安全的，所以在 <code>http</code> 传输过程中信息可能被窃取、伪造、篡改，这种攻击方式被称为<strong>中间人攻击</strong></p>
+<p>避免中间人攻击的方法就是用 <code>https</code>，在应用层与传输层之间添加一个安全层 <code>TLS</code>，但也不是就绝对安全了</p>
+<p>安全层会通过加密算法和公钥私钥加密传递的数据，好处是即使被劫持，中间人没有私钥就拿不到加密生成的随机数，就无法生成最终密钥</p>
+<p>但问题是：假如一开始就被 <code>DNS</code> 劫持，或者说<strong>域名劫持攻击</strong>，拿到的公钥就是中间人的，中间人解密拿到数据后，再请求实际服务器，拿到服务器公钥，再把信息发给服务器，这样不知不觉间信息还是会被窃取</p>
+<p>所以，还需要搭配数字证书，来帮我们验证服务器身份。可 <code>https</code> 还有一个安全问题就是<strong>伪造证书</strong>的存在，比如</p>
+<ul>
+<li>比如 <code>CA</code> 机构没有正确校验申请者的身份而无意签发了一些错误的证书</li>
+<li>比如 <code>CA</code> 机构在利益的驱使下，发放的证书</li>
+<li>比如冒充或伪造某个域名的拥有者，申请到一张证书，毕竟域名拥有者是无法知晓哪些 <code>CA</code> 机构给他签发了证书，也不知道是否有人冒充他的身份申请了证书的</li>
+<li>...</li>
+</ul>
+<p>而 <code>CA</code> 证书公钥可信度是靠操作系统里面预置的 <code>CA</code> 证书公钥列表来保证的，就像白名单，用户一般也不知道 <code>CA</code> 证书公钥的真假，那如果有黑客有能力把自己的公钥放到用户系统的 <code>CA</code> 证书公钥列表里，那也可以伪造数字证书放到用户的电脑上，而用户却无法感知就信任了这个证书，然后你懂的</p>
+<p>为了解决证书问题，有一个解决方案，就是证书透明度(<code>CT</code>)，能够审计、监控证书的签发和使用，一旦发现伪造的证书，可以快速联系到 <code>CA</code> 机构，吊销该证书</p>
+<p>使用证书透明度服务就是添加请求头 <code>Expect-CT</code> 用来告诉浏览器期望使用证书透明度服务的，这能更有效的避免中间人攻击等</p>
+<p>但谁也不能说这就有 100% 的绝对安全了，只是现行架构下的这些解决方案，已经大大增加了中间人的攻击成本，一般都是可以放心的</p>
+<h2>Node(服务端)</h2>
+<h3>本地文件操作</h3>
+<p>指由于本地文件操作相关或路径拼接导致的文件资源泄露，所带来的安全问题</p>
+<ul>
+<li>比如提供了一个静态服务，通过请求的参数 url 来给客户端返回想要资源，而用户手动修改 url 上的路径却可以访问到</li>
+<li>比如暴露了一个服务或接口也可以操作文件的话，如果对它的校验不是那么安全的，就会有攻击者能访问到我们的文件，比如 ssh 文件、密码之类的</li>
+</ul>
+<p>预防：<code>express-static</code>、<code>koa-static</code>、<code>resolve-path</code>，都可以解决这个</p>
+<h3>WebShell</h3>
+<p><code>WebShell</code> 是指一种恶意脚本，或者脚本木马</p>
+<p>原理：</p>
+<p>利用文件上传漏洞、SQL注入漏洞等等，把恶意文件放到服务器中，作为后门，然后通过服务器开放的端口+后门获取服务器的操作权限，比如窃取用户数据、修改权限、文件管理 修改甚至删除 web 页面、数据库管理等等</p>
+<p>常见的 <code>WebShell</code> 编写语言是 jsp、asp、php</p>
+<p>攻击方式：</p>
+<ul>
+<li><strong>上传漏洞</strong>。网站上有上传文件的功能，过滤又不严，就可以直接把 <code>jsp、asp、php</code> 文件直接上传到服务器</li>
+<li><strong>上传文件类型</strong>。项目上有添加上传类型或重命名文件功能的，比如把 <code>WebShell</code> 文件重命名成.jpg之类的允许上传的文件，上传完成后，再重命名改回如 <code>.jsp</code> 这样类型的文件</li>
+<li><strong>隐藏到合法文件</strong>。比如把 <code>php</code> 代码放到 <code>jpg</code> 文件里，再使用@运算符防止发生错误，或者删除空格换行等，导致代码比较混乱，再使用编码或者加密来隐藏恶意函数等</li>
+<li><strong>隐藏到日志</strong>。修改发送数据包的头部，添加 <code>WebShell</code> 。 web 服务器一般会保存访问记录到Web日志，如果找到web日志，且放到可执行目录下，可能获得 shell</li>
+<li>.....</li>
+</ul>
+<h3>ReDos</h3>
+<p><code>ReDos</code> 就是正则表达式攻击，利用正则表达式攻击或者利用开发者正则写的不规范，而疯狂占用服务器资源，造成服务器宕机</p>
+<p>正则表达式匹配规则是：会先匹配第一种要能性，每当一次匹配不成功，就会尝试回溯到上一个字符，看看能不能有其他组合来匹配到这个字符串，比如，匹配 <code>aaa</code> 会向下面这样匹配</p>
+<pre><code class="hljs language-sh code-block-extension-codeShowNum">aaa
+aa + a
+a + aa
+a + a + a
+</code></pre>
+<p>再看下图三条正则表达式执行时间，第一条 <code>0.198ms</code>，第二条 <code>26.445ms</code>，第三条没有结果，因为跑不完，会一直疯狂占用资源</p>
+<div>
+    <img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/cb262ad6.webp" width="60%"/>
+</div>
+<h3>时序攻击</h3>
+<p>时序攻击由于条件非常严荷，所以了解一下即可，哪怕只能说出时序攻击这四个字，但知道有这么回事就比不知道的强</p>
+<p>比如攻击者尝试 <code>arr = [1,2]</code>、<code>arr = [1,3]</code>，发现响应时间几乎一致，则可以认为第一个数字不是 <code>1</code>，再尝试 <code>arr = [2,1]</code>，依此类推，不断碰撞尝试，直到最后碰撞出来真实的 <code>arr</code></p>
+<p>像是对比两个数组是否相同，下面代码看似没什么问题，业务效果完全能达到，但是在绝对安全层面上是不安全的</p>
+<div>
+    <img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/ad061f3c.webp" width="55%"/>
+</div>
+<p>当然业务代码中没必要这么严苛，因为比如上述代码上如果还有其他 <code>if else</code> 判断，就完全没办法碰撞出来了</p>
+<h3>爬虫</h3>
+<p>爬虫就是一种按照一定规则自动抓取资源的程序或者脚本，搜索引擎可以用爬虫抓取网页、图片、视频、音频等</p>
+<p>对于有一些没有防范的系统，通过爬虫，甚至可以把人家会员才能看或者付费下载的资源直接给爬下来，假设网站上有一个 <code>10MB</code> 的文件，使用爬虫抓取上千上万次，就会导致网站产生大量出站流量，很可能还会使服务器瘫痪无法访问了</p>
+<p>防范其实主要就是服务端安全校验的问题，比如设置 robots.txt 文件、比如对请求中的 User Agent 识别和限制，说到底防爬虫主要是防范这几个点：<code>ip</code>、<code>origin</code>、<code>referer</code>、<code>request headers</code></p>
+<p>如果没有并发的去请求去爬虫的时候，它不会针对 <code>ip</code> 做校验，只会判断后面几个，而如果没有后几点就会认为你是不安全的系统，就给爷爬</p>
+<h2>结语</h2>
+<p>如果本文对你有一点点帮助，点个赞支持一下吧，你的每一个【赞】都是我创作的最大动力 ^_^</p>
+
+
+
+
+
+
+</div></div></article></div></div></main></div></div></div></div>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://juejin.cn/post/7233177170489901112" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-05-16 09:28:32</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
