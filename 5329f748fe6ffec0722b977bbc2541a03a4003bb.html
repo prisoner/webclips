@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT背后的语言模型简史</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>ChatGPT背后的语言模型简史</h1>
+</header>
+<main class="typo"><main><div><section><article><div><div>
+          
+          
+          
+          
+          
+<div><p><strong>本文修订记录</strong><br/>
+<heti-spacing>2023/05/10</heti-spacing>更新<span>未来展望</span>部分；<br/>
+<heti-spacing>2023/05/08</heti-spacing>感谢<a href="https://imzhanghao.com/">张浩在路上</a>对本文的审阅和修改；<br/>
+<heti-spacing>2023/05/07</heti-spacing>与<heti-spacing>ChatGPT</heti-spacing>合作完成初稿；<br/>
+<heti-spacing>2023/04/22</heti-spacing>选题与大纲设计；</p>
+</div>
+<ul>
+<li><a href="#%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80">自然语言</a>
+<ul>
+<li><a href="#%E4%BA%BA%E7%B1%BB%E6%96%87%E6%98%8E%E7%9A%84%E9%AB%98%E7%A7%91%E6%8A%80">人类文明的高科技</a></li>
+<li><a href="#%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%9A%84%E4%B8%80%E9%A2%97%E6%98%8E%E7%8F%A0">人工智能的一颗明珠</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BB%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%88%B0%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">从神经网络到深度学习</a>
+<ul>
+<li><a href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">神经网络</a></li>
+<li><a href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">深度学习</a>
+<ul>
+<li><a href="#%E4%BB%8E%E6%96%87%E6%9C%AC%E5%88%B0%E8%AF%8D%E5%90%91%E9%87%8F">从文本到词向量</a></li>
+<li><a href="#%E5%BE%AA%E7%8E%AF%E5%A4%84%E7%90%86%E6%96%87%E6%9C%AC%E5%BA%8F%E5%88%97">循环处理文本序列</a></li>
+<li><a href="#%E4%BB%8E%E5%BA%8F%E5%88%97%E5%88%B0%E5%BA%8F%E5%88%97">从序列到序列</a></li>
+<li><a href="#%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%98%AF%E5%85%A8%E9%83%A8">注意力是全部</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%97%B6%E4%BB%A3">大语言模型时代</a>
+<ul>
+<li><a href="#%E7%94%9F%E6%88%90%E5%BC%8F%E9%A2%84%E8%AE%AD%E7%BB%83">生成式预训练</a></li>
+<li><a href="#%E5%A4%A7%E5%8A%9B%E5%87%BA%E5%A5%87%E8%BF%B9">大力出奇迹</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9C%AA%E6%9D%A5%E5%B1%95%E6%9C%9B">未来展望</a></li>
+<li><a href="#%E8%BF%9B%E9%98%B6%E9%98%85%E8%AF%BB">进阶阅读</a></li>
+</ul>
+<div><svg width="100%"><g></g><g></g><defs><marker><path></path></marker></defs><g><g><g><path></path><line></line></g><g><text><tspan>神经网络</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>人工神经网络（1943）</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>使用数学模型</tspan><tspan>对神经元进行建模</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>感知机   (1957)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>最初的人工神经网络模型</tspan><tspan></tspan><tspan>不能处理线性不可分问题</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>反向传播（1974）</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>采用反向传播法</tspan><tspan>训练一般的人工神经网络</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>深度学习</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>多层感知器   (1980)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>采用多个隐含层</tspan><tspan>代替代感知器的单层结构</tspan><tspan></tspan><tspan>最早的深度学习网络模型</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>RNN   (1982)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>处理序列输入和输出场景</tspan><tspan></tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>LSTM   (1997)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>通过门控单元解决</tspan><tspan>长序列数据训练的困难性</tspan><tspan></tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>Word2vec   (2013)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>用于文本产生词向量</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>GRU   (2014)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>简化LSTM结构并提升表现</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>seq2seq   (2014)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>采用编码器-解码器架构</tspan><tspan></tspan><tspan>用于机器翻译和对话系统</tspan><tspan></tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>Transformer</tspan><tspan>(2017)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>自注意力机制，通过</tspan><tspan>编码器-解码器结构</tspan><tspan>处理自然语言</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>大语言模型</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>GPT-1   (2018)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>预训练语言模型</tspan><tspan>基于Transformer</tspan><tspan>和自回归机制生成文本</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>BERT   (2018)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>预训练模型，通过masking</tspan><tspan></tspan><tspan>预测句子中缺失的词汇</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>GPT-2   (2019)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>更大的预训练模型，</tspan><tspan>能够输出高质量文本</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>GPT-3   (2020)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>目前最强的通用</tspan><tspan>NLP语言模型，</tspan><tspan>可以完成多种领域的</tspan><tspan>自然语言任务</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>Instruct   GPT</tspan><tspan>(2022)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>ChatGPT背后的语言模型</tspan><tspan></tspan><tspan>通过人类指令(prompt)</tspan><tspan>来调整AI生成的内容</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>GPT-4   (2023)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>大型多模态语言模型</tspan><tspan>接受图像和文本输入</tspan><tspan>专业和学术基准上</tspan><tspan>表现出人类水平的表现</tspan></text></g></g></g><text>NLP语言模型的发展历程</text><g><line></line></g></svg></div><p><heti-spacing>ChatGPT</heti-spacing>的火爆出圈，让大家对自然语言处理（Natural Language Processing）语言模型的发展历程产生了浓厚的兴趣。本文将从深度学习在<heti-spacing>NLP</heti-spacing>领域的发展历程，到大语言模型的发展历程，再到大语言模型的未来展望，带你一起了解<heti-spacing>NLP</heti-spacing>语言模型的发展历史。</p>
+<h2>自然语言</h2>
+<p>想必很多人对<heti-spacing>ChatGPT</heti-spacing>涌现出的多领域能力感到震撼，尤其是它能很好使用人类的语言与人类沟通，光这一点就已经足以让很多人感到恐怖了。机器会使用自然语言与我们沟通，为什么会让我们感觉到恐怖？</p>
+<p>想象一下，某天我们的宠物突然会说话，会不会让我们感到难以接受？这是因为从数万年前我们的祖先智人走出非洲并统领地球开始，我们就一直是地球上唯一会使用语言的物种，这是我们与其他物种的巨大差异，也是我们独特的优势所在。但现在这种优势被我们创造出的智能掌握了，这是我们感到恐怖的原因。</p>
+<h3>人类文明的高科技</h3>
+<p>人类从掌握语言，并以语言创造出文字，靠着这种超越其他物种的能力，人类从个体的单打独斗产生了复杂的协作关系，从而进入文明社会，这意味着我们靠语言与文字创造了可延续的文明。</p>
+<p>现代经济、国家、法律、文化等都是人类集体共同想象的产物，这是智人与其他物种一个巨大的差异，而语言又是想象的载体，正是有了语言，我们才能够将想象力传递给其他人，从而创造出璀璨的人类文明。</p>
+<p>从这个角度看，语言是人类最先掌握的高科技，也是人类文明存在的基础。</p>
+<h3>人工智能的一颗明珠</h3>
+<p>在人工智能发展之前，人类是地球上甚至宇宙中唯一拥有智慧的生物，但我们的智慧只能通过繁衍后代的方式传递给下一代，老实说这种方式太过低效。在人类发明计算机后，人类智慧从碳基生物传递给硅基生物成为了可能。</p>
+<p>于是人工智能诞生了，人工智能是一门研究如何使机器能够像人一样智能的学科，这也是人类探索自身智慧的一门学科。</p>
+<p>如何让机器拥有类人一样的智慧？第一步就是让机器能够理解人类的语言，这样机器才能够通过语言学习人类文明的知识，能与人类进行沟通，这也是人工智能领域的一个重要分支，这个分支被称为自然语言处理（Natural Language Processing，简称<heti-spacing>NLP</heti-spacing><heti-adjacent>）</heti-adjacent>，它是人工智能领域的一颗明珠。</p>
+<p>如果机器能理解人类的语言，配合计算机视觉（Computer Vision<heti-adjacent>）</heti-adjacent>，再给这个系统一套机器人的机械身体，那人类相当于可以像神一样创造新物种了。照这个方向继续发展，<q>机械飞升</q>也不是不可能。</p>
+<p>而现在，我们创造出的智能也掌握了人类自然语言，这也许是我们进入智能文明的标志。</p>
+<h2>从神经网络到深度学习</h2>
+<p>要让机器能够理解人类语言，目前常用的方法是从机器学习开始。传统的机器学习方法有先天假定，需要人工确定数据特征（即特征工程<heti-adjacent>）</heti-adjacent>，这可能需要大量的人工工作，并且存在错误假设的可能性。</p>
+<p>在机器学习领域中，深度学习是一种基于神经网络的机器学习技术。其中的主要特点是能够自动学习数据的特征，通过将特征学习任务交给模型进行训练来实现自动学习过程。</p>
+<blockquote>
+<p>机器学习一开始有很多路线，不过逐渐人们发现深度学习的效果非常好，很多机器学习领域要解决的问题都可以用深度学习解决。</p>
+</blockquote>
+<h3>神经网络</h3>
+<div><svg width="100%"><g></g><g></g><defs><marker><path></path></marker></defs><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>人工神经网络（1943）</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>使用数学模型</tspan><tspan>对神经元进行建模</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>感知机   (1957)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>最初的人工神经网络模型</tspan><tspan></tspan><tspan>不能处理线性不可分问题</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>反向传播（1974）</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>采用反向传播法</tspan><tspan>训练一般的人工神经网络</tspan></text></g></g></g><text>神经网络</text><g><line></line></g></svg></div><p>神经网络是一种模拟人脑神经元网络的机器学习模型，它最早于<heti-spacing>1943</heti-spacing>年被提出，它使用数学模型对神经元进行建模，神经元是人脑的基本单元，它接收输入信号，经过处理后产生输出信号，神经元之间通过突触连接，突触可以增强或抑制神经元之间的连接强度。</p>
+<p>最简单的感知器模型如下所示：</p>
+<div><svg width="100%"><g><marker><path></path></marker><marker><path></path></marker><marker><circle></circle></marker><marker><circle></circle></marker><marker><path></path></marker><marker><path></path></marker><g><g></g><g><path></path><path></path></g><g><g><g><foreignObject height="28.796875" width="21.265625"><div><span>w1</span></div></foreignObject></g></g><g><g><foreignObject height="28.796875" width="21.265625"><div><span>w2</span></div></foreignObject></g></g></g><g><g><circle height="43.796875" width="32.703125"></circle><g><rect></rect><foreignObject height="28.796875" width="17.703125"><div><span>x1</span></div></foreignObject></g></g><g><circle height="43.796875" width="23.40625"></circle><g><rect></rect><foreignObject height="28.796875" width="8.40625"><div><span>y</span></div></foreignObject></g></g><g><circle height="43.796875" width="32.703125"></circle><g><rect></rect><foreignObject height="28.796875" width="17.703125"><div><span>x2</span></div></foreignObject></g></g></g></g></g></svg></div><p>如果用数学公式来表达如下所示：</p>
+<p><span><span><span><span><math><semantics><mrow><mi>y</mi><mo>=</mo><mrow><mo>{</mo><mtable><mtr><mtd><mstyle><mn>0</mn></mstyle></mtd><mtd><mstyle><mrow><msub><mi>w</mi><mn>1</mn></msub><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><msub><mi>w</mi><mn>2</mn></msub><msub><mi>x</mi><mn>2</mn></msub><mo>≤</mo><mi>θ</mi></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle><mn>1</mn></mstyle></mtd><mtd><mstyle><mrow><msub><mi>w</mi><mn>1</mn></msub><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><msub><mi>w</mi><mn>2</mn></msub><msub><mi>x</mi><mn>2</mn></msub><mo>&gt;</mo><mi>θ</mi></mrow></mstyle></mtd></mtr></mtable></mrow></mrow><annotation> y=\begin{cases} 0 &amp; w_1x_1+w_2x_2\leq \theta \\ 1 &amp; w_1x_1+w_2x_2&gt;\theta \end{cases} </annotation></semantics></math></span><span><span><span></span><span>y</span><span></span><span>=</span><span></span></span><span><span></span><span><span><span>{</span></span><span><span><span><span><span><span><span><span></span><span><span>0</span></span></span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span><span><span><span><span><span><span></span><span><span><span>w</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span><span>x</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>+</span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span><span>x</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>≤</span><span></span><span>θ</span></span></span><span><span></span><span><span><span>w</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span><span>x</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>+</span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span><span>x</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>&gt;</span><span></span><span>θ</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span><span></span></span></span></span></span></span></span></p>
+<p>看起来不可思议，人类的智慧竟然可以用这么简单的公式来表达。这个公式的意思是，如果输入的两个信号的加权和大于阈值，那么输出<heti-spacing>1</heti-spacing>，否则输出<heti-spacing>0</heti-spacing>。这个公式就是感知器的数学模型，它是最早的神经网络模型。</p>
+<p>单个的神经元很简单，但通过多个神经元的组合，就可以构成复杂的神经网络，这样的神经网络就可以解决复杂的问题。如下图所示是一个简单的神经网络：</p>
+<div><svg width="100%"><g><marker><path></path></marker><marker><path></path></marker><marker><circle></circle></marker><marker><circle></circle></marker><marker><path></path></marker><marker><path></path></marker><g><g></g><g><path></path><path></path><path></path><path></path><path></path><path></path></g><g><g><g><foreignObject height="28.796875" width="29.375"><div><span>w11</span></div></foreignObject></g></g><g><g><foreignObject height="28.796875" width="30.5625"><div><span>w12</span></div></foreignObject></g></g><g><g><foreignObject height="28.796875" width="30.5625"><div><span>w21</span></div></foreignObject></g></g><g><g><foreignObject height="28.796875" width="30.5625"><div><span>w22</span></div></foreignObject></g></g><g><g><foreignObject height="28.796875" width="30.5625"><div><span>w31</span></div></foreignObject></g></g><g><g><foreignObject height="28.796875" width="30.5625"><div><span>w32</span></div></foreignObject></g></g></g><g><g><circle height="43.796875" width="32.703125"></circle><g><rect></rect><foreignObject height="28.796875" width="17.703125"><div><span>x1</span></div></foreignObject></g></g><g><circle height="43.796875" width="32.703125"></circle><g><rect></rect><foreignObject height="28.796875" width="17.703125"><div><span>y1</span></div></foreignObject></g></g><g><circle height="43.796875" width="32.703125"></circle><g><rect></rect><foreignObject height="28.796875" width="17.703125"><div><span>x2</span></div></foreignObject></g></g><g><circle height="43.796875" width="32.703125"></circle><g><rect></rect><foreignObject height="28.796875" width="17.703125"><div><span>y2</span></div></foreignObject></g></g><g><circle height="43.796875" width="32.703125"></circle><g><rect></rect><foreignObject height="28.796875" width="17.703125"><div><span>y3</span></div></foreignObject></g></g></g></g></g></svg></div><p>如何理解这个神经网络呢？首先，这个神经网络有<heti-spacing>3</heti-spacing>层，第一层是输入层，第二层是隐含层，第三层是输出层。输入层有两个神经元，隐含层有两个神经元，输出层有一个神经元。每个神经元都有一个阈值，每个连接线都有一个权重，这些权重和阈值都是需要训练的参数。</p>
+<p>这个简单的神经网络通过叠加多个隐含层，就可以完成复杂的人工智能任务，比如识别图片中的手写数字，这个流程如下：</p>
+<ol>
+<li>第一层输入层接收图片的像素点作为输入信号，比如图片的大小是<heti-spacing>28x28</heti-spacing>，那么输入层就有<heti-spacing>784</heti-spacing>个神经元；</li>
+<li>隐含层将输入信号进行处理，层层传递后给输出层产生信号；</li>
+<li>输出层的信号就是图片的内容，比如输出层有<heti-spacing>10</heti-spacing>个神经元，那么输出层的信号就是<heti-spacing>10</heti-spacing>个数字，每个数字代表图片识别的概率，概率最大就代表整个神经网络的识别结果。</li>
+</ol>
+<p>这个流程看起来很简单，但是神经网络的训练过程非常复杂，需要大量的数据和计算资源，所以在神经网络被提出后，很长一段时间没有得到应用。而且为了取得好的效果，神经网络的层数就需要很多，深度学习就是指神经网络的层数很多，所以深度学习的训练过程更加复杂。</p>
+<h3>深度学习</h3>
+<div><svg width="100%"><g></g><g></g><defs><marker><path></path></marker></defs><g><g><g><path></path><line></line></g><g><text><tspan>多层感知器   (1980)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>采用多个隐含层</tspan><tspan>代替代感知器的单层结构</tspan><tspan></tspan><tspan>最早的深度学习网络模型</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>RNN   (1982)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>处理序列输入和输出场景</tspan><tspan></tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>LSTM   (1997)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>通过门控单元解决</tspan><tspan>长序列数据训练的困难性</tspan><tspan></tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>Word2vec   (2013)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>用于文本产生词向量</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>GRU   (2014)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>简化LSTM结构并提升表现</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>seq2seq   (2014)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>采用编码器-解码器架构</tspan><tspan></tspan><tspan>用于机器翻译和对话系统</tspan><tspan></tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>Transformer</tspan><tspan>(2017)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>自注意力机制，通过</tspan><tspan>编码器-解码器结构</tspan><tspan>处理自然语言</tspan></text></g></g></g><text>深度学习</text><g><line></line></g></svg></div><p>深度学习就是加深神经网络的层数，当然在特定领域的处理中，除了加深层数还需要处理特定的问题，比如在自然语言处理领域，就需要处理文本的序列问题，这个时候就需要采用<heti-spacing>RNN</heti-spacing>、LSTM、GRU、seq2seq、<heti-spacing>Transformer</heti-spacing>等模型。</p>
+<p>这些模型并不是独立的，而是相互关联的，比如<heti-spacing>seq2seq</heti-spacing>模型就是由<heti-spacing>RNN</heti-spacing>和<heti-spacing>LSTM</heti-spacing>组成的，<heti-spacing>Transformer</heti-spacing>模型就是由<heti-spacing>seq2seq</heti-spacing>模型演变而来的。</p>
+<p>和大家也许想的不同，当<heti-spacing>ChatGPT</heti-spacing>与人交流时，它会根据上下文不断预测并生成下一个单词。这个上下文包括了之前生成的所有单词，而不是一次性生成整个句子。我们可以通过如下数学公式来表示这个过程：</p>
+<p><span><span><span><span><math><semantics><mrow><mi>P</mi><mo>(</mo><msub><mi>w</mi><mn>1</mn></msub><mo>,</mo><msub><mi>w</mi><mn>2</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>w</mi><mi>n</mi></msub><mo>)</mo><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>P</mi><mo>(</mo><msub><mi>w</mi><mi>i</mi></msub><mi>∣</mi><msub><mi>w</mi><mn>1</mn></msub><mo>,</mo><msub><mi>w</mi><mn>2</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>w</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo></mrow><annotation> P(w_1,w_2,…,w_n)=\prod_{i=1}^nP(w_i|w_1,w_2,…,w_{i-1}) </annotation></semantics></math></span><span><span><span></span><span>P</span><span>(</span><span><span>w</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>,</span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>,</span><span></span><span>…</span><span></span><span>,</span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>n</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span><span></span><span>=</span><span></span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>i</span><span>=</span><span>1</span></span></span></span><span><span></span><span><span>∏</span></span></span><span><span></span><span><span>n</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span><span>P</span><span>(</span><span><span>w</span><span><span><span><span><span><span></span><span><span>i</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>∣</span><span><span>w</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>,</span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>,</span><span></span><span>…</span><span></span><span>,</span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span><span>i</span><span>−</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span></span></span></span></span></span></p>
+<p>该公式表示生成整个句子<span><span><span><math><semantics><mrow><msub><mi><heti-spacing>w</heti-spacing></mi><mn><heti-spacing>1</heti-spacing></mn></msub><mo><heti-spacing>,</heti-spacing></mo><msub><mi><heti-spacing>w</heti-spacing></mi><mn><heti-spacing>2</heti-spacing></mn></msub><mo><heti-spacing>,</heti-spacing></mo><mo>…</mo><mo>,</mo><msub><mi>w</mi><mi>n</mi></msub></mrow><annotation>w_1,w_2,\ldots,w_n</annotation></semantics></math></span><span><span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>,</span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>,</span><span></span><span>…</span><span></span><span>,</span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>n</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span></span>的概率等于每个单词的生成概率之积（联合概率<heti-adjacent>）</heti-adjacent>，其中每个单词的概率都是基于其前面所有单词来计算的。以上公式能给出单词序列发生的概率，这意味着语言模型可以通过概率来评估一个单词序列发生的可能性，也意味着可通过此概率评估一个句子在多大程度上是自然的单词序列。通过这种概率的计算，让<heti-spacing>ChatGPT</heti-spacing>这类语言模型能够产生连贯而自然的对话回复。</p>
+<h4>从文本到词向量</h4>
+<p>从上面神经网络的例子中，我们可以看到神经网络的输入和输出都是数字，而且神经网络的每个神经元都是一个数字，这些数字都是浮点数，所以神经网络的输入和输出都是浮点数。</p>
+<p>但自然语言处理的输入输出都是文本，所以需要将文本转换为数字，这个过程就是文本的向量化，也就是将文本转换为向量。文本向量化的方法有很多，比如<heti-spacing>one-hot</heti-spacing>、TF-IDF、<heti-spacing>word2vec</heti-spacing>等。</p>
+<p><heti-spacing>word2vec</heti-spacing>是一种用于生成词向量的神经网络模型，它最早于<heti-spacing>2013</heti-spacing>年被提出。该模型主要用于自然语言处理任务中，如文本分类、文本生成等。相比于<heti-spacing>one-hot</heti-spacing>和<heti-spacing>TF-IDF</heti-spacing>，<heti-spacing>word2vec</heti-spacing>可以将文本中的每个单词转换为一个固定长度的向量，这个向量可以用于神经网络的输入。</p>
+<p>有趣的是，词向量表示只是<heti-spacing>word2vec</heti-spacing>模型的副产品，<heti-spacing>word2vec</heti-spacing>模型的主要目的是通过训练神经网络来学习词向量，而不是生成词向量。<heti-spacing>word2vec</heti-spacing>模型通过训练神经网络来预测输入文本序列中下一个单词，当模型训练的能成功预测下一个单词时，说明神经网络已经学习到了文本中单词的语义信息，这个时候神经网络的隐含层（输入权重）就是输入文本序列的词向量，这也意味着在不同的语料库中，相同单词的词向量是不同的，但是相似的单词的词向量是相似的。</p>
+<h4>循环处理文本序列</h4>
+<p>将文本转换为词向量后，另一个问题是目前神经网络都是前馈神经网络，它们都是将输入数据从输入层传递到输出层，而没有反馈，所以无法处理序列数据，比如文本序列。于是就有了循环神经网络（RNN<heti-adjacent>）</heti-adjacent>。</p>
+<p><heti-spacing>RNN</heti-spacing>模型指的是循环神经网络（Recurrent Neural Network<heti-adjacent>）</heti-adjacent>，它最早于<heti-spacing>1982</heti-spacing>年被提出。该模型主要用于自然语言处理任务中，如文本分类、文本生成等。循环神经网络通过使用循环结构，将当前时刻的输出作为下一时刻的输入，从而实现对序列数据的处理。</p>
+<p>循环神经网络的每个神经元都有两个输入，一个是当前时刻的输入，一个是上一时刻的输出，这样就可以将序列数据的信息传递到下一时刻。循环神经网络的结构如下图所示：</p>
+<div><svg width="100%"><g><marker><path></path></marker><marker><path></path></marker><marker><circle></circle></marker><marker><circle></circle></marker><marker><path></path></marker><marker><path></path></marker><g><g></g><g><path></path><path></path><path></path><path></path><path></path><path></path><path></path><path></path><path></path><path></path><path></path><path></path></g><g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g><g><g><foreignObject height="28.796875" width="14.546875"><div><span>...</span></div></foreignObject></g></g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g><g><g><foreignObject height="0" width="0"><div><span></span></div></foreignObject></g></g></g><g><g><rect height="43.796875" width="35.375"></rect><g><rect></rect><foreignObject height="28.796875" width="20.375"><div><span>X0</span></div></foreignObject></g></g><g><rect height="43.796875" width="50.875"></rect><g><rect></rect><foreignObject height="28.796875" width="35.875"><div><span>RNN</span></div></foreignObject></g></g><g><rect height="43.796875" width="50.875"></rect><g><rect></rect><foreignObject height="28.796875" width="35.875"><div><span>RNN</span></div></foreignObject></g></g><g><rect height="43.796875" width="36.265625"></rect><g><rect></rect><foreignObject height="28.796875" width="21.265625"><div><span>H0</span></div></foreignObject></g></g><g><rect height="43.796875" width="35.375"></rect><g><rect></rect><foreignObject height="28.796875" width="20.375"><div><span>X1</span></div></foreignObject></g></g><g><rect height="43.796875" width="50.875"></rect><g><rect></rect><foreignObject height="28.796875" width="35.875"><div><span>RNN</span></div></foreignObject></g></g><g><rect height="43.796875" width="36.265625"></rect><g><rect></rect><foreignObject height="28.796875" width="21.265625"><div><span>H1</span></div></foreignObject></g></g><g><rect height="43.796875" width="35.375"></rect><g><rect></rect><foreignObject height="28.796875" width="20.375"><div><span>X2</span></div></foreignObject></g></g><g><rect height="43.796875" width="50.875"></rect><g><rect></rect><foreignObject height="28.796875" width="35.875"><div><span>RNN</span></div></foreignObject></g></g><g><rect height="43.796875" width="36.265625"></rect><g><rect></rect><foreignObject height="28.796875" width="21.265625"><div><span>H2</span></div></foreignObject></g></g><g><rect height="43.796875" width="30.921875"></rect><g><rect></rect><foreignObject height="28.796875" width="15.921875"><div><span>Xt</span></div></foreignObject></g></g><g><rect height="43.796875" width="31.8125"></rect><g><rect></rect><foreignObject height="28.796875" width="16.8125"><div><span>Ht</span></div></foreignObject></g></g><g><rect height="43.796875" width="31.8125"></rect><g><rect></rect><foreignObject height="28.796875" width="16.8125"><div><span>Ht</span></div></foreignObject></g></g></g></g></g></svg></div><p>如上图所示，循环神经网络可以从输入序列<span><span><span><math><semantics><mrow><mi><heti-spacing>X</heti-spacing></mi></mrow><annotation><heti-spacing>X</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>X</heti-spacing></span></span></span></span></span>中逐个读取输入<span><span><span><math><semantics><mrow><msub><mi><heti-spacing>X</heti-spacing></mi><mi><heti-spacing>t</heti-spacing></mi></msub></mrow><annotation><heti-spacing>X_t</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><span><heti-spacing>X</heti-spacing></span><span><span><span><span><span><span></span><span><span><heti-spacing>t</heti-spacing></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span></span>，并将当前时刻的输入<span><span><span><math><semantics><mrow><msub><mi><heti-spacing>X</heti-spacing></mi><mi><heti-spacing>t</heti-spacing></mi></msub></mrow><annotation><heti-spacing>X_t</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><span><heti-spacing>X</heti-spacing></span><span><span><span><span><span><span></span><span><span><heti-spacing>t</heti-spacing></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span></span>和上一时刻的输出<span><span><span><math><semantics><mrow><msub><mi><heti-spacing>H</heti-spacing></mi><mrow><mi><heti-spacing>t</heti-spacing></mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><annotation>H_{t-1}</annotation></semantics></math></span><span><span><span></span><span><span>H</span><span><span><span><span><span><span></span><span><span><span>t</span><span>−</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span></span>作为输入，然后输出当前时刻的输出<span><span><span><math><semantics><mrow><msub><mi><heti-spacing>H</heti-spacing></mi><mi><heti-spacing>t</heti-spacing></mi></msub></mrow><annotation><heti-spacing>H_t</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><span><heti-spacing>H</heti-spacing></span><span><span><span><span><span><span></span><span><span><heti-spacing>t</heti-spacing></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span></span>，这样就可以将序列数据的信息传递到下一时刻。</p>
+<p>不过原始的<heti-spacing>RNN</heti-spacing>模型存在记忆消失的问题，在长序列的情况下，模型无法学习到序列中较早的信息（可以简单理解为<heti-spacing>RNN</heti-spacing>在输入序列的循环过程中，在每次的输入转换中有信息的损失<heti-adjacent>）</heti-adjacent>，所以后来又有了<heti-spacing>LSTM</heti-spacing>和<heti-spacing>GRU</heti-spacing>模型，这些模型通过使用门控结构（输入门、遗忘门与输出门<heti-adjacent>）</heti-adjacent>，解决了<heti-spacing>RNN</heti-spacing>的记忆问题。</p>
+<blockquote>
+<p>神经网络模型经常使用反向传播和梯度下降算法进行训练，以便更新模型参数来获得更接近真实值的输出结果。然而，由于存在梯度消失和梯度爆炸的问题，导致模型无法正确训练和收敛。在<heti-spacing>RNN</heti-spacing>模型中，这些问题尤为突出。</p>
+<p>梯度消失是指在反向传播过程中，梯度值逐渐减小，最终使得模型无法训练。与之相对，梯度爆炸是指反向传播中梯度值变得极大，同样也会导致模型无法训练。了解这些问题后，我们需要寻找一些方法来解决它们。例如，可以通过采用梯度裁剪技术来解决梯度爆炸的问题；使用<heti-spacing>LSTM</heti-spacing>等网络结构可以有效缓解梯度消失的问题。此外，<heti-spacing>ReLU</heti-spacing>激活函数也被广泛使用，因为它能够防止梯度消失并加快训练速度。</p>
+</blockquote>
+<h4>从序列到序列</h4>
+<p>有了<heti-spacing>RNN</heti-spacing>模型，就可以处理序列数据了，但是<heti-spacing>RNN</heti-spacing>模型只能处理单个序列，而不能处理两个序列之间的关系，于是就有了<heti-spacing>seq2seq</heti-spacing>模型。</p>
+<p><heti-spacing>seq2seq</heti-spacing>模型指的是序列到序列模型（Sequence-to-Sequence Model<heti-adjacent>）</heti-adjacent>，它最早于<heti-spacing>2014</heti-spacing>年被提出。该模型主要用于自然语言处理任务中，如机器翻译、对话系统等。</p>
+<p>在传统的机器翻译方法中，通常采用基于短语或句法分析的方法将源语言句子转化为目标语言句子。这种方法存在大量的人工特征工程和规则定义，效果依赖于语言专家和领域知识，难以适应不同的语言和领域。</p>
+<p><heti-spacing>seq2seq</heti-spacing>模型通过使用编码器<heti-spacing>-</heti-spacing>解码器架构，将两个序列之间的关系转化为两个向量之间的关系，从而实现对两个序列之间的关系进行建模。在不需要手工特征工程的情况下，自动地学习源语言到目标语言之间的映射关系。其中，编码器将源语言序列映射到一个固定长度的向量表示，解码器利用这个向量表示生成目标语言序列。这种端到端的训练方式具有很强的可扩展性和泛化能力，并且随着数据量的增加，模型表现也会逐渐提升。</p>
+<p>因此，<heti-spacing>seq2seq</heti-spacing>模型既解决了传统机器翻译方法中需要注重规则和特征工程的缺陷，同时也支持了更加复杂和灵活的自然语言处理任务。</p>
+<p>它的架构如下所示：</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/7bafbb92.webp"/></p>
+<p>如上图所示，这是一个翻译汉语到英文的语言任务，输入的是汉语句子<q>你好</q>，输出的是英文句子<q><heti-spacing>Hello</heti-spacing></q>。首先，将输入的汉语句子经过编码器，得到一个固定长度的向量表示，然后将这个向量表示输入给解码器，解码器将这个向量表示转化为英文句子。</p>
+<p>以下是<heti-spacing>Seq2Seq</heti-spacing>模型在生成文本时的训练与生成流程：</p>
+<ol>
+<li>输入数据预处理</li>
+</ol>
+<p>首先，需要将输入的原始文本经过分词、去除停用词等预处理步骤，并将其转化为词向量表示，得到输入序列<span><span><span><math><semantics><mrow><mi><heti-spacing>X</heti-spacing></mi><mo><heti-spacing>=</heti-spacing></mo><mo><heti-spacing>(</heti-spacing></mo><msub><mi><heti-spacing>x</heti-spacing></mi><mn><heti-spacing>1</heti-spacing></mn></msub><mo><heti-spacing>,</heti-spacing></mo><msub><mi><heti-spacing>x</heti-spacing></mi><mn><heti-spacing>2</heti-spacing></mn></msub><mo><heti-spacing>,</heti-spacing></mo><mo>…</mo><mo>,</mo><msub><mi>x</mi><mi>T</mi></msub><mo>)</mo></mrow><annotation>X=(x_1, x_2, …, x_T)</annotation></semantics></math></span><span><span><span></span><span>X</span><span></span><span>=</span><span></span></span><span><span></span><span>(</span><span><span>x</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>,</span><span></span><span><span>x</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>,</span><span></span><span>…</span><span></span><span>,</span><span></span><span><span>x</span><span><span><span><span><span><span></span><span><span>T</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span></span></span></span></span>。</p>
+<ol>
+<li>编码器</li>
+</ol>
+<p>将输入序列<span><span><span><math><semantics><mrow><mi><heti-spacing>X</heti-spacing></mi></mrow><annotation><heti-spacing>X</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>X</heti-spacing></span></span></span></span></span>输入给编码器（Encoder<heti-adjacent>）</heti-adjacent>，编码器使用<heti-spacing>RNN</heti-spacing>（通常采用<heti-spacing>LSTM</heti-spacing>或<heti-spacing>GRU</heti-spacing>）将词向量序列转化为单个上下文向量<span><span><span><math><semantics><mrow><mi><heti-spacing>z</heti-spacing></mi></mrow><annotation><heti-spacing>z</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>z</heti-spacing></span></span></span></span></span>，即最后一个时间步的隐藏状态。这个向量包含所有输入信息的综合表示，它将被用于之后的解码器中。</p>
+<ol>
+<li>解码器</li>
+</ol>
+<p>解码器（Decoder）通过读取上下文向量<heti-spacing></heti-spacing><span><span><span><math><semantics><mrow><mi><heti-spacing>z</heti-spacing></mi></mrow><annotation><heti-spacing>z</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>z</heti-spacing></span></span></span></span></span>，并且使用另一个<heti-spacing>RNN</heti-spacing>来生成输出序列<span><span><span><math><semantics><mrow><mi><heti-spacing>Y</heti-spacing></mi><mo><heti-spacing>=</heti-spacing></mo><mo><heti-spacing>(</heti-spacing></mo><msub><mi><heti-spacing>y</heti-spacing></mi><mn><heti-spacing>1</heti-spacing></mn></msub><mo><heti-spacing>,</heti-spacing></mo><msub><mi><heti-spacing>y</heti-spacing></mi><mn><heti-spacing>2</heti-spacing></mn></msub><mo><heti-spacing>,</heti-spacing></mo><mo>…</mo><mo>,</mo><msub><mi>y</mi><msup><mi>T</mi><mo>′</mo></msup></msub><mo>)</mo></mrow><annotation>Y = (y_1, y_2, …, y_{T&#39;})</annotation></semantics></math></span><span><span><span></span><span>Y</span><span></span><span>=</span><span></span></span><span><span></span><span>(</span><span><span>y</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>,</span><span></span><span><span>y</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>,</span><span></span><span>…</span><span></span><span>,</span><span></span><span><span>y</span><span><span><span><span><span><span></span><span><span><span><span>T</span><span><span><span><span><span><span></span><span><span><span>′</span></span></span></span></span></span></span></span></span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span></span></span></span></span>。这里的输出序列长度不一定和输入序列相同。例如，在翻译中，从英语到意大利语的句子长度可能会改变。</p>
+<ol>
+<li>训练</li>
+</ol>
+<p>对于每个目标输出序列<span><span><span><math><semantics><mrow><msup><mi><heti-spacing>Y</heti-spacing></mi><mo>′</mo></msup></mrow><annotation>Y&#39;</annotation></semantics></math></span><span><span><span></span><span><span>Y</span><span><span><span><span><span><span></span><span><span><span>′</span></span></span></span></span></span></span></span></span></span></span></span></span>（即参考答案<heti-adjacent>）</heti-adjacent>，训练的目的是尽可能地使生成的输出序列<span><span><span><math><semantics><mrow><mi><heti-spacing>Y</heti-spacing></mi></mrow><annotation><heti-spacing>Y</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>Y</heti-spacing></span></span></span></span></span>最大程度地接近<span><span><span><math><semantics><mrow><msup><mi><heti-spacing>Y</heti-spacing></mi><mo>′</mo></msup></mrow><annotation>Y&#39;</annotation></semantics></math></span><span><span><span></span><span><span>Y</span><span><span><span><span><span><span></span><span><span><span>′</span></span></span></span></span></span></span></span></span></span></span></span></span>。因此，我们需要定义一个损失函数，用来衡量以<span><span><span><math><semantics><mrow><mi><heti-spacing>Y</heti-spacing></mi></mrow><annotation><heti-spacing>Y</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>Y</heti-spacing></span></span></span></span></span>作为输出时产生的误差，通常使用交叉熵损失函数。</p>
+<ol>
+<li>生成</li>
+</ol>
+<p>在生成时，我们使用训练好的编码器和解码器来处理新的输入，并生成一个输出序列。具体地，首先将输入字符串经过相同的预处理转化为词向量序列<span><span><span><math><semantics><mrow><mi><heti-spacing>X</heti-spacing></mi></mrow><annotation><heti-spacing>X</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>X</heti-spacing></span></span></span></span></span>。然后，将<span><span><span><math><semantics><mrow><mi><heti-spacing>X</heti-spacing></mi></mrow><annotation><heti-spacing>X</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>X</heti-spacing></span></span></span></span></span>拿去给编码器，得到上下文向量<span><span><span><math><semantics><mrow><mi><heti-spacing>z</heti-spacing></mi></mrow><annotation><heti-spacing>z</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>z</heti-spacing></span></span></span></span></span>。最后，利用解码器对<span><span><span><math><semantics><mrow><mi><heti-spacing>z</heti-spacing></mi></mrow><annotation><heti-spacing>z</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>z</heti-spacing></span></span></span></span></span>进行解码，即可得到生成的输出序列<span><span><span><math><semantics><mrow><mi><heti-spacing>Y</heti-spacing></mi></mrow><annotation><heti-spacing>Y</heti-spacing></annotation></semantics></math></span><span><span><span></span><span><heti-spacing>Y</heti-spacing></span></span></span></span></span>。</p>
+<p><heti-spacing>seq2seq</heti-spacing>模型的优点是可以处理变长的序列，但是它也存在一些缺点：</p>
+<ol>
+<li>编码器只能通过一个固定长度的向量来表示输入序列，这个向量包含了输入序列的所有信息。因此，编码器的向量表示可能会存在信息损失，这会影响到解码器的性能。</li>
+<li>编码器和解码器都是使用<heti-spacing>RNN</heti-spacing>来实现的，因此它们都存在梯度消失和梯度爆炸的问题。这会导致模型的训练变得困难，同时也会影响到模型的性能。</li>
+<li>编码器和解码器都是使用<heti-spacing>RNN</heti-spacing>来实现的，因此它们都是串行的结构，无法并行计算，导致训练速度较慢。</li>
+</ol>
+<p><heti-spacing>seq2seq</heti-spacing>模型的缺点主要是由于<heti-spacing>RNN</heti-spacing>的缺点导致的，因此我们需要一种新的模型来解决这些问题，这就是<heti-spacing>Transformer</heti-spacing>模型。</p>
+<h4>注意力是全部</h4>
+<p><heti-spacing>RNN</heti-spacing>网络模型的问题主要在于，串行处理输入序列，无法并行计算，同时也无法捕捉到输入序列中的长距离依赖关系。而<heti-spacing>Transformer</heti-spacing>模型则是完全基于注意力机制来实现的，因此它不仅能够并行计算，而且能够更好地捕捉输入序列的长距离依赖关系，从而提升模型的性能。</p>
+<p>在<heti-spacing>RNN</heti-spacing>中，序列中的每个单元都是按顺序依次进行计算的，后一个单元的计算需要等待前一个单元计算完成后才能开始，因此无法并行化计算。而在<heti-spacing>Transformer</heti-spacing>中，自注意力机制的计算可以并行计算，因为每个单词的表示向量是独立计算的，它们的计算不需要等待其它单词的计算完成，因此可以同时进行。此外，注意力权重的计算也可以并行化，因为每个单词与其它单词的相似度可以同时计算，因此<heti-spacing>Transformer</heti-spacing>的自注意力机制可以更快地处理大规模序列数据。</p>
+<p>对比<heti-spacing>RNN</heti-spacing>，举例来解释<heti-spacing>Transformer</heti-spacing>的注意力机制：</p>
+<p>假设我们有一组输入序列，包含<heti-spacing>5</heti-spacing>个单词<heti-adjacent>：</heti-adjacent>“I”, “like”, “to”, “eat”, “pizza”。</p>
+<ol>
+<li>我们将每个单词转化为向量表示。可以使用词向量来表示每个单词。</li>
+<li>将每个单词向量应用于三个全连接层，以获得表示向量。每个全连接层都采用不同的权重矩阵，用于捕捉不同方面的单词特征。</li>
+<li>为了计算向量之间的相似性，我们将每个表示向量与相邻单词的表示向量计算点积。对于句子中的每个单词，它将与前后单词的表示向量进行点积。</li>
+<li>我们将每组点积值传递到<heti-spacing>Softmax</heti-spacing>函数中，以得出每个单词与相邻单词的注意力权重。这个步骤计算了每个单词与相邻单词的重要性，并为序列中的每个单词分配了注意力权重。</li>
+<li>将每个单词向量与其对应的注意力权重相乘，然后将它们相加。这将形成一个自注意力池化向量，该向量是所有输入单词的加权和。这个自注意力池化向量可以更好地捕捉单词之间的语义关系，同时维护整个输入序列的完整性。</li>
+</ol>
+<p>通过这种方式，自注意力机制允许模型更加全面地考虑输入序列中不同单词之间的关系，并获取单词之间的上下文信息，从而为序列到序列转换任务提供更好的表现力和准确性。</p>
+<p><heti-spacing>Transformer</heti-spacing>模型的架构如下所示：</p>
+<figure>
+    <a href="https://arxiv.org/pdf/1706.03762.pdf">
+        <img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/84eab2c9.webp"/>
+    </a>
+    
+    <figcaption>
+        <p>
+        Source: Attention Is All You Need
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+<p>如上图所示，<heti-spacing>Transformer</heti-spacing>模型的编码器和解码器都使用了自注意力机制，它们的输入都是整个序列，而不会像<heti-spacing>RNN</heti-spacing>那样串行处理序列。因此，<heti-spacing>Transformer</heti-spacing>模型可以并行计算，从而提升模型的训练速度。</p>
+<p><heti-spacing>Transformer</heti-spacing>模型将语言模型的训练带入了大语言模型时代，因为它的训练计算复杂度不会随着输入序列的长度而指数增加，因此可以训练更大的模型，从而提升模型的性能。</p>
+<p>同时随着<heti-spacing>GPU</heti-spacing>计算能力的提升，<heti-spacing>Transformer</heti-spacing>模型的训练时间也大大缩短，因此<heti-spacing>Transformer</heti-spacing>模型的训练成本也大大降低，于是一个大语言模型的时代拉开了序幕。</p>
+<figure>
+    <a href="https://www.researchgate.net/publication/370224758_Harnessing_the_Power_of_LLMs_in_Practice_A_Survey_on_ChatGPT_and_Beyond">
+        <img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/d41405d9.webp"/>
+    </a>
+    
+    <figcaption>
+        <p>
+        Source: Harnessing the Power of LLMs in Practice: A Survey on ChatGPT and Beyond
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+<h2>大语言模型时代</h2>
+<div><svg width="100%"><g></g><g></g><defs><marker><path></path></marker></defs><g><g><g><path></path><line></line></g><g><text><tspan>GPT-1   (2018)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>预训练语言模型</tspan><tspan>基于Transformer</tspan><tspan>和自回归机制生成文本</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>BERT   (2018)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>预训练模型，通过masking</tspan><tspan></tspan><tspan>预测句子中缺失的词汇</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>GPT-2   (2019)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>更大的预训练模型，</tspan><tspan>能够输出高质量文本</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>GPT-3   (2020)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>目前最强的通用</tspan><tspan>NLP语言模型，</tspan><tspan>可以完成多种领域的</tspan><tspan>自然语言任务</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>Instruct   GPT</tspan><tspan>(2022)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan></tspan><tspan>ChatGPT背后的语言模型</tspan><tspan></tspan><tspan>通过人类指令(prompt)</tspan><tspan>来调整AI生成的内容</tspan></text></g></g></g><g><g><g><path></path><line></line></g><g><text><tspan>GPT-4   (2023)</tspan></text></g></g></g><g><line></line></g><g><g><g><path></path><line></line></g><g><text><tspan>大型多模态语言模型</tspan><tspan>接受图像和文本输入</tspan><tspan>专业和学术基准上</tspan><tspan>表现出人类水平的表现</tspan></text></g></g></g><text>大语言模型</text><g><line></line></g></svg></div><p>在<heti-spacing>Transformer</heti-spacing>模型出现后，这种架构启发了<heti-spacing>OpenAI</heti-spacing>的研究人员，于是他们在<heti-spacing>2018</heti-spacing>年提出了<heti-spacing>GPT-1</heti-spacing>模型，这是一个基于<heti-spacing>Transformer</heti-spacing>的预训练语言模型，它使用了自回归机制来生成文本。</p>
+<h3>生成式预训练</h3>
+<p><heti-spacing>Generative Pre-Training (GPT)</heti-spacing>语言模型的训练过程是半监督的，使用了无监督预训练和有监督微调的组合方法，旨在学习一个通用的表征，以便在各种任务中进行迁移学习。</p>
+<p>该模型使用<heti-spacing>Transformer</heti-spacing>架构右侧的解码器（Decoder）部分，在无标注数据上使用语言建模目标进行初始参数学习，然后使用相应的监督目标来适应目标任务（用有标注的数据训练并微调模型<heti-adjacent>）</heti-adjacent>。在转移过程中，使用从遍历式方法推导出的特定于任务的输入适应进行微调，以实现最小的对预训练模型架构的更改。该模型在自然语言推理、问答、语义相似性和文本分类等四个类型的语言理解任务上都获得了优异的表现。</p>
+<p><heti-spacing>GPT</heti-spacing>的创新之处在于：</p>
+<ul>
+<li>通过<heti-spacing>Transformer</heti-spacing>架构，它实现了并行计算，提高了模型训练速度。同时，该架构还具备自回归机制，支持文本生成任务；</li>
+<li>结合预训练和微调技术，<heti-spacing>GPT</heti-spacing>可以应用于多种<heti-spacing>NLP</heti-spacing>任务，并支持零样本学习；</li>
+<li><heti-spacing>GPT</heti-spacing>不仅支持多模态、多语言、多任务和多领域任务，而且在这些领域中表现优异。</li>
+</ul>
+<blockquote>
+<p><heti-spacing>GPT</heti-spacing>使用了<heti-spacing>Transformer</heti-spacing>模型的右侧解码器，因为其被证明是一种非常适合自然语言处理任务的模型，并且能够在处理长序列时表现出色。</p>
+<p><heti-spacing>Transformer</heti-spacing>模型中有两个主要的组件：编码器和解码器。而编码器被设计用于从输入序列中提取信息，而解码器则可从该信息生成输出序列。 在机器翻译等任务中，需要将源语言序列（即输入）转换为目标语言序列（即输出<heti-adjacent>）</heti-adjacent>。因此，传统的神经机器翻译系统使用编码器<heti-spacing>-</heti-spacing>解码器架构来进行这些任务。</p>
+<p>然而，在语言生成任务如文本生成、对话模型等方面，只需要根据历史上下文生成新的单词<heti-spacing>/</heti-spacing>字符串。 在这些任务中，只需要生成一个序列，而不是翻译两个不同语言之间的不同的序列信息。因此，使用<heti-spacing>Transformer</heti-spacing>模型中解码器部分的权重，可以更好地拟合文本生成类任务，同时也可以更好地利用它的多头自注意力机制和残差连接来处理长序列，并且可以解决学习时间步骤之间长距离依赖关系的挑战。</p>
+</blockquote>
+<h3>大力出奇迹</h3>
+<p>人类的大脑神经元数量大约是<heti-spacing>1000</heti-spacing>亿个，这些神经元能产生数万亿个连接，而<heti-spacing>GPT-1</heti-spacing>模型的参数数量只有<heti-spacing>1.17</heti-spacing>亿个，这意味着<heti-spacing>GPT-1</heti-spacing>模型的参数数量只有人类大脑神经元数量的<heti-spacing>0.1%</heti-spacing>。</p>
+<p>不知道<heti-spacing>OpenAI</heti-spacing>是否受到了这个启发，于是他们在<heti-spacing>2019</heti-spacing>年提出了<heti-spacing>GPT-2</heti-spacing>模型，这是一个更大的预训练模型，它的参数数量是<heti-spacing>GPT-1</heti-spacing>模型的<heti-spacing>10</heti-spacing>倍，达到了<heti-spacing>15</heti-spacing>亿个，在<heti-spacing>2020</heti-spacing>年发布的<heti-spacing>GPT-3</heti-spacing>模型的参数数量是<heti-spacing>GPT-2</heti-spacing>模型的<heti-spacing>100</heti-spacing>倍，达到了<heti-spacing>1750</heti-spacing>亿个，从数量上来看，<heti-spacing>GPT-3</heti-spacing>模型的参数数量已经超过了人类大脑神经元的数量。</p>
+<p>于是，奇迹出现了，<heti-spacing>GPT-3</heti-spacing>模型在专业和学术基准上表现出了人类水平的表现。这个奇迹的出现是因为<heti-spacing>GPT-3</heti-spacing>模型使用了深度学习和大规模预训练技术，它被训练了海量的自然语言数据，并利用自监督学习方法进行强化，使其能够产生惊人的语言表达能力。此外，<heti-spacing>GPT-3</heti-spacing>还具有令人难以置信的创造力，它能够生成准确、流畅的文章、诗歌和音乐，甚至在游戏、绘画等其他领域也能发挥出惊人的创作能力。</p>
+<p>虽然<heti-spacing>GPT-3</heti-spacing>模型已经展示了令人瞩目的性能，但它仍然存在一些局限性，比如对于某些特定领域知识的理解还不够深入，同时语言模型的运行需要庞大的计算资源和存储空间，这也增加了该技术应用的成本。未来，我们可以期待更加智能、灵活、高效的语言模型的出现，它们将会给我们带来更多新的可能性和优秀的应用场景。</p>
+<p>然而，<heti-spacing>GPT-3</heti-spacing>的强大并非仅凭借大力出奇迹而来，因为许多其他参数数量超过人类大脑神经元数量的<a href="https://briefgpt.xyz/lm">语言模型</a>却没有表现出比<heti-spacing>GPT</heti-spacing>更好的效果。可见，<heti-spacing>GPT-3</heti-spacing>之所以拥有如此巨大的影响力，是由于其强大的表现和开创性的技术贡献所决定的。</p>
+<h2>未来展望</h2>
+<p>大语言模型的出现，为我们提供了一种新的思路，即通过大规模预训练和微调技术，让模型具备更强大的语言理解能力，从而能够应用于更多的<heti-spacing>NLP</heti-spacing>任务。未来，我们可以期待更加智能、灵活、高效的语言模型的出现，它们将会给我们带来更多新的可能性和优秀的应用场景。以下是笔者对未来语言模型发展的一些展望：</p>
+<ol>
+<li><strong>智能编程</strong>：它是将大语言模型作为推理引擎，无需编程即可完成各种用户提交的任务。例如，当用户请求播报最近热点新闻简报时，大语言模型可以自动规划任务并使用必要的工具来完成任务：获取新闻网站的热点新闻<heti-spacing>RSS</heti-spacing>地址，然后爬取新闻内容，总结新闻，并使用文字转语音接口合成语音。与传统的编程方式相比，这种方式更加灵活和高效。我们只需要设计一套内置的规则，大语言模型就能够动态规划并完成任务需要的步骤和子任务的工具，从而大幅降低人工编程的成本。</li>
+<li><strong>多模态能力</strong>：它是尝试让大语言模型能理解语音、图片、视频等多模态内容。<heti-spacing>Transformer</heti-spacing>模型在这个方面已经发挥了至关重要的作用，并使得<heti-spacing>GPT-4</heti-spacing>具有了多模态能力。未来的研究将集中于设计更加灵活、适应性更强的模型，使其能够处理不同类型和媒体形式的内容。</li>
+<li><strong>设备端语言模型</strong>：目前大语言模型只能在云服务中运行，未来的一个重要方向是将其部署到移动设备上，使其能够在本地运行。这样做的好处是可以保护用户隐私，同时也可以降低网络延迟，提高用户体验。这些模型相对于云服务中的模型来说更加垂直，能在设备端运行，就像一个智能的助手一样，能够帮助用户完成各种任务。</li>
+<li><strong>隐私安全问题</strong>：它是企业在应用大语言模型过程中面临的重要问题，一些企业难以接受将自己的重要数据上传给大型语言模型。因此，一方面可以考虑使用脱敏的方式为模型提供提示语，另一方面，也可能会出现聚焦于本地运行的开源或商业化大语言模型，从而保护企业的隐私。</li>
+<li><strong>版权问题</strong>：目前的大语言模型都是基于各类公开数据训练的，而这些数据的版权关系可能比较复杂：比如，如果一个企业使用了某个大语言模型，而这个大语言模型生成了一些侵犯他人版权的内容，那这时候该怎么处理？这些问题都需要在未来的研究中考虑。比如<heti-spacing>GitHub Copilot</heti-spacing>就是一个商业化的大语言模型，它的训练数据来自于<heti-spacing>GitHub</heti-spacing>上的开源代码，而这些开源代码在训练过程中并未做代码许可证的过滤，这可能就引发了一些版权的问题。</li>
+<li><strong>泛化及可解释性问题</strong>：随着技术的不断进步，我们期望机器能够像人类一样具备广泛的推理和应用能力，同时也能够给出解释和原因，以便更好地理解机器的决策和思维过程。</li>
+<li><strong>安全问题</strong>：随着人工智能在社会生活中的广泛应用，越来越多的机器学习算法和模型将牵涉到重要的决策过程，例如医疗、金融等领域。因此，对机器学习的安全性进行更加深入的探究，并开发相应的安全技术，将是未来研究的一个重要方向，以确保机器学习的应用是可靠和安全的。</li>
+<li><strong>高效节能</strong>：它是让机器学习模型在仅有少量数据输入和能耗消耗的情况下像人脑一样学习新知识。虽然深度学习在自然语言处理领域取得了重要进展，但我们仍需寻找更高效、节能的方法来应对大规模的学习任务。为了降低成本，未来的人工智能发展可能需要从更深层次上改变算法和计算架构，在保证高效性的同时实现更低的能耗。</li>
+</ol>
+<p>人工智能的崛起，给予了我们像上帝一样塑造新生命的力量。我们期待未来的<heti-spacing>AI</heti-spacing>不仅仅是人类的伙伴，更是我们和宇宙之间的桥梁。因为最终我们将理解：科技没有善恶之分，只有我们对待它的方式才会体现出道德的坐标。正如电影《星际穿越》中所说：</p>
+<blockquote>
+<p>Love is the one thing we’re capable of perceiving that transcends time and space.</p>
+</blockquote>
+<h2>进阶阅读</h2>
+<ul>
+<li>视频
+<ul>
+<li><a href="https://youtu.be/nzqlFIcCSWQ"><heti-spacing>Transformer</heti-spacing>论文逐段精读</a></li>
+<li><a href="https://youtu.be/t70Bl3w7bxY">GPT，GPT-2，<heti-spacing>GPT-3</heti-spacing>论文精读</a></li>
+<li><a href="https://youtu.be/ULD3uIb2MHQ"><heti-spacing>BERT</heti-spacing>论文逐段精读</a></li>
+<li><a href="https://youtu.be/zfIGAwD1jOQ"><heti-spacing>InstructGPT</heti-spacing>论文精读</a></li>
+<li><a href="https://www.youtube.com/watch?v=p9IxoSkvZ-M">Open Pretrained Transformers - Susan Zhang | Stanford MLSys</a></li>
+<li><a href="http://lipiji.com/slides/ChatGPT_ppf.pdf"><heti-spacing>ChatGPT</heti-spacing>的前世今生</a></li>
+</ul>
+</li>
+<li>论文
+<ul>
+<li><a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a></li>
+<li><a href="https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf">Improving Language Understanding by Generative Pre-Training</a></li>
+<li><a href="https://arxiv.org/abs/1810.04805">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</a></li>
+<li><a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">Language Models are Unsupervised Multitask Learners</a></li>
+<li><a href="https://arxiv.org/abs/2005.14165">Language Models are Few-Shot Learners</a></li>
+<li><a href="https://arxiv.org/abs/2203.02155">Training language models to follow instructions with human feedback</a></li>
+</ul>
+</li>
+<li>图书
+<ul>
+<li><a href="https://book.douban.com/subject/30270959//">深度学习入门</a></li>
+<li><a href="https://book.douban.com/subject/35225413/">深度学习进阶</a></li>
+<li><a href="https://zh.d2l.ai/">动手学深度学习</a></li>
+<li><a href="https://book.douban.com/subject/6749832/">复杂</a></li>
+</ul>
+</li>
+</ul>
+
+        </div></div></article></section></div></main>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://www.bmpi.dev/dev/deep-learning/nlp-language-models/" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-05-18 23:05:37</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
