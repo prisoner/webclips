@@ -1,5 +1,11 @@
 [
   {
+    "ID": "8a02cc5af160879bf43a9865b06182f4b4198697",
+    "Title": "架构设计之Single-source-of-truth",
+    "Link": "https://blog.zhangwen.site/single-source-of-truth/",
+    "Time": "2023-05-24T11:48:48.273460758+08:00"
+  },
+  {
     "ID": "bd92ad8f62fbfe26e4471b3f53b45febed37101f",
     "Title": "CSS水平垂直居中的N种实现方式",
     "Link": "https://juejin.cn/post/7236263262071947322",
