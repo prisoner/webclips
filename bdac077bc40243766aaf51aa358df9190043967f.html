@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页字体度量及渲染</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>网页字体度量及渲染</h1>
+</header>
+<main class="typo"><div><div><div><div><main><div><div><article><div><div><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/b87e5dc6.webp"/>
+<h1>字体度量（Font Metrics）</h1>
+<p>字体度量是每个字体文件内的配置，如下图 1 和图 2 为用 <a href="https://fontforge.github.io/en-US/">FontForge</a> 查看得到的 Catamaran 字体的度量属性。为了方便后文展示 Line Gap，此处手动将 Catamaran 字体的 HHead Line Gap 值从 0 调整为 500。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/aacd6767.webp"/></p>
+<p>图 1</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/c8884315.webp"/></p>
+<p>图 2</p>
+<p>字体文件内，在没有设置 Typo metrics 优先（图 1 中 的 <em>Really use Typo metrics</em> 选项）时，对于 Windows 系统，浏览器读取 Win Ascent、Win Descent 值；对于 Mac / Linux 系统，浏览器读取 HHead Ascent、HHead Descent 值；Windows、Mac、Linux 系统均读取 HHead Line Gap 来确定行距，如下表 1 所示。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>度量</th><th>Windows</th><th>Mac</th><th>Linux</th></tr></thead><tbody><tr><td>Ascent</td><td>Win Ascent</td><td>HHead Ascent</td><td>HHead Ascent</td></tr><tr><td>Descent</td><td>Win Descent</td><td>HHead Descent</td><td>HHead Descent</td></tr><tr><td>Line Gap</td><td>HHead Line Gap</td><td>HHead Line Gap</td><td>HHead Line Gap</td></tr></tbody></table>
+<p>表 1：未设置 Typo metrics 优先</p>
+<p>在设置了 Typo metrics 优先时，Windows 和 Linux 系统会读取 Typo Ascent、Typo Descent、Typo Line Gap 值，而 Mac 仍然会读取 HHead Ascent、HHead Descent、HHead Line Gap 值，如下表 2所示。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>度量</th><th>Windows</th><th>Mac</th><th>Linux</th></tr></thead><tbody><tr><td>Ascent</td><td>Typo Ascent</td><td>HHead Ascent</td><td>Typo Ascent</td></tr><tr><td>Descent</td><td>Typo Descent</td><td>HHead Descent</td><td>Typo Descent</td></tr><tr><td>Line Gap</td><td>Typo Line Gap</td><td>HHead Line Gap</td><td>Typo Line Gap</td></tr></tbody></table>
+<p>表 2：设置了 Typo metrics 优先</p>
+<p><strong>这也是为什么前端还原的 UI 稿在Windows 电脑、Mac 电脑、Linux 电脑展示样式可能有差异。</strong></p>
+<h2>几个名词</h2>
+<h3>x-height</h3>
+<p>在西文字体排印学中，x 字高(英语：x-height 或 corpus size)是指字母的基本高度，精确地说，就是基线和主线之间的距离，即小写字母 x 的高度。</p>
+<h3>ex</h3>
+<p>在西文的具体字体以及排版术语中，x 字高通常被称为一个 ex。</p>
+<h3>em</h3>
+<p>em 是字体排印学的计量单位，相当于当前指定的点数。em 最初表示的是字体中大写 M 的宽度及所用的尺寸。在 CSS 中，单位 em 是字体点数或英寸数在名义上的高度。</p>
+<h3>em 框（em-square）</h3>
+<p>em 框在字体中定义(也称为字符框( character box ))。实际字形可能比 em 框更高或更矮，<strong>font-size</strong> 的值确定了各个 em 框的高度。</p>
+<h3>行距（Line Gap）</h3>
+<p>下图 3 是 MILanPro 字体分别设置 Line Gap 为 0 和 Line Gap 为 500的渲染结果。浅灰色区域为行盒（line box），深灰色区域为文字<strong>内容区域（content area）</strong> 。Line Gap 为 0 时，内容区域撑开行盒；Line Gap 为 500 时，行距被均分为两份到内容区域上方和下方，然后才撑开行盒。</p>
+<pre><code class="hljs language-xml code-block-extension-codeShowNum">  
+    
+    
+      @font-face {
+        font-family : &#39;MILanPro_GAP0&#39;;
+        src : url(&#34;MILanPro_GAP0.woff2&#34;) format(&#34;woff2&#34;);
+      }
+      @font-face {
+        font-family : &#39;MILanPro_GAP500&#39;;
+        src : url(&#34;MILanPro_GAP500.woff2&#34;) format(&#34;woff2&#34;);
+      }
+      .wrapper {
+        padding : 0 40px;
+        font-size : 100px;
+        background-color : #eeeeee;
+      }
+      .gap0 {
+        font-family : MILanPro_GAP0;
+      }
+      .gap500 {
+        font-family : MILanPro_GAP500;
+      }
+    
+  
+  
+    
+      Xiaomi Mix
+    
+    
+      Xiaomi Mix
+    
+  
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/052658fd.webp"/></p>
+<p>图 3</p>
+<p>下面是一段HTML代码，一个 <code>&lt;p&gt;</code> 标签包含三个不同 <code>font-family</code> 的 <code>&lt;span&gt;</code>。最终渲染如图 4，不同的字体使用相同的 <code>font-size</code> 导致不同的元素高度。测量到不同字体的不同高度：Helvetica：115px，Gruppo：97px，Catamaran：164px。<strong>原因就在字体本身</strong>。它的工作原理如下：</p>
+<ul>
+<li>字体定义它的 <strong><a href="http://designwithfontforge.com/zh-CN/The_EM_Square.html">em-square</a></strong>（也被称作“EM size”或者“UPM”），在一个字体中，每个字符都放置在一个方块空间容器内。方块使用相对单位，通常为 1000 个单位，也可以是 1024 或 2048 等值。</li>
+</ul>
+
+<ul>
+<li>基于它的相对单位，设置字体的度量（ascet、descent、cap-height、x-height 等）。注意有些值是可以大于 em-square 的。</li>
+</ul>
+
+<ul>
+<li>在浏览器中，相对单位会被缩放以适应所需字体的大小。</li>
+</ul>
+
+<pre><code class="hljs language-xml code-block-extension-codeShowNum">
+  Ba
+  Ba
+  Ba
+
+</code></pre>
+
+<pre><code class="hljs language-css code-block-extension-codeShowNum">p { font-size: 100px }
+.a { font-family: Helvetia }
+.b { font-family: Gruppo }
+.c { font-family: Catamaran }
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/48888ed3.webp"/></p>
+<p>图 4</p>
+<p>下图 5 为 Catamaran 字体设置 <code>font-size: 100px</code> 时的各部分参数。首先计算得到字体文件中定义的</p>
+<ul>
+<li>Ascet = 1100 单位 = 110px</li>
+</ul>
+
+<ul>
+<li>Descent = 540 单位 = 54px</li>
+</ul>
+
+<ul>
+<li>Line Gap = 500 单位 = 50px</li>
+</ul>
+
+<ul>
+<li>大写字母高（cap-height）= 68px（680单位）</li>
+</ul>
+
+<ul>
+<li>小写字母高（x-height）= 49px（485单位）</li>
+</ul>
+<p>这意味着 Catamaran 字体设置 <code>font-size: 100px</code> 时，其在 1000 单位的 em-square 中使用 1100 + 540 个单位，得到实际高度 164px。此结果定义元素的<strong>内容区域（content-area）</strong> 。可以把 内容区域高度视为行内元素<code>background</code> 属性应用的区域。可计算得到：</p>
+<ul>
+<li><code>1ex</code> = 小写字母高（x-height）= 49px</li>
+</ul>
+
+<ul>
+<li><code>1em</code> = font-size = 100px（<code>em</code> 等于 <code>font-size</code> 而不是内容区域高度）</li>
+</ul>
+
+<ul>
+<li><strong>内容区域（content area） = Ascet + Descent</strong> = 164px</li>
+</ul>
+
+<ul>
+<li><strong>行高（line-height）= 内容区域（content area）+ Line Gap = Ascet + Descent + Line Gap</strong> = 214px</li>
+</ul>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/fdf9ead2.webp"/></p>
+<p>图 5</p>
+<h2>八根线</h2>
+<p>本文，将字体的 <strong>Top line、Ascender line、Cap height line、Mean line、Middle line、Baseline、Descender line、Bottom line</strong> 称为字体的 8 根线。通常情况，这 8 根线垂直方向从上往下排列，同时这 8 根线决定了 8 个高度，如图 6 所示。行高（line-height）单独到下一章节介绍。</p>
+<ul>
+<li>上半行距：<strong>顶线（Top line）</strong> 到<strong>上悬线（Ascender line）</strong> 的距离</li>
+</ul>
+
+<ul>
+<li>上悬线距：<strong>上悬线（Ascender line）</strong> 到<strong>基线（Baseline）</strong> 的距离</li>
+</ul>
+
+<ul>
+<li>大写字高：<strong>大写字高线（Cap height line）</strong> 到<strong>基线（Baseline）</strong> 的距离</li>
+</ul>
+
+<ul>
+<li>x 字高：<strong>主线（Mean line</strong>）到<strong>基线（Baseline）</strong> 的距离</li>
+</ul>
+
+<ul>
+<li>x 半高：<strong>中线（Middle line</strong>）到<strong>基线（Baseline）</strong> 的距离</li>
+</ul>
+
+<ul>
+<li>下悬线距：<strong>下悬线（Descender line）</strong> 到<strong>基线（Baseline）</strong> 的距离</li>
+</ul>
+
+<ul>
+<li>下半行距：<strong>底线（Bottom line）</strong> 到<strong>下悬线（Descender line）</strong> 的距离</li>
+</ul>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/209de35a.webp"/></p>
+<p>图 6</p>
+<h3>Baseline 基线</h3>
+<p><strong>基线</strong>（<strong>Baseline</strong>）指的是多数<a href="https://zh.wikipedia.org/wiki/%E6%8B%89%E4%B8%81%E5%AD%97%E6%AF%8D">拉丁字母</a>排列的基准线，上图中黑色线即为基线。基线是其他七根线的基础，其他线的位置均以基线为基础确定。</p>
+<h3>Mean line 主线</h3>
+<p><strong>主线</strong>（<strong>Mean Line / Waist Line</strong>）指的是决定无<a href="https://zh.wikipedia.org/wiki/%E5%8D%87%E9%83%A8">升部</a>的<a href="https://zh.wikipedia.org/wiki/%E5%B0%8F%E5%AF%AB%E5%AD%97%E6%AF%8D">小写字母</a>字体大小的一条线，其与<a href="https://zh.wikipedia.org/wiki/%E5%9F%BA%E7%B7%9A">基线</a>的距离称为**<a href="https://zh.wikipedia.org/wiki/X%E5%AD%97%E9%AB%98">x 字高（x height）</a>** 。</p>
+<p><strong>注意，字体设置的 x height 不一定与渲染的 x 字母的实际高度相同。</strong> 以 <strong>MiLanPro</strong> 为例，如图 7、8、9 所示，x 字母真实高度为 526，而字体设置的 x height 值为 480。MiLanPro 字体的 主线与字母 x 上边缘并未齐平。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/687e2a91.webp"/></p>
+<p>图 7</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/57952425.webp"/></p>
+<p>图 8</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/96c41687.webp"/></p>
+<p>图 9</p>
+<h3>Middle line 中线 / x 半高线</h3>
+<p><strong>中线（Middle line）</strong> 通常理解为字母的中间位置，高度是主线高度的一半，也就是 x height 的一半。</p>
+<h3>Cap height line 大写高线</h3>
+<p><strong>大写高线（Cap height line）</strong> 指的是决定大写字高的一条线。<strong>大写字高（Cap height）</strong> 是指某种<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%25AD%2597%25E4%25BD%2593">字体</a>中，位于<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%259F%25BA%25E7%25B7%259A">基线</a>（baseline）以上的<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%25A4%25A7%25E5%2586%2599%25E5%25AD%2597%25E6%25AF%258D">大写字母</a>的高度。尤其指相对平顺的<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%25AD%2597%25E6%25AF%258D">字母</a>“H”和“I”的高度。因为圆型的字母 O 和尖形字母 A 等，在设计中为保持视觉观感，其高度会有上下浮动（Overshoot）。</p>
+<h3>Ascender line 上悬线</h3>
+<p><strong>上悬线（Ascender line）</strong> 指的是决定字体升部的一条线。<strong>升部</strong>（<strong>Ascender</strong>）是指一个<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%25AD%2597%25E4%25BD%2593">字体</a>的字母中向上超过<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E4%25B8%25BB%25E7%25B7%259A">主线</a>笔画的部分，也就是比<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2FX%25E5%25AD%2597%25E9%25AB%2598">x字高</a>还要高的部分，是字体设计中一个重要的组成部分。下图 10 中红色部分即为升部。<strong>注意</strong>，西文<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%25AD%2597%25E4%25BD%2593%25E6%258E%2592%25E5%258D%25B0%25E5%25AD%25A6">字体排印学</a>中，<strong>升部</strong>（<strong>Ascender</strong>）只是指红色部分主线到<strong>上悬线（Ascender line）</strong> 的距离；但在字体文件中，<strong>上悬线距（Ascent）</strong> 表示的是字体基线到<strong>上悬线（Ascender line）</strong> 的距离。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/4213d479.webp"/></p>
+<p>图 10</p>
+<h3>Descender line 下悬线</h3>
+<p><strong>下悬线（Descender line）</strong> 指的是决定字体降部的一条线。<strong>降部</strong>（<strong>Descender</strong>）在西文<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%25AD%2597%25E4%25BD%2593%25E6%258E%2592%25E5%258D%25B0%25E5%25AD%25A6">字体排印学</a>中指的是一个<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%25AD%2597%25E4%25BD%2593">字体</a>中，<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%25AD%2597%25E6%25AF%258D">字母</a>向下延伸超过<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%259F%25BA%25E7%25B7%259A">基线</a>的笔画部分，也称为<strong>下延部</strong>。下图 11 中红色部分即为降部。<strong>注意</strong>，西文<a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2F%25E5%25AD%2597%25E4%25BD%2593%25E6%258E%2592%25E5%258D%25B0%25E5%25AD%25A6">字体排印学</a>中，<strong>降部</strong>（<strong>Descender</strong>）只是指红色部分主线到<strong>下悬线（Descender line）</strong> 的距离；但在字体文件中，<strong>下悬线距（Descent）</strong> 表示的是字体基线到<strong>下悬线（Descender line）</strong> 的距离。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/821f559d.webp"/></p>
+<p>图 11</p>
+<h3>Top line 顶线</h3>
+<p><strong>顶线（Top line）</strong> 是决定字体上半行距位置的一条线。顶线与上悬线之间的距离为上半行距，对应字体文件中 Line Gap 的值取半。</p>
+<h3>Bottom line 底线</h3>
+<p><strong>底线（Bottom line）</strong> 是决定字体下半行距位置的一条线。底线与下悬线之间的距离为下半行距，对应字体文件中 Line Gap 的值取半。</p>
+<h1>字体渲染</h1>
+<h2>line-height</h2>
+<h3>line-height 属性</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>属性</th><th>介绍</th></tr></thead><tbody><tr><td><strong>normal</strong></td><td>Tells user agents to set the used value to a &#34;reasonable&#34; value based on the font of the element. The value has the same meaning as &lt;number&gt;. We recommend a used value for &#39;normal&#39; between 1.0 to 1.2. The computed value is &#39;normal&#39;. <br/>W3C 中的描述不清楚，实际 line-height 由字体度量和 font-size 决定，与其他无关。</td></tr><tr><td><a href="https://www.w3.org/TR/CSS2/syndata.html#value-def-length">&lt;<strong>length</strong>&gt;</a><br/>长度值</td><td>The specified length is used in the calculation of the line box height. Negative values are illegal.<br/>line-height 由长度值决定，子元素默认继承长度值。</td></tr><tr><td><a href="https://www.w3.org/TR/CSS2/syndata.html#value-def-number">&lt;<strong>number</strong>&gt;</a><br/>数字</td><td>The used value of the property is this number multiplied by the element&#39;s font size. Negative values are illegal. The <a href="https://www.w3.org/TR/CSS2/cascade.html#computed-value">computed value</a> is the same as the specified value.<br/>line-height 由 <a href="https://www.w3.org/TR/CSS2/syndata.html#value-def-number">&lt;number&gt;</a> 和 font-size 相乘得到，子元素默认继承 <a href="https://www.w3.org/TR/CSS2/syndata.html#value-def-number">&lt;number&gt;</a> 而不是乘积。</td></tr><tr><td><a href="https://www.w3.org/TR/CSS2/syndata.html#value-def-percentage">&lt;<strong>percentage</strong>&gt;</a><br/>百分比</td><td>The <a href="https://www.w3.org/TR/CSS2/cascade.html#computed-value">computed value</a> of the property is this percentage multiplied by the element&#39;s computed font size. Negative values are illegal.<br/>line-height 由 <a href="https://www.w3.org/TR/CSS2/syndata.html#value-def-percentage">&lt;percentage&gt;</a> 和 font-size 相乘得到，子元素默认继承乘积而不是 <a href="https://www.w3.org/TR/CSS2/syndata.html#value-def-percentage">&lt;percentage&gt;</a>。</td></tr></tbody></table>
+<h3><code>line-height: normal</code> 时行高的计算公式</h3>
+<p><code>行高 = 上半行距（红色） + 上悬线距（橙色）+ 下悬线距（粉色）+ 下半行距（青色）</code></p>
+<p>回看图 6，<code>font-size: 100px</code>，基于上面的公式，得到：</p>
+<p>行高 = 25px + 110px + 54px + 25px = 214px</p>
+<h3>line-height 中 1em、100% 和 1 的不同</h3>
+<p>如下代码块和对应的图 12 所示（字体采用 Catamaran 字体）：</p>
+<ul>
+<li>当 line-height 的值有单位时，子元素继承的是父元素计算之后的值，即在父元素上计算</li>
+</ul>
+
+<ul>
+<li>当 line-height 的值为百分比时，子元素继承的是父元素计算之后的值，即在父元素上计算</li>
+</ul>
+
+<ul>
+<li>
+<p>当 line-height 的值无单位时，是继承值(缩放因子)而不是计算值，即在当前子元素上计算</p>
+<div>
+    <span>line-height: 1em; line-height: 1em; line-height: 1em; line-height: 1em; line-height: 1em; line-height: 1em;</span>
+</div>
+<div>
+    <span>line-height: 100%; line-height: 100%; line-height: 100%; line-height: 100%; line-height: 100%; line-height: 100%;</span>
+</div>
+<div>
+    <span>line-height: 1; line-height: 1; line-height: 1; line-height: 1; line-height: 1; line-height: 1; line-height: 1;</span>
+</div>
+</li>
+</ul>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/ac5760dc.webp"/></p>
+<p>图 12</p>
+<h2>vertical-align</h2>
+<h3>vertical-align 属性</h3>
+<p>下表为 vertical-align 对应的可选值。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>属性</th><th>介绍</th></tr></thead><tbody><tr><td><strong>top</strong></td><td>Align the top of the aligned subtree with the top of the line box.<br/>元素顶部（顶线）与父元素顶部（顶线）对齐。</td></tr><tr><td><strong>text-top</strong></td><td>Align the top of the box with the top of the parent&#39;s content area.<br/>元素顶部（顶线）与父元素内容区域顶部（上悬线）对齐。</td></tr><tr><td><strong>super</strong></td><td>Raise the baseline of the box to the proper position for superscripts of the parent&#39;s box. (This value has no effect on the font size of the element&#39;s text.)Raise by the offset appropriate for superscripts of the parent’s box. The UA may use the parent’s font metrics to find this offset; otherwise it defaults to raising by one third of the parent’s used font-size.<br/>以父元素基线为初始位置，元素基线向上偏移，偏移量从字体度量读取或直接计算三分之一父元素的 font-size 值，本属性对 font-size 无影响。</td></tr><tr><td><strong>middle</strong></td><td>Align the vertical midpoint of the box with the baseline of the parent box plus half the x-height of the parent.<br/>元素中线/中间位置与父元素中线对齐。</td></tr><tr><td><strong>baseline</strong></td><td>Align the baseline of the box with the baseline of the parent box. If the box does not have a baseline, align the bottom margin edge with the parent&#39;s baseline.<br/>默认值，元素基线与父元素基线对齐。</td></tr><tr><td><strong>sub</strong></td><td>Lower the baseline of the box to the proper position for subscripts of the parent&#39;s box. (This value has no effect on the font size of the element&#39;s text.)Lower by the offset appropriate for subscripts of the parent’s box. The UA may use the parent’s font metrics to find this offset; otherwise it defaults to dropping by one fifth of the parent’s used font-size.<br/>以父元素基线为初始位置，元素基线向下偏移，偏移量从字体度量读取或直接计算五分之一父元素的 font-size 值，本属性对 font-size 无影响。</td></tr><tr><td><strong>text-bottom</strong></td><td>Align the bottom of the box with the bottom of the parent&#39;s content area.<br/>元素底部（底线）与父元素内容区域底部（下悬线）对齐。</td></tr><tr><td><strong>bottom</strong></td><td>Align the bottom of the aligned subtree with the bottom of the line box.<br/>元素底部（底线）与父元素底部（底线）对齐。</td></tr><tr><td><a href="https://www.w3.org/TR/CSS2/syndata.html#value-def-percentage">&lt;<strong>percentage</strong>&gt;</a><br/><strong>百分比</strong></td><td>Raise (positive value) or lower (negative value) the box by this distance (a percentage of the <a href="https://www.w3.org/TR/CSS2/visudet.html#propdef-line-height">&#39;line-height&#39;</a> value). The value &#39;0%&#39; means the same as &#39;baseline&#39;.<br/>以父元素基线为初始位置，以行高为基础值，元素基线向上（正值）或向下（负值）偏移。</td></tr><tr><td><a href="https://www.w3.org/TR/CSS2/syndata.html#value-def-length">&lt;<strong>length</strong>&gt;</a><br/><strong>长度值</strong></td><td>Raise (positive value) or lower (negative value) the box by this distance. The value &#39;0cm&#39; means the same as &#39;baseline&#39;.<br/>以父元素基线为初始位置，元素基线向上（正值）或向下（负值）偏移。</td></tr></tbody></table>
+<p>如图 13 所示为 vertical-align 各属性对应的对齐位置。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/d40e2ea8.webp"/></p>
+<p>图 13</p>
+<h3>拓展问题</h3>
+<ol>
+<li>文本设置 <code>vertical-align: middle</code> 后是不是居中的？</li>
+</ol>
+<p><strong>不一定。</strong></p>
+<p><code>vertical-align: middle</code> 时，子元素中线/中间位置与父元素的<strong>中线（Middle line）</strong> 对齐。由图 5 可知，需要子元素和父元素的字体度量均满足</p>
+<p><code>上半行距</code> + <code>上悬线距</code> - <code>x 半字高</code> = <code>x 半字高</code> + <code>下悬线距</code> + <code>下半行距</code></p>
+<p>才能达到完全居中。又因为<code>上半行距</code> 与 <code>下半行距</code> 相等，换算得到</p>
+<p><code>上悬线距</code> - <code>下悬线距</code> = <code>x 字高</code></p>
+<p>时，文本居中。</p>
+<ol>
+<li>无法修改字体度量的情况，如何让内容居中？</li>
+</ol>
+<blockquote>
+<p>提示：从行距（Line Gap）入手。</p>
+</blockquote>
+<p>答案由大家思考。</p>
+<h2>字体选择与合成</h2>
+<h3>字重</h3>
+<p>每个字体集可以由多个样式变体（常规、粗体、斜体）和每种样式的多个粗细（字重）组成。</p>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/4370e755.webp"/></p>
+<p>图 14</p>
+<p>上图中的字体提供了三种不同字重的字体（黑色 A）：</p>
+<ul>
+<li>400 (regular)</li>
+</ul>
+
+<ul>
+<li>700 (bold)</li>
+</ul>
+
+<ul>
+<li>900 (extra bold)</li>
+</ul>
+<p>所有其他中间变体（灰色 A）由浏览器自动映射到最接近的变体。</p>
+<p><a href="https://link.juejin.cn/?target=https%3A%2F%2Fwww.w3.org%2FTR%2Fcss-fonts-3%2F%23font-matching-algorithm">CSS Font Matching Algorithm</a>：</p>
+<blockquote>
+<p>When a weight is specified for which no face exists, a face with a nearby weight is used. In general, bold weights map to faces with heavier weights and light weights map to faces with lighter weights.</p>
+</blockquote>
+<p>翻译一下：<strong>当前字重不存在时，会自动匹配接近的字重。</strong> 通常粗体字重会匹配更粗的字体，常规字重会匹配更细的字体。</p>
+<h3>字体样式</h3>
+<p>上文解释了缺少字重时浏览器的处理策略。那如果加载的 web 字体只定义了常规样式，而某个元素设置了<code>font-style</code> 为 <code>italic</code>该怎么办？</p>
+<ul>
+<li>如果没有完全匹配的字体，浏览器将替换最接近的匹配项</li>
+</ul>
+
+<ul>
+<li>如果未找到样式匹配（例如，在上面的示例中未声明斜体变体），则浏览器会合成自己的字体变体</li>
+</ul>
+<p>下面代码提供了 400 和 700 字重，最终结果如图 15，左侧为字体所有字重和样式对应的渲染，右侧为实际浏览器渲染结果。</p>
+
+<pre><code class="hljs language-css code-block-extension-codeShowNum">@font-face {
+  font-family: &#39;Awesome Font&#39;;
+  font-style: normal;
+  font-weight: 400;
+  src: url(&#39;/fonts/awesome-l.woff2&#39;) format(&#39;woff2&#39;);
+  /* Latin glyphs */
+  unicode-range: U+000-5FF;
+}
+
+@font-face {
+  font-family: &#39;Awesome Font&#39;;
+  font-style: normal;
+  font-weight: 700;
+  src: url(&#39;/fonts/awesome-l-700.woff2&#39;) format(&#39;woff2&#39;);
+  /* Latin glyphs */
+  unicode-range: U+000-5FF;
+}
+</code></pre>
+<p><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/529a3f3f.webp"/></p>
+<p>图 15</p>
+<h2>字体库</h2>
+<h3><a href="https://link.juejin.cn/?target=https%3A%2F%2Ffonts.google.com%2F">谷歌字体库</a></h3>
+<p>所有 Google Font 字体都是开源的，是免费的，可以商用。</p>
+<h3><a href="https://font.mioffice.cn/">小米字体</a></h3>
+<p>目前提供小米兰亭Pro（MI Lan Pro）、MiSans、MiType、MiType 等宽字体（MiType-Mono）、思源宋体（Source Han Serif）5 种字体。</p>
+<h2>参考链接</h2>
+<ol>
+<li>Exploring x-height &amp; the em square: <a href="https://fonts.google.com/knowledge/choosing_type/exploring_x_height_the_em_square">fonts.google.com/knowledge/c…</a></li>
+</ol>
+
+<ol>
+<li>Deep dive CSS: font metrics, line-height and vertical-align: <a href="https://iamvdo.me/en/blog/css-font-metrics-line-height-and-vertical-align">iamvdo.me/en/blog/css…</a></li>
+</ol>
+
+<ol>
+<li>揭开 baseline &amp; line-height &amp; vertical-align 的面纱：<a href="https://paddywang.github.io/demo/list/css/baseline_line-height.html">paddywang.github.io/demo/list/c…</a></li>
+</ol></div></div></article></div></div></main></div></div></div></div>
+      <hr/>
+      <!-- clipping information -->
+      </main>
+<footer>
+        <label>原网址: <a href="https://juejin.cn/post/7242145254056362039" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2023-06-09 09:37:03</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
