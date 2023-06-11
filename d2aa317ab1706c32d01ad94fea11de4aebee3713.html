@@ -1,45 +1,15 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<!DOCTYPE html><html lang="zh-CN"><head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mastering-LangChain-Your-Ultimate-Guide-to-Getting-Started</title>
-    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
-    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Mastering LangChain Your Ultimate Guide To Getting Started</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css"/>
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css"/>
 </head>
 <body>
 <header>
-  <h1>Mastering-LangChain-Your-Ultimate-Guide-to-Getting-Started</h1>
+  <h1>Mastering LangChain Your Ultimate Guide To Getting Started</h1>
 </header>
-<main class="typo"><div><main><div><div><div><div><p>Have you seen the parrot + chain emoji popping up around AI lately? Those are LangChain’s signature emojis. LangChain is an AI Agent tool that adds functionality to large language models (LLMs) like GPT. In addition, it includes functionality such as token management and context management. For this getting started tutorial, we look at two primary examples of LangChain usage. First, how to query GPT. Second, how to query a document with a <a href="https://colab.research.google.com/drive/1KiPHx1wxfYylc3fqMP1hVsUB4yYtzQGn?usp=sharing">Colab notebook available here</a>.</p>
-<p>In this tutorial we cover:</p>
-<ul>
-<li>What is LangChain?</li>
-<li>How Can You Run LangChain Queries?</li>
-<li><ul>
-<li>Query GPT</li>
-</ul></li>
-<li><ul>
-<li>Query a Document</li>
-</ul></li>
-<li>Introduction to LangChain Summary</li>
-</ul>
-<h2>What is LangChain?<button>
-        <svg height="20" width="16">
-          <path></path>
-        </svg></button></h2><p>LangChain is a framework for building applications that leverage LLMs. It allows you to quickly build with the <a href="https://zilliz.com/blog/ChatGPT-VectorDB-Prompt-as-code">CVP Framework</a>. The two core functionalities that LangChain offers LLMs are 1) to be data-aware and 2) to be agentic. Data-awareness is the ability to incorporate outside data sources into an LLM application. Agency is the ability to use other tools.</p>
-<p>As with many LLM tools, LangChain’s default LLM is OpenAI’s GPT and you need an <a href="https://platform.openai.com/docs/api-reference">API key from OpenAI</a> to use it. In addition, LangChain works with both Python and JavaScript. In this tutorial, you will learn how it works using Python examples. You can install the Python library through <code>pip</code> by running <code>pip install langchain</code>.</p>
-<h2>How Can You Run LangChain Queries?<button>
-        <svg height="20" width="16">
-          <path></path>
-        </svg></button></h2><p>One of the primary uses for LangChain is to query some text data. You can use it to query documents, vector stores, or to smooth your interactions with GPT, much like LlamaIndex. In this tutorial, we cover a simple example of how to interact with GPT using LangChain and query a document for semantic meaning using LangChain with a vector store.</p>
-<h3>Query GPT<button>
-        <svg height="20" width="16">
-          <path></path>
-        </svg></button></h3><p>Most people’s familiarity with GPT comes from chatting with ChatGPT. ChatGPT is OpenAI’s flagship interface for interacting with GPT. However, if you want to interact with GPT programmatically, you need a query interface like LangChain. LangChain provides a range of query interfaces for GPT, from simple one-question prompts to few shot learning via context.</p>
-<p>In this example, we’ll look at how to use LangChain to chain together questions using a prompt template. There are a few Python libraries you need to install first. We can install them with # <code>pip install langchain openai python-dotenv tiktoken</code>. I use <code>python-dotenv</code> because I manage my environment variables in a <code>.env</code> file, but you can use whatever method you want to get your OpenAI API key loaded.</p>
-<p>With our OpenAI API key ready, we must load up our LangChain tools. We need the <code>PromptTemplate</code> and <code>LLMChain</code> imports from <code>langchain</code> and the <code>OpenAI</code> import from <code>langchain.llms</code>. We use OpenAI’s text model, <code>text-davinci-003</code> for this example. Next, we create a template to query GPT with. The template that we create below tells GPT to answer the given questions one at a time. First, we create a string representing input variables within brackets, similar to how <code>f-strings</code> work.</p>
-<pre><code class="language-python">import os
+<main class="typo"><p>Have you seen the parrot + chain emoji popping up around AI lately? Those are LangChain’s signature emojis. LangChain is an AI Agent tool that adds functionality to large language models (LLMs) like GPT. In addition, it includes functionality such as token management and context management. For this getting started tutorial, we look at two primary examples of LangChain usage. First, how to query GPT. Second, how to query a document with a <a href="https://colab.research.google.com/drive/1KiPHx1wxfYylc3fqMP1hVsUB4yYtzQGn?usp=sharing" rel="noopener noreferrer" target="_blank">Colab notebook available here</a>.</p><p>In this tutorial we cover:</p><ul><li>What is LangChain?</li><li>How Can You Run LangChain Queries?</li><li class="ql-indent-1">Query GPT</li><li class="ql-indent-1">Query a Document</li><li>Introduction to LangChain Summary</li></ul><h2>What is LangChain?</h2><p>LangChain is a framework for building applications that leverage LLMs. It allows you to quickly build with the <a href="https://zilliz.com/blog/ChatGPT-VectorDB-Prompt-as-code" rel="noopener noreferrer" target="_blank">CVP Framework</a>. The two core functionalities that LangChain offers LLMs are 1) to be data-aware and 2) to be agentic. Data-awareness is the ability to incorporate outside data sources into an LLM application. Agency is the ability to use other tools.</p><p>As with many LLM tools, LangChain’s default LLM is OpenAI’s GPT and you need an <a href="https://platform.openai.com/docs/api-reference" rel="noopener noreferrer" target="_blank">API key from OpenAI</a> to use it. In addition, LangChain works with both Python and JavaScript. In this tutorial, you will learn how it works using Python examples. You can install the Python library through <code>pip</code> by running <code>pip install langchain</code>.</p><h2>How Can You Run LangChain Queries?</h2><p>One of the primary uses for LangChain is to query some text data. You can use it to query documents, vector stores, or to smooth your interactions with GPT, much like LlamaIndex. In this tutorial, we cover a simple example of how to interact with GPT using LangChain and query a document for semantic meaning using LangChain with a vector store.</p><h3>Query GPT</h3><p>Most people’s familiarity with GPT comes from chatting with ChatGPT. ChatGPT is OpenAI’s flagship interface for interacting with GPT. However, if you want to interact with GPT programmatically, you need a query interface like LangChain. LangChain provides a range of query interfaces for GPT, from simple one-question prompts to few shot learning via context.</p><p>In this example, we’ll look at how to use LangChain to chain together questions using a prompt template. There are a few Python libraries you need to install first. We can install them with # <code>pip install langchain openai python-dotenv tiktoken</code>. I use <code>python-dotenv</code> because I manage my environment variables in a <code>.env</code> file, but you can use whatever method you want to get your OpenAI API key loaded.</p><p>With our OpenAI API key ready, we must load up our LangChain tools. We need the <code>PromptTemplate</code> and <code>LLMChain</code> imports from <code>langchain</code> and the <code>OpenAI</code> import from <code>langchain.llms</code>. We use OpenAI’s text model, <code>text-davinci-003</code> for this example. Next, we create a template to query GPT with. The template that we create below tells GPT to answer the given questions one at a time. First, we create a string representing input variables within brackets, similar to how <code>f-strings</code> work.</p><pre class="ql-syntax" spellcheck="false">import os
 from dotenv import load_dotenv
 import openai
 load_dotenv()
@@ -63,9 +33,7 @@ Answers:
     
     
   
-</code></pre>
-<p>Next, we use the <code>PromptTemplate</code> object to create a template from the string with specified input variables. With our prompt template ready, we can create an LLM “chain” by passing in the prompt and the chosen LLM. Now it’s time to create the questions. Once we have the questions we want to ask, we <code>run</code> the LLM chain with the questions passed in to get our answers.</p>
-<pre><code class="language-long_prompt = PromptTemplate(template=multi_template, input_variables=[&#34;questions&#34;])">llm_chain = LLMChain(
+</pre><p>Next, we use the <code>PromptTemplate</code> object to create a template from the string with specified input variables. With our prompt template ready, we can create an LLM “chain” by passing in the prompt and the chosen LLM. Now it’s time to create the questions. Once we have the questions we want to ask, we <code>run</code> the LLM chain with the questions passed in to get our answers.</p><pre class="ql-syntax" spellcheck="false">llm_chain = LLMChain(
    prompt=long_prompt,
    llm=davinci
 )
@@ -76,21 +44,7 @@ qs_str = (
    &#34;How many eyes does a blade of grass have?&#34;
 )
 print(llm_chain.run(qs_str))
-</code></pre>
-<p>The image below shows the expected results from our example questions.</p>
-<p>
-      <span>
-        <a href="https://assets.zilliz.com/Langchain_blog_1_results_08dedb25d4.png"><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/45ac067b.png"/></a>
-        <span>Results from example questions.</span>
-      </span>
-    </p>
-<h3>Query a Document<button>
-        <svg height="20" width="16">
-          <path></path>
-        </svg></button></h3><p>One of the areas for improvement of GPT and LLMs at large is that they are only trained on data available at their time of training. This means that over time, they lose context and accuracy. Much like the CVP framework, LangChain provides a way to remediate this problem with vector databases. Many vector databases are available; for this example, we use Milvus because of our familiarity with it.</p>
-<p>To demonstrate LangChain’s ability to inject up-to-date knowledge into your LLM application and the ability to do a <a href="https://zilliz.com/glossary/semantic-search">semantic search</a>, we cover how to query a document. We use a transcript from the State of the Union address for this example. You can download the transcript <a href="https://github.com/hwchase17/langchain/blob/master/docs/modules/state_of_the_union.txt">here</a> and find the <a href="https://colab.research.google.com/drive/1KiPHx1wxfYylc3fqMP1hVsUB4yYtzQGn?usp=sharing">Colab notebook here</a>. To get the libraries you need for this part of the tutorial, run <code>pip install langchain openai milvus pymilvus python-dotenv tiktoken</code>.</p>
-<p>As with the example of chaining questions together, we start by loading our OpenAI API key and the LLM. Then, we spin up a vector database using <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>, which allows us to run Milvus directly in our notebook.</p>
-<pre><code>import os
+</pre><p>The image below shows the expected results from our example questions.</p><p><a href="https://assets.zilliz.com/Langchain_blog_1_results_08dedb25d4.png" rel="noopener noreferrer" target="_blank"><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/45ac067b.png"/></a></p><p>Results from example questions.</p><h3>Query a Document</h3><p>One of the areas for improvement of GPT and LLMs at large is that they are only trained on data available at their time of training. This means that over time, they lose context and accuracy. Much like the CVP framework, LangChain provides a way to remediate this problem with vector databases. Many vector databases are available; for this example, we use Milvus because of our familiarity with it.</p><p>To demonstrate LangChain’s ability to inject up-to-date knowledge into your LLM application and the ability to do a <a href="https://zilliz.com/glossary/semantic-search" rel="noopener noreferrer" target="_blank">semantic search</a>, we cover how to query a document. We use a transcript from the State of the Union address for this example. You can download the transcript <a href="https://github.com/hwchase17/langchain/blob/master/docs/modules/state_of_the_union.txt" rel="noopener noreferrer" target="_blank">here</a> and find the <a href="https://colab.research.google.com/drive/1KiPHx1wxfYylc3fqMP1hVsUB4yYtzQGn?usp=sharing" rel="noopener noreferrer" target="_blank">Colab notebook here</a>. To get the libraries you need for this part of the tutorial, run <code>pip install langchain openai milvus pymilvus python-dotenv tiktoken</code>.</p><p>As with the example of chaining questions together, we start by loading our OpenAI API key and the LLM. Then, we spin up a vector database using <a href="https://milvus.io/docs/milvus_lite.md" rel="noopener noreferrer" target="_blank">Milvus Lite</a>, which allows us to run Milvus directly in our notebook.</p><pre class="ql-syntax" spellcheck="false">import os
 from dotenv import load_dotenv
 import openai
 load_dotenv()
@@ -99,11 +53,7 @@ from langchain.llms import OpenAI
 davinci = OpenAI(model_name=&#34;text-davinci-003&#34;)
 from milvus import default_server
 default_server.start()
-</code></pre>
-<p>Now we are ready to get into the specifics of querying a document. There are a lot of imports from LangChain this time. We need the Open AI Embeddings, the character text splitter, the Milvus integration, the text loader, and the retrieval Q/A chain.</p>
-<p>The first thing we do is set up a loader and load the text file. In this case, I have it stored in the same folder as this notebook under <code>state_of_the_union.txt.</code> Next, we split up the text and store it as a set of docs in LangChain. Then, we can set up our vector database. In this case, we create a Milvus collection from the documents we just ingested via the <code>TextLoader</code> and <code>CharacterTextSplitter</code>. We also pass in the OpenAI embeddings as the set of text vector embeddings.</p>
-<p>With our vector database loaded, we can use the <code>RetrievalQA</code> object to query the documents via a vector database. We use the chain type <code>stuff &#34; and pass in OpenAI as our LLM and the Milvus vector database as a retriever. Then, we can create a query, such as “What did the president say about Ketanji Brown Jackson?” and</code>run` the query. Finally, we should shut down our vector database for a clean close.</p>
-<pre><code>from langchain.embeddings.openai import OpenAIEmbeddings
+</pre><p>Now we are ready to get into the specifics of querying a document. There are a lot of imports from LangChain this time. We need the Open AI Embeddings, the character text splitter, the Milvus integration, the text loader, and the retrieval Q/A chain.</p><p>The first thing we do is set up a loader and load the text file. In this case, I have it stored in the same folder as this notebook under <code>state_of_the_union.txt.</code> Next, we split up the text and store it as a set of docs in LangChain. Then, we can set up our vector database. In this case, we create a Milvus collection from the documents we just ingested via the <code>TextLoader</code> and <code>CharacterTextSplitter</code>. We also pass in the OpenAI embeddings as the set of text vector embeddings.</p><p>With our vector database loaded, we can use the <code>RetrievalQA</code> object to query the documents via a vector database. We use the chain type <code>stuff &#34; and pass in OpenAI as our LLM and the Milvus vector database as a retriever. Then, we can create a query, such as “What did the president say about Ketanji Brown Jackson?” and</code>run` the query. Finally, we should shut down our vector database for a clean close.</p><pre class="ql-syntax" spellcheck="false">from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Milvus
 from langchain.document_loaders import TextLoader
@@ -124,28 +74,12 @@ qa = RetrievalQA.from_chain_type(llm=OpenAI(), chain_type=&#34;stuff&#34;, retri
 query = &#34;What did the president say about Ketanji Brown Jackson?&#34;
 qa.run(query)
 default_server.stop()
-</code></pre>
-<p>The image below shows what an expected response could look like. We should get a response like “The president said that Ketanji Brown Jackson is one of the nation&#39;s top legal minds, a former top litigator in private practice, a former federal public defender,  …”</p>
-<p>
-      <span>
-        <a href="https://assets.zilliz.com/Langchain_blog_results2_v2_ec22fde211.png"><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/3b8acf90.png"/></a>
-        <span>Query results</span>
-      </span>
-    </p>
-<h2>Summary of an Introduction to LangChain<button>
-        <svg height="20" width="16">
-          <path></path>
-        </svg></button></h2><p>In this article, we covered the basics of how to use LangChain. We learned that LangChain is a framework for building LLM applications that relies on two key factors. The first factor is using outside data, such as a text document. The second factor is using other tools, such as a vector database.</p>
-<p>We covered two examples. First, we looked at one of the classic examples of LangChain - how to chain together multiple questions. Then, we looked at a practical way to use LangChain to inject domain knowledge by combining it with a vector database like Milvus to query documents.</p>
-</div></div></div></div></main></div>
-      <hr/>
-      <!-- clipping information -->
-      </main>
+</pre><p>The image below shows what an expected response could look like. We should get a response like “The president said that Ketanji Brown Jackson is one of the nation&#39;s top legal minds, a former top litigator in private practice, a former federal public defender, …”</p><p><a href="https://assets.zilliz.com/Langchain_blog_results2_v2_ec22fde211.png" rel="noopener noreferrer" target="_blank"><img src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/3b8acf90.png"/></a>Query results</p><h2>Summary of an Introduction to LangChain</h2><p>In this article, we covered the basics of how to use LangChain. We learned that LangChain is a framework for building LLM applications that relies on two key factors. The first factor is using outside data, such as a text document. The second factor is using other tools, such as a vector database.</p><p>We covered two examples. First, we looked at one of the classic examples of LangChain - how to chain together multiple questions. Then, we looked at a practical way to use LangChain to inject domain knowledge by combining it with a vector database like Milvus to query documents.</p></main>
 <footer>
         <label>原网址: <a href="https://zilliz.com/blog/langchain-ultimate-guide-getting-started?utm_source=twitter&amp;utm_medium=social&amp;utm_term=zilliz" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
         <label>创建时间: 2023-05-23 13:53:53</label><br/>
         <br/>
         
       </footer>
-</body>
-</html>
+
+</body></html>
