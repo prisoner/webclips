@@ -1,140 +1,20 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<!DOCTYPE html><html lang="zh-CN"><head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Interface Guidelines</title>
-    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
-    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Web Interface Guideline</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css"/>
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css"/>
 </head>
 <body>
 <header>
-  <h1>Web Interface Guidelines</h1>
+  <h1>Web Interface Guideline</h1>
 </header>
-<main class="typo"><div><div><div><main><turbo-frame><div><div><div><div><div><readme-toc><div><div><article>
-<p>This document outlines a non-exhaustive list of details that make a good (web) interface. It is a living document, periodically updated based on learnings. Some of these may be subjective, but most apply to all websites.</p>
-<p>The <a href="https://www.w3.org/TR/wai-aria-1.1/">WAI-ARIA</a> spec is deliberately not duplicated in this document. However, some accessibility guidelines may be pointed out. Contributions are welcome. Edit <a href="https://github.com/raunofreiberg/interfaces/blob/main/README.md">this file</a> and submit a pull request.</p>
-<h2><a href="#interactivity"></a>Interactivity</h2>
-<ul>
-<li>Clicking the input label should focus the input field</li>
-<li>Inputs should be wrapped with a <code>&lt;form&gt;</code> to submit by pressing Enter</li>
-<li>Inputs should have an appropriate <code>type</code> like <code>password</code>, <code>email</code>, etc</li>
-<li>Inputs should disable <code>spellcheck</code> and <code>autocomplete</code> attributes most of the time</li>
-<li>Inputs should leverage HTML form validation by using the <code>required</code> attribute when appropriate</li>
-<li>Input prefix and suffix decorations, such as icons, should be absolutely positioned on top of the text input with padding, not next to it, and trigger focus on the input</li>
-<li>Toggles should immediately take effect, not require confirmation</li>
-<li>Buttons should be disabled after submission to avoid duplicate network requests</li>
-<li>Interactive elements should disable <code>user-select</code> for inner content</li>
-<li>Decorative elements (glows, gradients) should disable <code>pointer-events</code> to not hijack events</li>
-</ul>
-<h2><a href="#typography"></a>Typography</h2>
-<ul>
-<li>Fonts should have <code>-webkit-font-smoothing: antialiased</code> applied for better legibility</li>
-<li>Fonts should have <code>text-rendering: optimizeLegibility</code> applied for better legibility</li>
-<li>Fonts should be subset based on the content, alphabet or relevant language(s)</li>
-<li>Font weight should not change on hover or selected state to prevent layout shift</li>
-<li>Font weights below 400 should not be used</li>
-<li>Medium sized headings generally look best with a font weight between 500-600</li>
-<li>Adjust values fluidly by using CSS <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/clamp"><code>clamp()</code></a>, e.g. <code>clamp(48px, 5vw, 72px)</code> for the <code>font-size</code> of a heading</li>
-</ul>
-<h2><a href="#motion"></a>Motion</h2>
-<ul>
-<li>Switching themes should not trigger transitions and animations on elements <sup><a href="#user-content-fn-1-bc66166683460b88df034eda3e96cd28">1</a></sup></li>
-<li>Animation duration should not be more than 200ms for interactions to feel immediate</li>
-<li>Animation values should be proportional to the trigger size:
-<ul>
-<li>Don&#39;t animate dialog scale in from 0 → 1, fade opacity and scale from ~0.8</li>
-<li>Don&#39;t scale buttons on press from 1 → 0.8, but ~0.96, ~0.9, or so</li>
-</ul>
-</li>
-<li>Actions that are frequent and low in novelty should avoid extraneous animations: <sup><a href="#user-content-fn-2-bc66166683460b88df034eda3e96cd28">2</a></sup>
-<ul>
-<li>Opening a right click menu</li>
-<li>Deleting or adding items from a list</li>
-<li>Hovering trivial buttons</li>
-</ul>
-</li>
-<li>Looping animations should pause when not visible on the screen to offload CPU and GPU usage</li>
-</ul>
-<h2><a href="#touch"></a>Touch</h2>
-<ul>
-<li>Hover states should not be visible on touch press, use <code>@media (hover: hover)</code> <sup><a href="#user-content-fn-3-bc66166683460b88df034eda3e96cd28">3</a></sup></li>
-<li>Font size for inputs should not be smaller than 16px to prevent iOS zooming on focus</li>
-<li>Inputs should not auto focus on touch devices as it will open the keyboard and cover the screen</li>
-<li>Apply <code>muted</code> and <code>playsinline</code> to <code>&lt;video /&gt;</code> tags to auto play on iOS</li>
-<li>Disable <code>touch-action</code> for custom components that implement pan and zoom gestures to prevent interference from native behavior like zooming and scrolling</li>
-</ul>
-<h2><a href="#optimizations"></a>Optimizations</h2>
-<ul>
-<li>Large <code>blur()</code> values for <code>filter</code> and <code>backdrop-filter</code> may be slow</li>
-<li>Scaling and blurring filled rectangles will cause banding, use radial gradients instead</li>
-<li>Sparingly enable GPU rendering with <code>transform: translateZ(0)</code> for unperformant animations</li>
-<li>Toggle <code>will-change</code> on unperformant scroll animations for the duration of the animation <sup><a href="#user-content-fn-4-bc66166683460b88df034eda3e96cd28">4</a></sup></li>
-<li>Auto-playing too many videos on iOS will choke the device, pause or even unmount off-screen videos</li>
-<li>Bypass React&#39;s render lifecycle with refs for real-time values that can commit to the DOM directly <sup><a href="#user-content-fn-5-bc66166683460b88df034eda3e96cd28">5</a></sup></li>
-<li><a href="https://github.com/GoogleChromeLabs/react-adaptive-hooks">Detect and adapt</a> to the hardware and network capabilities of the user&#39;s device</li>
-</ul>
-<h2><a href="#accessibility"></a>Accessibility</h2>
-<ul>
-<li>Disabled buttons should not have tooltips, they are not accessible <sup><a href="#user-content-fn-6-bc66166683460b88df034eda3e96cd28">6</a></sup></li>
-<li>Box shadow should be used for focus rings, not outline which won’t respect radius <sup><a href="#user-content-fn-7-bc66166683460b88df034eda3e96cd28">7</a></sup></li>
-<li>Focusable elements in a sequential list should be navigable with <kbd>↑</kbd> <kbd>↓</kbd></li>
-<li>Focusable elements in a sequential list should be deletable with <kbd>⌘</kbd> <kbd>Backspace</kbd></li>
-<li>To open immediately on press, dropdown menus should trigger on <code>mousedown</code>, not <code>click</code></li>
-<li>Use a svg favicon with a style tag that adheres to the system theme based on <code>prefers-color-scheme</code></li>
-<li>Icon only interactive elements should define an explicit <code>aria-label</code></li>
-<li>Tooltips triggered by hover should not contain interactive content</li>
-<li>Images should always be rendered with <code>&lt;img&gt;</code> for screen readers and ease of copying from the right click menu</li>
-<li>Illustrations built with HTML should have an explicit <code>aria-label</code> instead of announcing the raw DOM tree to people using screen readers</li>
-<li>Gradient text should unset the gradient on <code>::selection</code> state</li>
-</ul>
-<h2><a href="#design"></a>Design</h2>
-<ul>
-<li>Optimistically update data locally and roll back on server error with feedback</li>
-<li>Authentication redirects should happen on the server before the client loads to avoid janky URL changes</li>
-<li>Style the document selection state with <code>::selection</code></li>
-<li>Display feedback relative to its trigger:
-<ul>
-<li>Show a temporary inline checkmark on a successful copy, not a notification</li>
-<li>Highlight the relevant input(s) on form error(s)</li>
-</ul>
-</li>
-<li>Empty states should prompt to create a new item, with optional templates</li>
-</ul>
-<section><h2>Footnotes</h2>
-<ol>
-<li>
-<p>Switching between dark mode or light mode will trigger transitions on elements that are meant for explicit interactions like hover. We can <a href="https://paco.me/writing/disable-theme-transitions">disable transitions temporarily</a> to prevent this. For Next.js, use <a href="https://github.com/pacocoursey/next-themes">next-themes</a> which prevents transitions out of the box. <a href="#user-content-fnref-1-bc66166683460b88df034eda3e96cd28"><g-emoji><img height="20" width="20" src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9081cbb7.png"/></g-emoji></a></p>
-</li>
-<li>
-<p>This is a matter of taste but some interactions just feel better with no motion. For example, the native macOS right click menu only animates out, not in, due to the frequent usage of it. <a href="#user-content-fnref-2-bc66166683460b88df034eda3e96cd28"><g-emoji><img height="20" width="20" src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9081cbb7.png"/></g-emoji></a></p>
-</li>
-<li>
-<p>Most touch devices on press will temporarily flash the hover state, unless explicitly only defined for pointer devices with <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover"><code>@media (hover: hover)</code></a>. <a href="#user-content-fnref-3-bc66166683460b88df034eda3e96cd28"><g-emoji><img height="20" width="20" src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9081cbb7.png"/></g-emoji></a></p>
-</li>
-<li>
-<p>Use <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/will-change"><code>will-change</code></a> as a last resort to improve performance. Pre-emptively throwing it on elements for better performance may have the opposite effect. <a href="#user-content-fnref-4-bc66166683460b88df034eda3e96cd28"><g-emoji><img height="20" width="20" src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9081cbb7.png"/></g-emoji></a></p>
-</li>
-<li>
-<p>This might be controversial but sometimes it can be beneficial to manipulate the DOM directly. For example, instead of relying on React re-rendering on every wheel event, we can track the delta in a ref and update relevant elements directly in the callback. <a href="#user-content-fnref-5-bc66166683460b88df034eda3e96cd28"><g-emoji><img height="20" width="20" src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9081cbb7.png"/></g-emoji></a></p>
-</li>
-<li>
-<p>Disabled buttons do not appear in tab order in the DOM so the tooltip will never be announced for keyboard users and they won&#39;t know why the button is disabled. <a href="#user-content-fnref-6-bc66166683460b88df034eda3e96cd28"><g-emoji><img height="20" width="20" src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9081cbb7.png"/></g-emoji></a></p>
-</li>
-<li>
-<p>As of 2023, Safari will not take the border radius of an element into account when defining custom outline styles. <a href="https://developer.apple.com/documentation/safari-release-notes/safari-16_4-release-notes">Safari 16.4</a> has added support for <code>outline</code> following the curve of border radius. However, keep in mind that not everyone updates their OS immediately. <a href="#user-content-fnref-7-bc66166683460b88df034eda3e96cd28"><g-emoji><img height="20" width="20" src="https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/9081cbb7.png"/></g-emoji></a></p>
-</li>
-</ol>
-</section>
-</article></div></div></readme-toc></div></div></div></div></div></turbo-frame></main></div></div></div>
-      <hr/>
-      <!-- clipping information -->
-      </main>
+<main class="typo"><p>This document outlines a non-exhaustive list of details that make a good (web) interface. It is a living document, periodically updated based on learnings. Some of these may be subjective, but most apply to all websites.</p><p>The <a href="https://www.w3.org/TR/wai-aria-1.1/" rel="noopener noreferrer" target="_blank">WAI-ARIA</a> spec is deliberately not duplicated in this document. However, some accessibility guidelines may be pointed out. Contributions are welcome. Edit <a href="https://github.com/raunofreiberg/interfaces/blob/main/README.md" rel="noopener noreferrer" target="_blank">this file</a> and submit a pull request.</p><h2>Interactivity</h2><ul><li>Clicking the input label should focus the input field</li><li>Inputs should be wrapped with a <code>&lt;form&gt;</code> to submit by pressing Enter</li><li>Inputs should have an appropriate <code>type</code> like <code>password</code>, <code>email</code>, etc</li><li>Inputs should disable <code>spellcheck</code> and <code>autocomplete</code> attributes most of the time</li><li>Inputs should leverage HTML form validation by using the <code>required</code> attribute when appropriate</li><li>Input prefix and suffix decorations, such as icons, should be absolutely positioned on top of the text input with padding, not next to it, and trigger focus on the input</li><li>Toggles should immediately take effect, not require confirmation</li><li>Buttons should be disabled after submission to avoid duplicate network requests</li><li>Interactive elements should disable <code>user-select</code> for inner content</li><li>Decorative elements (glows, gradients) should disable <code>pointer-events</code> to not hijack events</li></ul><h2>Typography</h2><ul><li>Fonts should have <code>-webkit-font-smoothing: antialiased</code> applied for better legibility</li><li>Fonts should have <code>text-rendering: optimizeLegibility</code> applied for better legibility</li><li>Fonts should be subset based on the content, alphabet or relevant language(s)</li><li>Font weight should not change on hover or selected state to prevent layout shift</li><li>Font weights below 400 should not be used</li><li>Medium sized headings generally look best with a font weight between 500-600</li><li>Adjust values fluidly by using CSS <code><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/clamp" rel="noopener noreferrer" target="_blank">clamp()</a></code>, e.g. <code>clamp(48px, 5vw, 72px)</code> for the <code>font-size</code> of a heading</li></ul><h2>Motion</h2><ul><li>Switching themes should not trigger transitions and animations on elements <a href="#user-content-fn-1-bc66166683460b88df034eda3e96cd28" rel="noopener noreferrer" target="_blank"><sup>1</sup></a></li><li>Animation duration should not be more than 200ms for interactions to feel immediate</li><li>Animation values should be proportional to the trigger size:</li><li class="ql-indent-1">Don&#39;t animate dialog scale in from 0 → 1, fade opacity and scale from ~0.8</li><li class="ql-indent-1">Don&#39;t scale buttons on press from 1 → 0.8, but ~0.96, ~0.9, or so</li><li class="ql-indent-1">Actions that are frequent and low in novelty should avoid extraneous animations: <a href="#user-content-fn-2-bc66166683460b88df034eda3e96cd28" rel="noopener noreferrer" target="_blank"><sup>2</sup></a>Opening a right click menu</li><li class="ql-indent-1">Deleting or adding items from a list</li><li class="ql-indent-1">Hovering trivial buttons</li><li>Looping animations should pause when not visible on the screen to offload CPU and GPU usage</li></ul><h2>Touch</h2><ul><li>Hover states should not be visible on touch press, use <code>@media (hover: hover)</code> <a href="#user-content-fn-3-bc66166683460b88df034eda3e96cd28" rel="noopener noreferrer" target="_blank"><sup>3</sup></a></li><li>Font size for inputs should not be smaller than 16px to prevent iOS zooming on focus</li><li>Inputs should not auto focus on touch devices as it will open the keyboard and cover the screen</li><li>Apply <code>muted</code> and <code>playsinline</code> to <code>&lt;video /&gt;</code> tags to auto play on iOS</li><li>Disable <code>touch-action</code> for custom components that implement pan and zoom gestures to prevent interference from native behavior like zooming and scrolling</li></ul><h2>Optimizations</h2><ul><li>Large <code>blur()</code> values for <code>filter</code> and <code>backdrop-filter</code> may be slow</li><li>Scaling and blurring filled rectangles will cause banding, use radial gradients instead</li><li>Sparingly enable GPU rendering with <code>transform: translateZ(0)</code> for unperformant animations</li><li>Toggle <code>will-change</code> on unperformant scroll animations for the duration of the animation <a href="#user-content-fn-4-bc66166683460b88df034eda3e96cd28" rel="noopener noreferrer" target="_blank"><sup>4</sup></a></li><li>Auto-playing too many videos on iOS will choke the device, pause or even unmount off-screen videos</li><li>Bypass React&#39;s render lifecycle with refs for real-time values that can commit to the DOM directly <a href="#user-content-fn-5-bc66166683460b88df034eda3e96cd28" rel="noopener noreferrer" target="_blank"><sup>5</sup></a></li><li><a href="https://github.com/GoogleChromeLabs/react-adaptive-hooks" rel="noopener noreferrer" target="_blank">Detect and adapt</a> to the hardware and network capabilities of the user&#39;s device</li></ul><h2>Accessibility</h2><ul><li>Disabled buttons should not have tooltips, they are not accessible <a href="#user-content-fn-6-bc66166683460b88df034eda3e96cd28" rel="noopener noreferrer" target="_blank"><sup>6</sup></a></li><li>Box shadow should be used for focus rings, not outline which won’t respect radius <a href="#user-content-fn-7-bc66166683460b88df034eda3e96cd28" rel="noopener noreferrer" target="_blank"><sup>7</sup></a></li><li>Focusable elements in a sequential list should be navigable with ↑ ↓</li><li>Focusable elements in a sequential list should be deletable with ⌘ Backspace</li><li>To open immediately on press, dropdown menus should trigger on <code>mousedown</code>, not <code>click</code></li><li>Use a svg favicon with a style tag that adheres to the system theme based on <code>prefers-color-scheme</code></li><li>Icon only interactive elements should define an explicit <code>aria-label</code></li><li>Tooltips triggered by hover should not contain interactive content</li><li>Images should always be rendered with <code>&lt;img&gt;</code> for screen readers and ease of copying from the right click menu</li><li>Illustrations built with HTML should have an explicit <code>aria-label</code> instead of announcing the raw DOM tree to people using screen readers</li><li>Gradient text should unset the gradient on <code>::selection</code> state</li></ul><h2>Design</h2><ul><li>Optimistically update data locally and roll back on server error with feedback</li><li>Authentication redirects should happen on the server before the client loads to avoid janky URL changes</li><li>Style the document selection state with <code>::selection</code></li><li>Display feedback relative to its trigger:</li><li class="ql-indent-1">Show a temporary inline checkmark on a successful copy, not a notification</li><li class="ql-indent-1">Highlight the relevant input(s) on form error(s)</li><li>Empty states should prompt to create a new item, with optional templates</li></ul><h2>Footnotes</h2><ol><li>Switching between dark mode or light mode will trigger transitions on elements that are meant for explicit interactions like hover. We can <a href="https://paco.me/writing/disable-theme-transitions" rel="noopener noreferrer" target="_blank">disable transitions temporarily</a> to prevent this. For Next.js, use <a href="https://github.com/pacocoursey/next-themes" rel="noopener noreferrer" target="_blank">next-themes</a> which prevents transitions out of the box. </li><li>This is a matter of taste but some interactions just feel better with no motion. For example, the native macOS right click menu only animates out, not in, due to the frequent usage of it. </li><li>Most touch devices on press will temporarily flash the hover state, unless explicitly only defined for pointer devices with <code><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover" rel="noopener noreferrer" target="_blank">@media (hover: hover)</a></code>. </li><li>Use <code><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/will-change" rel="noopener noreferrer" target="_blank">will-change</a></code> as a last resort to improve performance. Pre-emptively throwing it on elements for better performance may have the opposite effect. </li><li>This might be controversial but sometimes it can be beneficial to manipulate the DOM directly. For example, instead of relying on React re-rendering on every wheel event, we can track the delta in a ref and update relevant elements directly in the callback. </li><li>Disabled buttons do not appear in tab order in the DOM so the tooltip will never be announced for keyboard users and they won&#39;t know why the button is disabled. </li><li>As of 2023, Safari will not take the border radius of an element into account when defining custom outline styles. <a href="https://developer.apple.com/documentation/safari-release-notes/safari-16_4-release-notes" rel="noopener noreferrer" target="_blank">Safari 16.4</a> has added support for <code>outline</code> following the curve of border radius. However, keep in mind that not everyone updates their OS immediately. </li></ol></main>
 <footer>
         <label>原网址: <a href="https://github.com/raunofreiberg/interfaces" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
         <label>创建时间: 2023-06-02 14:21:55</label><br/>
         <br/>
         
       </footer>
-</body>
-</html>
+
+</body></html>
