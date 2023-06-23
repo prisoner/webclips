@@ -1,5 +1,11 @@
 [
   {
+    "ID": "4b5c851fd4d2a28b381afe5c7b0592c24547c24d",
+    "Title": "ChatGPT的工作原理-这篇文章说清楚了",
+    "Link": "https://mp.weixin.qq.com/s/gMYr8KwC_S3G4tKKMmjwxw",
+    "Time": "2023-06-23T10:00:19.343982745+08:00"
+  },
+  {
     "ID": "fe9428020d8416001218a026b70a2a8598eaaf78",
     "Title": "贝叶斯主义者",
     "Link": "https://36kr.com/p/2309494763334915",
@@ -13,7 +19,7 @@
   },
   {
     "ID": "cf209d815abe3ff4e24d9c1b3cc7e8989a5728d5",
-    "Title": "Visual-Information-Theory",
+    "Title": "Visual Information Theory",
     "Link": "https://colah.github.io/posts/2015-09-Visual-Information/",
     "Time": "2023-06-16T08:40:25.329746389+08:00"
   },
@@ -67,7 +73,7 @@
   },
   {
     "ID": "25cc532725e3584d0435bc5b83f3eab4815b6bbd",
-    "Title": "通过销售-api-赚取被动收入-无需启动成本",
+    "Title": "通过销售API赚取被动收入",
     "Link": "https://www.v2ex.com/t/945706#reply1",
     "Time": "2023-06-05T08:25:50.746902355+08:00"
   },
@@ -121,7 +127,7 @@
   },
   {
     "ID": "8a02cc5af160879bf43a9865b06182f4b4198697",
-    "Title": "架构设计之Single-source-of-truth",
+    "Title": "架构设计之 Single Source Of Truth",
     "Link": "https://blog.zhangwen.site/single-source-of-truth/",
     "Time": "2023-05-24T11:48:48.273460758+08:00"
   },
@@ -181,7 +187,7 @@
   },
   {
     "ID": "c85096754e10ec79e6cc4ed4c30a429b02a399e2",
-    "Title": "由浅入深了解-Base64-编码解码",
+    "Title": "由浅入深了解 Base64 编码解码",
     "Link": "https://juejin.cn/post/7234060695255154749",
     "Time": "2023-05-19T10:13:51.267163259+08:00"
   },
