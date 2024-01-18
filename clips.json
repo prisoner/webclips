@@ -1,5 +1,11 @@
 [
   {
+    "ID": "537273ccb30b7a50c18c3f6e6a7a93c04c6df4c3",
+    "Title": "图解CSS-CSS-的值和单位",
+    "Link": "https://juejin.cn/post/7324680413926834215",
+    "Time": "2024-01-18T09:37:55.248943511+08:00"
+  },
+  {
     "ID": "e6c08fb95b986a2e2bd3fbb779fccd1e1a928240",
     "Title": "图解CSS-CSS盒模型",
     "Link": "https://juejin.cn/post/7323771067877163058",
@@ -7,13 +13,13 @@
   },
   {
     "ID": "a310d3f7beb9667d4308642912ae2fd0c482c994",
-    "Title": "Embeddings-What-they-are-and-why-they-matter",
+    "Title": "Embeddings: What they are and why they matter",
     "Link": "https://simonwillison.net/2023/Oct/23/embeddings/",
     "Time": "2024-01-12T11:25:25.296390472+08:00"
   },
   {
     "ID": "40fe8ce81ae18711d720865aa70a5a363695eace",
-    "Title": "在-Go-语言-14-年的发展历史中-我们做得对的和不对的-译",
+    "Title": "在 Go 语言14年的发展历史中: 我们做得对的和不对的-译",
     "Link": "https://baoyu.io/translations/software-engineering/what-we-got-right-what-we-got-wrong",
     "Time": "2024-01-10T16:07:47.089860511+08:00"
   },
