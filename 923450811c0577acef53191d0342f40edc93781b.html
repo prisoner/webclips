@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript-中的协变与逆变</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>TypeScript-中的协变与逆变</h1>
+</header>
+<main class="typo"><div><p>类型变异（Type Variance）广泛存在于强类型的编程语言中，对于没有接触过类似 Java 语言的小伙伴来说，型变似乎有点难以理解。尤其是学习 TypeScript 时，可能会被它的类型系统绕得云里雾里，这篇文章我们就来对比 TypeScript 的类型层级，以及隐藏在幕后的理论——协变与逆变。<h2>TypeScript 中的类型层级</h2><p>类型的层级关系是静态类型语言的核心概念。首先，我们要弄清楚<code>子类型</code>和<code>超类型</code>。<p><img src=https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/a66f3c98.webp><p>如上图所示，<strong>给定两个类型 A 和 B，假设 B 是 A 的子类型，那么在需要 A 的地方都可以放心的使用 B。</strong><p>很简单，有点像数学中集合的概念，即 B 是 A 的子集或 B 包含于 A。<p>如此，我们便可看出 TypeScript 各个类型之间的层级关系。比如：<ul><li>Array 是 Object 的子类型；<li>Tuple 是 Array 的子类型；<li>所有类型都是 any 的子类型；<li>never 是 所有类型的子类型；<li>如果 Brid 类扩展自 Animal 类，那么 Brid 是 Animal 的子类型；</ul><p>根据前面给出的子类型定义，我们便可得出：<ul><li>需要 Object 的地方都可以使用 Array；<li>需要 Array 的地方都可以使用 Tuple；<li>需要 any 的地方都可以使用 Object；<li>never 可在任何地方使用；<li>需要 Animal 的地方都可以使用 Bird；</ul><p>同理，<code>超类型</code>正好与子类型相反。在上图中，A 就是 B 的超类型。<h2>型变</h2><p>对于简单的数据类型，还是很容易判断它们的层级的，比如 <code>number</code> 包含在联合类型 <code>number | string</code> 中，那么 <code>number</code> 肯定是它的子类型。<p>但是对于较为复杂的类型（比如泛型），可能就不太好分析了。比如：<ul><li>什么情况下 <code>Array&lt;A&gt;</code> 是 <code>Array&lt;B&gt;</code> 的子类型？<li>什么情况下 <code>对象 A</code> 是 <code>对象 B</code> 的子类型？<li>什么情况下函数 <code>(a: A) =&gt; B</code> 是 <code>(c: C) =&gt; D</code> 的子类型？</ul><p>会发现，如果一个类型中包含其他类型，使用上述规则就很难判断谁是子类型，而且不同的语言在判断上也不尽相同。<p>为了便于理解 TypeScript 是怎么做的，我们先做如下规定：<ul><li>A ≦ B，指 “A 类型是 B 类型的子类型，或者为同种类型”<li>A ≧ B，指 “A 类型是 B 类型的超类型，或者为同种类型”</ul><h3>结构（对象和类）的型变</h3><p>我们以对象为例，去描述两种类型的用户，一个是已注册用户，它包含 <code>id</code> 和 <code>name</code>，另一个是游客，只有 <code>name</code>：<pre><code class="hljs language-ts code-block-extension-codeShowNum">// 已注册的用户
+type Account = {
+  id: number;
+  name: string;
+}
+
+// 游客
+type Visitor = {
+  name: string;
+}
+</code></pre><p>现在实现一个删除用户 id 的代码：<pre><code class="hljs language-ts code-block-extension-codeShowNum">function deletaAccount(user: { id?: number; name: string }) {
+  delete user.id;
+}
+
+const account: Account = {
+  id: 12345,
+  name: &#34;Jerry&#34;
+};
+
+deletaAccount(account);
+</code></pre><p><code>deletaAccount()</code> 方法接收一个对象，类型为 <code>{ id?: number; name: string }</code>，其中 <code>id</code> 是可选的，而传入的实际用户的 <code>id</code> 是确定的 <code>number</code>。所以，<code>id</code> 为 <code>number</code> 的类型是 <code>id</code> 为 <code>number | undefined</code> 的子类型。<p>因此，<code>Account</code> 作为一个整体是 <code>{ id?: number; name: string }</code> 的子类型，所以 TypeScript 不会报错。<p>不出意外的话，要出意外了。<p>这里有一个安全问题，我们使用 <code>deletaAccount()</code> 删除了 <code>id</code>，但是 TypeScript 并不知道用户的 <code>id</code> 已被删除，所以 TypeScript 仍然认为 <code>account.id</code> 是 <code>number</code> 类型。<p><img src=https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/05de3f1d.webp><p>可见，在预期使用超类型的地方，传入了子类型并不安全。但 TypeScript 并没有阻止我们，而是放宽了要求。<p>那么反过来呢？能不能在预期使用子类型的地方，传入超类型呢？<p>我们接着添加一个表示旧用户的类型，旧用户的 <code>id</code> 还能是 <code>string</code> 或没有：<pre><code class="hljs language-ts code-block-extension-codeShowNum">type LegacyUser = {
+  id?: number | string;
+  name: string;
+}
+
+const legacyUser = {
+  id: &#39;hahaha&#39;,
+  name: &#39;Tom&#39;
+}
+</code></pre><p>同样做删除操作，此时 TypeScript 报错了。<p><img src=https://note-2019-images.oss-cn-hangzhou.aliyuncs.com/589faa77.webp><p>我们得到的答案是不能。不能在预期使用子类型的地方传入超类型。<p>TypeScript 的行为是这样的：对预期的结构，可以使用 ≦ 预期类型的子类型结构，但不能使用 ≧ 预期类型的超类型结构。<p><strong>在类型上，我们就说 TypeScript 对结构（对象和类）的属性进行了<code>协变</code>（covariant）。</strong><p>即如果想保证 A 对象可以赋值给 B 对象，那么 A 对象的每个属性都必须 ≦ B 对象的对应属性。<p>其实，<code>协变</code> 只是型变的四种方式之一：<ol><li>不变（Invariant）：只能是 T；<li>协变（Covariant）：可以是 ≦ T；<li>逆变（Contravariance）：可以是 ≧ T；<li>双变（Bivariant ）：可以是 ≦ T 或 ≧ T；</ol><p>在 TypeScript 中，每个复杂类型的成员都会进行协变，包括对象、类、数组和函数的返回类型。<p>不过有个例外，<strong>函数的参数类型进行逆变</strong>。<h3>函数的型变</h3><p>先看函数本身，判断函数 A 是否 ≦ 函数 B，需要满足以下条件：<ol><li>函数 A 的 this 类型未指定，或者 ≧ 函数 B 的 this 类型；<li>函数 A 的各个参数的类型 ≧ 函数 B 的相应参数；<li>函数 A 的返回类型 ≦ 函数 B 的返回类型；</ol><p>细品几遍，你可能有疑问：<p>如果函数 A 是 函数 B 的子类型，那么函数 A 的 this 类型 和参数类型必定 ≧ 函数 B 的 this 类型 和参数类型。<p>但是函数 A 的返回类型却必定 ≦ 函数 B 的返回类型。<p>为什么两者的型变方向恰恰相反，而不都是 ≦ 哩？<h4>函数返回类型的协变</h4><p>为了回答这个问题，我们先定义三个 Class 类型（满足 A ≦ B ≦ C 的其他类型也可以）：<pre><code class="hljs language-ts code-block-extension-codeShowNum">class Animal {};
+
+class Cat extends Animal {
+  eat() {}
+};
+
+class Tom extends Cat {
+  catchJerry() {}
+}
+</code></pre><p>其中，<code>Tom</code> 是 <code>Cat</code> 的子类型，<code>Cat</code> 是 <code>Animal</code> 的子类型。即 <code>Tom</code> ≦ <code>Cat</code> ≦ <code>Animal</code>。<p>定义一个参数为 <code>eat</code> 的函数，该函数预期想要一个 <code>Cat</code> 类型的参数：<pre><code class="hljs language-ts code-block-extension-codeShowNum">function eat(cat: Cat): Cat {
+  cat.eat();
+  return cat;
+}
+</code></pre><p>看看 TypeScript 在校验类型时，允许我们把什么传给 <code>eat()</code> ？<pre><code class="hljs language-ts code-block-extension-codeShowNum">eat(new Animal());
+// 类型“Animal”的参数不能赋给类型“Cat”的参数。
+//  类型 &#34;Animal&#34; 中缺少属性 &#34;eat&#34;，但类型 &#34;Cat&#34; 中需要该属性。
+
+eat(new Cat());
+eat(new Tom());
+</code></pre><p>可以传入一个 <code>Cat</code> 实例，或者一个 <code>Tom</code> 实例（因为 <code>Tom</code> 是 <code>Cat</code> 的子类型），目前都能按预期正常工作。<p>可能有人会纳闷，不是说函数参数是逆变吗？为什么 <code>Animal</code> 不能传进去呢？请注意，上述结论是用来判断两个函数之间是否有层级关系的，而给函数传入参数则是在进行类型的校验，传入的类型必须为预期类型或其子类型，这里不要搞混了。<p>我们接着往下，再定义一个函数，现在该函数的参数变成了一个回调函数：<pre><code class="hljs language-ts code-block-extension-codeShowNum">function clone(f: (c: Cat) =&gt; Cat): void {
+  // ...
+}
+</code></pre><p><code>clone()</code> 的参数是一个函数，该回调函数的参数是一个 <code>Cat</code>，返回值也是一个 <code>Cat</code>。什么类型的函数可以作为 <code>f</code> 传入呢？<p>我们控制变量，先测试返回不同的类型，看看有什么结果。<ol><li>传入一个接收 <code>Cat</code> 并返回 <code>Cat</code> 的函数</ol><pre><code class="hljs language-ts code-block-extension-codeShowNum">function catToCat(cat: Cat): Cat {
+  return cat;
+}
+
+clone(catToCat); // OK
+</code></pre><ol><li>传入一个接收 <code>Cat</code> 并返回 <code>Tom</code> 的函数</ol><pre><code class="hljs language-ts code-block-extension-codeShowNum">function catToTom(cat: Cat): Tom {
+  // 这里的报错先无视
+  return cat;
+}
+
+clone(catToTom); // OK
+</code></pre><ol><li>传入一个接收 <code>Cat</code> 并返回 <code>Animal</code> 的函数</ol><pre><code class="hljs language-ts code-block-extension-codeShowNum">function catToAnimal(cat: Cat): Animal {
+  return cat;
+}
+
+clone(catToAnimal);
+// 类型“(cat: Cat) =&gt; Animal”的参数不能赋给类型“(c: Cat) =&gt; Cat”的参数。
+//  类型 &#34;Animal&#34; 中缺少属性 &#34;eat&#34;，但类型 &#34;Cat&#34; 中需要该属性。
+</code></pre><p>第三个报错了，TypeScript 发现返回的 <code>Animal</code> 缺少 <code>Cat</code> 中的某些属性，这可能会导致程序出现错误。因此在编译时，TypeScript 会确保传入的函数至少返回一个 <code>Cat</code>。<p><code>clone()</code> 预期一个 <code>catToCat()</code> 类型的回调函数，<code>catToTom()</code> 可以，<code>catToAnimal()</code> 就会报错，显然这三个函数类型层级关系是：<code>catToTom()</code> ≦ <code>catToCat()</code> ≦ <code>catToAnimal()</code>。<p>这也应证了我们的结论：函数返回类型是协变的，即一个函数的返回值类型必须 ≦ 另一个函数的返回值类型。<h4>函数参数类型的逆变</h4><p>好，现在来看看回调函数的参数位置。<ol><li>传入一个接收 <code>Animal</code> 并返回 <code>Cat</code> 的函数</ol><pre><code class="hljs language-ts code-block-extension-codeShowNum">function animalToCat(cat: Animal): Cat {
+  return cat;
+}
+
+clone(catToCat); // OK
+</code></pre><ol><li>传入一个接收 <code>Tom</code> 并返回 <code>Cat</code> 的函数</ol><pre><code class="hljs language-ts code-block-extension-codeShowNum">function tomToCat(tom: Tom): Cat {
+  return tom;
+}
+
+clone(tomToCat);
+// 类型“(tom: Tom) =&gt; Cat”的参数不能赋给类型“(c: Cat) =&gt; Cat”的参数。
+//   参数“tom”和“c” 的类型不兼容。
+//     不能将类型“Cat”分配给类型“Tom”。
+</code></pre><p><code>animalToCat()</code> 的参数类型 <code>Animal</code> 是 <code>Cat</code> 的超类型，符合逆变的特征，所以 <code>animalToCat()</code> 是 <code>catToCat()</code> 的子类型，类型校验通过。<p><code>tomToCat()</code> 的参数类型 <code>Tom</code> 是 <code>Cat</code> 的子类型，并不符合逆变的特征，所以 <code>tomToCat()</code> 不是 <code>catToCat()</code> 的子类型，类型校验不通过。<p>这也很好理解，因为 <code>Tom</code> 有自己独有的技能 <code>.catchJerry()</code>，但不是所有的 <code>Cat</code> 都会抓杰瑞，如果这都不报错，那报错的就是程序了。<p>这表明，<strong>函数不对参数和 this 的类型做型变</strong> 。也就是说，一个函数是另一个函数的子类型，必须保证该函数的参数和 this 的类型 ≧ 另一个函数相应参数的类型。<h4>tsconfig 中的 strictFunctionTypes</h4><p>其实，考虑历史遗留问题，<strong>TypeScript 中的函数默认会对参数和 this 的检查采用双变</strong>，即逆变与协变都被认为是可接受的。如果想像上述示例中那样报错，得手动在 <code>tsconfig.json</code> 中启用 <code>{&#34;strictFunctionTypes&#34;: true}</code> 标识。<p>当然，<code>strict</code> 模式包含 <code>strictFunctionTypes</code>，如果已经设置了 <code>{&#34;strict&#34;: true}</code>，那就不用再启用 <code>strictFunctionTypes</code> 标识了。<h2>条件类型中的类型推断</h2><p>以 <a href="https://link.juejin.cn/?target=https%3A%2F%2Fts.nodejs.cn%2Fdocs%2Fhandbook%2F2%2Fconditional-types.html%23%25E5%259C%25A8%25E6%259D%25A1%25E4%25BB%25B6%25E7%25B1%25BB%25E5%259E%258B%25E4%25B8%25AD%25E6%258E%25A8%25E6%2596%25AD">infer</a> 关键字为例，我们看下型变在泛型的类型推断中的应用。<blockquote><p>现在在有条件类型的 extends 子语句中，允许出现 infer 声明，它会引入一个待推断的类型变量。
+这个推断的类型变量可以在有条件类型的 true 分支中被引用。 允许出现多个同类型变量的 infer 。</blockquote><ol><li>在协变位置上，同一个类型变量的多个候选类型会被推断为联合类型</ol><pre><code class="hljs language-ts code-block-extension-codeShowNum">  type Foo = T extends { a: infer U, b: infer U } ? U : never;
+
+  type T10 = Foo&lt;{ a: string, b: string }&gt;;  // string
+  type T11 = Foo&lt;{ a: string, b: number }&gt;;  // string | number
+</code></pre><p><code>T11</code> 中结果可以是 <code>string</code> 也可以是 <code>number</code>，所以推断为 <code>string | number</code>。<ol><li>在逆变位置上，同一个类型变量的多个候选类型会被推断为交叉类型</ol><pre><code class="hljs language-ts code-block-extension-codeShowNum">type Bar = T extends { a: (x: infer U) =&gt; void, b: (x: infer U) =&gt; void } ? U : never;
+
+type T20 = Bar&lt;{ a: (x: string) =&gt; void, b: (x: string) =&gt; void }&gt;;  // string
+type T21 = Bar&lt;{ a: (x: string) =&gt; void, b: (x: number) =&gt; void }&gt;;  // string &amp; number
+</code></pre><p><code>T21</code> 中参数类型既要满足 a 中的 <code>string</code> 又要满足 b 中的 <code>number</code>，所以是 <code>string &amp; number</code>，即 <code>never</code>。<h2>总结</h2><p><strong>协变意味着类型收窄，逆变意味着类型拓宽</strong>。<p>对于简单数据类型或结构（对象和类）类型而言，类型需要收窄到能确保它最安全的类型。对于函数的返回值同样如此。<p>只是对于函数的参数而言，参数类型应该拓宽到能确保它最安全的类型（比如至少得拥有相同的基类）。<blockquote><p>函数更倾向于范围大的，参数是狗接收狗，参数是动物也能接收狗。
+所以这事兼容允许的，但是反过来，狗不能接收其他动物。</blockquote><p>从类型安全的角度能更好地理解层级关系，虽然型变的方向有所不同，但目的都是一样的。<h2>参考资料</h2><p><a href="https://juejin.cn/post/7211358106629750841?searchId=20240227153256BD9B539E005F91E393EA#heading-30">类型兼容性—逆变/型变</a><p><a href=https://juejin.cn/book/7086408430491172901/section/7086436622425653285>TypeScript 全面进阶指南</a><p><a href="https://link.juejin.cn/?target=https%3A%2F%2Fts.nodejs.cn%2Fdocs%2Fhandbook%2F2%2Fconditional-types.html%23%25E5%259C%25A8%25E6%259D%25A1%25E4%25BB%25B6%25E7%25B1%25BB%25E5%259E%258B%25E4%25B8%25AD%25E6%258E%25A8%25E6%2596%25AD">在条件类型中的推断</a></div></main>
+<hr>
+<footer>
+        <label>原网址: <a href="https://juejin.cn/post/7340295805999415330" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2024-02-29 10:01:04</label><br/>
+        <br/>
+        
+      </footer>
+<link rel=stylesheet href=https://cp-bkt1.oss-cn-hangzhou.aliyuncs.com/cdn/prism.css>
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css>
+<script src=https://cp-bkt1.oss-cn-hangzhou.aliyuncs.com/cdn/prism.js></script>
+</body>
+</html>
