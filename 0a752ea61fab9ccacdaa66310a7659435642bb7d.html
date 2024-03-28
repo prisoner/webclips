@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data-URI-Scheme介绍及支持的类型</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>Data-URI-Scheme介绍及支持的类型</h1>
+</header>
+<main class="typo"><div><h2><strong>什么是Data URI Scheme？</strong></h2><p>Data URI scheme 简称 Data URI，是在RFC2397中定义的，目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。<p>或许你已经注意到，在有的网页上，图片的 src 或 css 背景图片的 url 并不是我们常见的在线图片链接，而是一大串的字符，比如像这样：<code>data:image/gif;base64,base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAIAAAA7ljmRAAAAGElEQVQIW2P4DwcMDAxAfBvMAhEQMYgcACEHG8ELxtbPAAAAAElFTkSuQmCC</code>
+在上面的Data URI中，data表示取得数据的协定名称，image/png 是数据类型名称，base64 是数据的编码方法，逗号后面就是这个image/png文件base64编码后的数据。<h2><strong>什么是Base64 编码？</strong></h2><p>Base64是一种编码方式，这个术语最初是在“MIME内容传输编码规范”中提出的。Base64不是一种加密算法，它实际上是一种“二进制转换到文本”的编码方式，它能够将任意二进制数据转换为ASCII字符串的形式，以便在只支持文本的环境中也能够顺利地传输二进制数据。<p>（1）base64编码：把二进制数据转为字符；<p>（2）base64解码：把字符转为二进制数据；<p>Base64 常用于处理文本数据的场合，表示、传输、存储一些二进制数据。<h2><strong>Data URI 如何使用？</strong></h2><p>（1）可以作为iscript/img/video/iframe等元素的src属性<pre><code class="hljs language-js code-block-extension-codeShowNum">var scriptDataURL = `data:text/javascript;base64,YWxlcnQoJ+WcqHNjcmlwdOS4reS9v+eUqERhdGEgVVJMJykK`
+// 对应文本为：alert(&#39;在script中使用Data URL&#39;)
+$(&#39;#setDataURLInScriptBtn&#39;).click(function () {
+  $(&#39;&#39;).attr(&#39;src&#39;, scriptDataURL).appendTo($(&#39;body&#39;))
+})
+</code></pre><p>（2）可以在 CSS 中使用<pre><code class="hljs language-js code-block-extension-codeShowNum">body { 
+    background-image: url(&#34;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAIAAAA7ljmRAAAAGElEQVQIW2P4DwcMDAxAfBvMAhEQMYgcACEHG8ELxtbPAAAAAElFTkSuQmCC&#34;);
+}
+</code></pre><p>（3）在浏览器地址栏中使用<pre><code class="hljs language-js code-block-extension-codeShowNum">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAIAAAA7ljmRAAAAGElEQVQIW2P4DwcMDAxAfBvMAhEQMYgcACEHG8ELxtbPAAAAAElFTkSuQmCC
+</code></pre><p>（4）在标签的href中使用<pre><code class="hljs language-js code-block-extension-codeShowNum">var linkDataURL = `data:text/css;base64,I3NldERhdGFVUkxJbkxpbmtCdG57Y29sb3I6IHJlZDt9Cg==`
+//对应内容为：setDataURLInLinkBtn{color: red;}
+$(&#39;#setDataURLInLinkBtn&#39;).click(function () {
+  $(&#39;&#39;).attr(&#39;href&#39;, linkDataURL).appendTo($(&#39;head&#39;))
+})
+</code></pre><h2><strong>Data URI 哪些场景适用？</strong></h2><ul><li>图片体积较小，没必要浪费一次http请求<li>访问外部资源受限或者很麻烦的情况<li>外部图片为动态的</ul><h2><strong>Data URI 的优点：</strong></h2><ol><li>减少HTTP请求数，没有了TCP连接消耗和同一域名下浏览器的并发数限制。<li>对于小文件会降低带宽。虽然编码后数据量会增加，但是却减少了http头，当http头的数据量大于文件编码的增量，那么就会降低带宽。<li>对于HTTPS站点，HTTPS和HTTP混用会有安全提示，而HTTPS相对于HTTP来讲开销要大更多，所以Data URI在这方面的优势更明显。<li>可以把整个多媒体页面保存为一个文件。<li>当图片是在服务器端用程序动态生成，每个访问用户显示的都不同时</ol><h2><strong>Data URI 的缺点：</strong></h2><ol><li>在HTML上不能复用，要复用只能放在CSS和JavaScript里<li>无法被独自缓存，所以其包含文档重新加载时，它也要重新加载。<li>客户端需要重新解码和显示，增加了点消耗。<li>不支持数据压缩，base64编码会增加1/3大小，而urlencode后数据量会增加更多。<li>不利于安全软件的过滤，同时也存在一定的安全隐患。<li>移动端不宜使用 Data URI 技术(解码耗 CPU)。<li>不合适 lazy loading，不利于维护</ol><h2><strong>Data URI Scheme支持的类型</strong></h2><ol><li>data:,文本数据<li>data:text/plain,文本数据<li>data:text/html,HTML代码<li>data:text/html;base64,base64编码的HTML代码<li>data:text/css,CSS代码<li>data:text/css;base64,base64编码的CSS代码<li>data:text/javascript,Javascript代码<li>data:text/javascript;base64,base64编码的Javascript代码<li>data:image/gif;base64,base64编码的gif图片数据<li>data:image/png;base64,base64编码的png图片数据<li>data:image/jpeg;base64,base64编码的jpeg图片数据<li>data:image/x-icon;base64,base64编码的icon图片数据</ol></div></main>
+<hr>
+<footer>
+        <label>原网址: <a href="https://juejin.cn/post/7350601840398909490" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2024-03-28 09:43:50</label><br/>
+        <br/>
+        
+      </footer>
+<link rel=stylesheet href=https://cp-bkt1.oss-cn-hangzhou.aliyuncs.com/cdn/prism.css>
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css>
+<script src=https://cp-bkt1.oss-cn-hangzhou.aliyuncs.com/cdn/prism.js></script>
+</body>
+</html>
