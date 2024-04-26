@@ -1,5 +1,11 @@
 [
   {
+    "ID": "f25dfc3b34bdb2537dbc5ff370bbc5f4a8835169",
+    "Title": "图解Word2vec-读这一篇就够了",
+    "Link": "https://cloud.tencent.com/developer/article/1430171",
+    "Time": "2024-04-26T10:15:37.534928191+08:00"
+  },
+  {
     "ID": "f92e2a8f96f2839e5e23a1bf834b10063fead7a9",
     "Title": "Shadow-DOM",
     "Link": "http://objcer.com/2017/10/20/Shadow-DOM/",
