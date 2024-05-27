@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The-JavaScript-Class-Handbook-–-Complete-Guide-to-Class-Fields-and-the-Super-Keyword</title>
+    <link rel="stylesheet" href="https://c1312.netlify.app/typo.css">
+    <link rel="stylesheet" href="https://c1312.netlify.app/style.css">
+</head>
+<body>
+<header>
+  <h1>The-JavaScript-Class-Handbook-–-Complete-Guide-to-Class-Fields-and-the-Super-Keyword</h1>
+</header>
+<main class="typo"><section><p>Classes let you privatize your data while providing users indirect access to it. It is an excellent way to prevent direct access to your constructor’s data.<p>This handbook aims to show you exactly how classes work in JavaScript. We will also discuss class fields and the <code>super</code> keyword.<h2>Table of Contents</h2><ol><li><a href=#what-is-a-javascript-class>What is a JavaScript Class?</a><li><a href=#why-classes-in-javascript>Why Classes in JavaScript?</a><li><a href=#syntax-of-a-javascript-class>Syntax of a JavaScript Class</a><ul><li><a href=#what-is-a-class-keyword>What is a <code>class</code> Keyword?</a><li><a href=#what-is-a-class-name>What is a Class Name?</a><li><a href=#what-is-a-code-block>What is a Code Block?</a><li><a href=#what-is-a-class-body>What is a Class Body?</a></ul><li><a href=#what-is-a-javascript-class-field>What is a JavaScript Class Field?</a><ul><li><a href=#how-to-create-class-fields-in-javascript>How to Create Class Fields in JavaScript</a><li><a href=#how-to-create-class-fields-with-computed-names>How to Create Class Fields with Computed Names</a><li><a href=#how-to-create-regular-class-field-methods>How to Create Regular Class Field Methods</a><li><a href=#how-to-create-shorthand-class-field-methods>How to Create Shorthand Class Field Methods</a><li><a href=#regular-vs-shorthand-class-field-methods-what-s-the-difference>Regular vs. Shorthand Class Field Methods: What’s the Difference?</a><li><a href=#what-is-a-user-defined-prototypal-method-in-javascript-classes>What is a User-defined Prototypal Method in JavaScript Classes?</a><li><a href=#what-is-a-constructor-method-in-javascript-classes>What is a <code>constructor</code> Method in JavaScript Classes?</a><li><a href=#types-of-class-fields>Types of Class Fields</a><li><a href=#what-is-a-public-class-field-in-javascript-classes>What is a Public Class Field in JavaScript Classes?</a><li><a href=#what-is-a-private-class-field-in-javascript-classes>What is a Private Class Field in JavaScript Classes?</a><li><a href=#what-is-a-static-class-field-in-javascript-classes>What is a Static Class Field in JavaScript Classes?</a></ul><li><a href=#types-of-javascript-classes>Types of JavaScript Classes</a><ul><li><a href=#what-is-a-javascript-class-declaration>What is a JavaScript Class Declaration?</a><li><a href=#what-is-a-javascript-class-expression>What is a JavaScript Class Expression?</a><li><a href=#what-is-a-derived-class-in-javascript>What is a Derived Class in JavaScript?</a></ul><li><a href=#what-is-the-super-keyword-in-javascript>What is the <code>super</code> Keyword in JavaScript?</a><ul><li><a href=#how-to-use-the-super-keyword-as-a-function-caller>How to Use the <code>super</code> Keyword as a Function Caller</a><li><a href=#how-to-use-the-super-keyword-as-a-property-accessor>How to Use the <code>super</code> Keyword as a Property Accessor</a><li><a href=#super-vs-this-keyword-what-s-the-difference><code>super</code> vs. <code>this</code> Keyword: What’s the Difference?</a></ul><li><a href=#components-of-a-javascript-class>Components of a JavaScript Class</a><li><a href=#how-does-a-javascript-class-help-with-encapsulation>How Does a JavaScript Class Help with Encapsulation?</a><li><a href=#important-things-to-know-about-javascript-classes>Important Things to Know about JavaScript Classes</a><ul><li><a href=#1-declare-your-class-before-you-access-it>1. Declare Your Class Before You Access It</a><li><a href=#2-classes-are-functions>2. Classes are Functions</a><li><a href=#3-classes-are-strict>3. Classes are Strict</a><li><a href=#4-avoid-the-return-keyword-in-your-class-s-constructor-method>4. Avoid the <code>return</code> Keyword in Your Class’s <code>constructor</code> Method</a><li><a href=#5-a-class-s-evaluation-starts-from-the-extends-clause-to-its-values>5. A Class’s Evaluation starts from the <code>extends</code> clause to its values</a></ul><li><a href=#overview>Overview</a></ol><p>So, let’s get started from the basics.<h2>What is a JavaScript Class?</h2><p>A JavaScript class is an <a href=https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/Object>object constructor</a> that the <a href=https://codesweetly.com/javascript-new-keyword><code>new</code> keyword</a> uses to create a new object instance.<p>Here’s an example:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {}
+
+// Create an object instance from the Name class:
+const yourName = new Name();
+
+// Check yourName&#39;s content:
+yourName;
+
+// The invocation above will return an empty object:
+{ }</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-explained/js-gtfmeb><strong>Try Editing It</strong></a><p>The snippet above used the <code>new</code> keyword to create a new object instance from the <code>class</code> constructor.<p><strong>Note:</strong> Calling a JavaScript class requires the <code>new</code> keyword. Otherwise, browsers will throw a <code>TypeError</code>.<h2>Why Classes in JavaScript?</h2><p>Classes provide a way to create a template for creating objects that have access to private data through public methods.<p>In other words, classes help you <a href=https://codesweetly.com/encapsulation-in-javascript>encapsulate</a> your data while providing users indirect access to an instance’s internal workings. This lets you provide users with a clean and friendly interface that is independent of an object’s internal implementations.<p>For instance, <a href=https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date><code>Date</code></a> is a JavaScript class that allows you to access its date data through its public methods, such as <code>getDate()</code>, <code>setDate()</code>, and <code>getFullYear()</code>.<h2>Syntax of a JavaScript Class</h2><pre class=language-js><code class=language-js>class NameOfClass {
+  // class&#39;s body
+}</code></pre><p>A class is composed of four components:<ol><li>A <code>class</code> keyword<li>The name of the class<li>A code block (<code>{...}</code>)<li>The body of the class</ol><p>Let’s discuss each component.<h3>What is a <code>class</code> Keyword?</h3><p>We use the <code>class</code> keyword to declare to browsers that a specific piece of code is a JavaScript class—not a mathematical or other generic class.<h3>What is a Class Name?</h3><p>A class name allows you to create an identifier for your class, which you can use to reference it.<p><strong>Note:</strong> Developers typically use uppercase to begin a class&#39;s name. This convention helps to differentiate a constructor from other functions.<h3>What is a Code Block?</h3><p>A block is a pair of braces (<code>{...}</code>) used to group multiple statements together.<p>Here’s an example:<pre class=language-js><code class=language-js>{
+  var bestColor = &#34;White&#34;;
+}</code></pre><p>The block in the snippet above encased one <a href=https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements>JavaScript statement</a>.<p>Here’s another example:<pre class=language-js><code class=language-js>if (new Date().getHours() &lt; 18) {
+  const hourNow = new Date().getHours();
+  const minutesNow = new Date().getMinutes();
+  const secondsNow = new Date().getSeconds();
+  console.log(`Check your plans now. The time is ${hourNow}:${minutesNow}:${secondsNow}.`);
+}</code></pre><p>The <code>if</code> condition’s code block grouped four JavaScript statements together.<p>Now, consider this snippet:<pre class=language-js><code class=language-js>class Time {
+  hourNow = new Date().getHours();
+  minutesNow = new Date().getMinutes();
+  secondsNow = new Date().getSeconds();
+}
+
+if (new Date().getHours() &lt; 18) {
+   const currentTime = new Time();
+   console.log(`Check your plans now. The time is ${currentTime.hourNow}:${currentTime.minutesNow}:${currentTime.secondsNow}.`);
+}</code></pre><p>The <code>Time</code> class’s code block grouped three JavaScript statements, while the <code>if</code> condition’s code block grouped two.<p>Note the following:<ul><li><code>hourNow</code>, <code>minutesNow</code>, and <code>secondsNow</code> are the class fields (properties).<li>The snippet above used the <code>new</code> keyword to construct a new object from the <code>Time</code> class. Therefore, the <code>currentTime</code> object is an instance of the <code>Time</code> constructor class.</ul><h3>What is a Class Body?</h3><p>A class body is where you place a sequence of statements.<p>Here’s the syntax:<pre class=language-js><code class=language-js>class NameOfClass {
+  // class&#39; body
+}</code></pre><p><strong>Note:</strong> A class’s body houses only class fields. But what exactly is a class field? Let’s find out.<h2>What is a JavaScript Class Field?</h2><p>A class field is a property defined directly in a class’s body—not inside any of the class’s <a href=https://codesweetly.com/method-in-javascript>methods</a>.<h3>How to Create Class Fields in JavaScript</h3><p>You can create a class field by using an equal sign (<code>=</code>)—not a colon (<code>:</code>)—to assign a value to a property.<p>Here’s an example:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {
+  // Create two class fields:
+  firstName = &#34;Oluwatobi&#34;;
+  lastName = &#34;Sofela&#34;;
+}
+
+// Create a new object instance:
+const fullName = new Name();
+
+console.log(fullName.firstName + &#34; &#34; + fullName.lastName);</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-bxe9or><strong>Try Editing It</strong></a><p>The <code>Name</code> class in the snippet above has two class fields (<code>firstName</code> and <code>lastName</code>).<p>Note the following:<ul><li>JavaScript class fields default to <code>undefined</code> if you do not provide any value.<li>Class fields are like the regular object <a href=https://developer.mozilla.org/en-US/docs/Glossary/Property/JavaScript>properties</a> whose names you can <a href=https://codesweetly.com/javascript-properties-object#computed-property-names-in-javascript>compute</a>. Let’s discuss how.</ul><h3>How to Create Class Fields with Computed Names</h3><p>You can compute (evaluate) a class field’s name by putting an expression in a square bracket like so:<pre class=language-js><code class=language-js>// Initialize a num variable with a number:
+let num = 0;
+
+// Assign a string value to an enSuites variable:
+const enSuites = &#34;East&#34;;
+
+// Define a Room class and compute each of its class fields&#39; names:
+class Room {
+  [enSuites + ++num] = num;
+  [enSuites + ++num] = num;
+  [enSuites + ++num] = num;
+}
+
+// Create an ensuiteRooms object instance:
+const ensuiteRooms = new Room();
+
+// Check the ensuiteRooms&#39;s content:
+console.log(ensuiteRooms);
+
+// The invocation above will return:
+{East1: 1, East2: 2, East3: 3}</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-b9jwfx><strong>Try Editing It</strong></a><p>We used the <code>[enSuites + ++num]</code> syntax in the snippet above to compute the class fields’ names.<p>In other words, JavaScript evaluated the <code>enSuites + ++num</code> expression and used the result as each class field’s name.<p><strong>Note:</strong> You can also define class fields as regular JavaScript methods. Let’s talk more about this now.<h3>How to Create Regular Class Field Methods</h3><p>You can create a regular class field method by using an equal sign (<code>=</code>) to assign a function to a property.<p>Here’s an example:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Time {
+  // Create two regular class field methods:
+  hourNow = function() {
+    return new Date().getHours();
+  }
+  minutesNow = function() {
+    return new Date().getMinutes();
+  }
+}
+
+// Create a new object instance:
+const currentTime = new Time();
+
+console.log(`The time is ${currentTime.hourNow()}:${currentTime.minutesNow()}.`);</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-fro6pz><strong>Try Editing It</strong></a><p>The <code>hourNow</code> and <code>minutesNow</code> methods in the snippet above are class field methods because they are properties containing regular JavaScript functions.<p>JavaScript allows you to use shorthand syntax to shorten your class’s methods. Let’s see how.<h3>How to Create Shorthand Class Field Methods</h3><p>The shorthand class field method is a concise way of defining JavaScript methods in the body of your classes.<p>Here’s an example:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Time {
+  // Create two shorthand class field methods: 
+  hourNow() {
+    return new Date().getHours();
+  }
+  minutesNow() {
+    return new Date().getMinutes();
+  }
+}
+
+// Create a new object instance:
+const currentTime = new Time();
+
+console.log(`The time is ${currentTime.hourNow()}:${currentTime.minutesNow()}.`);</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-j6kpwy><strong>Try Editing It</strong></a><p>Although you can use the regular and shorthand methods interchangeably in your class’s body, you should know a significant difference between the two syntaxes. Let’s discuss it now.<h3>Regular vs. Shorthand Class Field Methods: What’s the Difference?</h3><p>The main difference between regular and shorthand class field methods is this:<ul><li>Regular methods are <a href=https://codesweetly.com/web-tech-terms-i#instance-property-in-javascript>instance properties</a>, while shorthand methods are <a href=https://codesweetly.com/web-tech-terms-p#prototypal-property-in-javascript>prototypal properties</a>.</ul><p>In other words, JavaScript treats regular and shorthand methods differently as follows:<ul><li><strong>Regular method:</strong> JavaScript adds the method to the <a href=https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object>object instance</a> you construct with the <code>new</code> keyword. Therefore, regular methods are properties of the object instance.<li><strong>Shorthand method:</strong> JavaScript adds the method to the class’s <a href=https://codesweetly.com/default-function-properties-in-javascript#what-is-the-default-prototype-property-in-javascript-functions><code>prototype</code> property</a>. Therefore, shorthand methods are prototypal properties of an object instance.</ul><p>Here’s an example:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Time {
+  // Create a regular method:
+  hourNow = function() {
+    return new Date().getHours();
+  }
+  // Create a shorthand method:
+  minutesNow() {
+    return new Date().getMinutes();
+  }
+}
+
+// Create a new object instance:
+const currentTime = new Time();
+
+// Check currentTime&#39;s content:
+console.log(currentTime);
+
+// The invocation above will return:
+{ hourNow: hourNow() }</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-xgekwn><strong>Try Editing It</strong></a><p>The <code>currentTime</code> object instance contains only the <code>hourNow</code> property because regular methods are instance properties the <code>new</code> keyword assigned to the object it constructs from its constructor class.<p>On the other hand, shorthand methods are prototypal methods that JavaScript adds to the <code>prototype</code> property of the class you’ve defined.<p>Therefore, you can access the <code>minuteNow</code> method through its class’s <a href=https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain>prototypal inheritance</a> like so:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Time {
+  // Create a regular method:
+  hourNow = function() {
+    return new Date().getHours();
+  }
+  // Create a shorthand method:
+  minutesNow() {
+    return new Date().getMinutes();
+  }
+}
+
+// Check Time&#39;s prototype content:
+console.log(Time.prototype);
+
+// The invocation above will return:
+{...}:
+  constructor: class Time {}
+  minutesNow: function minutesNow()
+  [[Prototype]]: Object {...}</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-tfz2hb><strong>Try Editing It</strong></a><p>You can see that <code>Time</code>’s <code>prototype</code> property contains the <code>minutesNow</code> method, which all object instances will inherit automatically.<p>Here’s an example:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Time {
+  // Create a shorthand method:
+  minutesNow() {
+    return new Date().getMinutes();
+  }
+}
+
+// Create an object instance from the Time class:
+const currentTime = new Time();
+
+// Check currentTime&#39;s content:
+console.log(currentTime);
+
+// The invocation above will return an empty object:
+{ }
+
+// Invoke currentTime&#39;s minutesNow method:
+console.log(currentTime.minutesNow());</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-gzhxdi><strong>Try Editing It</strong></a><p>The <code>currentTime.minutesNow()</code> code returned a valid value because <code>currentTime</code> inherited the <code>minuteNow()</code> method from its constructor’s <code>prototype</code> property.<p><strong>Note:</strong> A JavaScript class has two types of prototypal methods:<ul><li>User-defined methods<li>Constructor methods</ul><p>Let’s discuss the two types now.<h3>What is a User-defined Prototypal Method in JavaScript Classes?</h3><p>A user-defined prototypal method is the shorthand method you create yourself in the body of your JavaScript class.<p>Here’s an example:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {
+  // Create a shorthand method:
+  firstName(name) {
+    return name;
+  }
+}
+
+// Create an object instance from the Name class:
+const myName = new Name().firstName(&#34;Oluwatobi&#34;);
+
+// Log myName&#39;s content to the console:
+console.log(myName);
+
+// The invocation above will return:
+&#34;Oluwatobi&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-pqgqew><strong>Try Editing It</strong></a><p>The <code>firstName()</code> method is a user-defined method because we created it ourselves in the body of the <code>Name</code> class.<h2>What is a Constructor Method in JavaScript Classes?</h2><p>A <code>constructor()</code> is the default prototypal method that comes built-in with every JavaScript class.<p>Creating a <code>constructor</code> method is optional. However, if you do not create one, JavaScript will automatically add an empty one.<p>The <code>constructor</code> method automatically receives the <a href=https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments>arguments</a> you pass to the class. Therefore, it is the ideal place to define the class fields that depend on the <a href=https://codesweetly.com/declaration-initialization-invocation-in-programming#what-does-invocation-mean>class invocator</a>’s arguments.<p>Here’s an example:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {
+  // Use the built-in constructor method:
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+// Create an object instance from the Name class:
+const myName = new Name(&#34;Oluwatobi&#34;);
+
+// Log myName&#39;s content to the console:
+console.log(myName);
+
+// The invocation above will return:
+{ name: &#34;Oluwatobi&#34; }</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-stxiye><strong>Try Editing It</strong></a><p>The <code>Name</code> class above has a <code>constructor</code> method with one <a href=https://codesweetly.com/web-tech-terms-i#instance-property-in-javascript>instance property</a> in its code block.<p><strong>Tip:</strong> A <code>constructor()</code> method’s <code>this</code> keyword refers to the class’s object instance.<p>JavaScript executes the <code>constructor</code> method before any other user-defined methods. Therefore, it is the best place to define any code you want to run before other methods in the class’s body. For instance, consider the code below:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class CarColor {
+  // Use the built-in constructor method:
+  constructor(color) {
+    this.carColor = `${color} car`;
+  }
+  // Create a shorthand method:
+  revealColor() {
+    console.log(`I have a ${this.carColor}`);
+  }
+}
+
+// Create an object instance from the CarColor class:
+const myCarColor = new CarColor(&#34;white&#34;);
+
+// Invoke myCarColor&#39;s revealColor prototypal method:
+myCarColor.revealColor();
+
+// The invocation above will return:
+&#34;I have a white car&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-vkvnuv><strong>Try Editing It</strong></a><p>The snippet above automatically invoked the <code>constructor</code> method while creating <code>myCarColor</code>’s object instance.<p>Therefore, the computer processed the <code>constructor</code>’s statements before executing the <code>myCarColor.revealColor()</code> code.<p>Note the following:<ul><li>You can only use the <a href=https://codesweetly.com/method-in-javascript#shorthand-for-javascript-methods>JavaScript method shorthand</a> technique to define a <code>constructor</code>. Otherwise, browsers will throw an <code>Uncaught SyntaxError</code>.<li>A class can have only one <code>constructor</code> method. Otherwise, browsers will throw an <code>Uncaught SyntaxError</code>.</ul><p>Now that we know how to create class fields, we can discuss the available types.<h2>Types of Class Fields</h2><p>The three types of class fields are:<ul><li>Public class fields<li>Private class fields<li>Static class fields</ul><p>Let’s discuss each type.<h3>What is a Public Class Field in JavaScript Classes?</h3><p>A public class field is a property an object instance has access to.<p><strong>Tip:</strong> Although you can define multiple public class fields with the same name, the last field will overwrite the previous ones.<h4>Example: How to create public class fields</h4><pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {
+  // Create two public class fields:
+  myName = &#34;Oluwatobi&#34;;
+  updateMyName(name) {
+    this.myName = name;
+  }
+}
+
+// Create a new object instance:
+const author = new Name();
+
+// Check myName&#39;s current value:
+author.myName;
+
+// The invocation above will return:
+&#34;Oluwatobi&#34;
+
+// Use the author variable&#39;s property to modify myName&#39;s value:
+author.myName = &#34;Sofela&#34;;
+
+// Check myName&#39;s current value:
+author.myName;
+
+// The invocation above will return:
+&#34;Sofela&#34;
+
+// Use the author variable&#39;s method to update myName&#39;s value:
+author.updateMyName(&#34;CodeSweetly&#34;);
+
+// Check myName&#39;s current value:
+author.myName;
+
+// The invocation above will return:
+&#34;CodeSweetly&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-88zwpt><strong>Try Editing It</strong></a><p>The <code>Name</code> class in the snippet above contains public class fields because you can use the class’s object instances to access and modify the two properties.<p>Suppose you define multiple public class fields with the same name. In that case, the last property will overwrite the previous ones.<h4>Example: The last public class field overwrites the previous ones with the same name</h4><pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {
+  // Create three public class fields:
+  myName = &#34;Oluwatobi&#34;;
+  myName = &#34;Sofela&#34;;
+  myName = &#34;CodeSweetly&#34;;
+}
+
+// Create a new object instance:
+const author = new Name();
+
+// Check myName&#39;s current value:
+author.myName;
+
+// The invocation above will return:
+&#34;CodeSweetly&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-4gefar><strong>Try Editing It</strong></a><p>The snippet above returned <code>&#34;CodeSweetly&#34;</code> because the last <code>myName</code> public class field overwrites the previously declared ones.<h3>What is a Private Class Field in JavaScript Classes?</h3><p>A private class field is a property you can only access and modify within the class’s body.<p>You can prefix a class field with the hash (<code>#</code>) symbol to make it a private property.<p><strong>Tip:</strong> Private class field names must be unique. You cannot redeclare a private field in the same class. Otherwise, the browser will throw an <code>Uncaught SyntaxError</code>.<h4>Example: How to create private class fields</h4><pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {
+  // Create a private class field:
+  #myName = &#34;Oluwatobi&#34;;
+}
+
+// Create a new object instance:
+const author = new Name();
+
+// Check myName&#39;s current value:
+author.myName;
+
+// The invocation above will return:
+undefined</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-mkabvf><strong>Try Editing It</strong></a><p>The snippet above returned <code>undefined</code> because <code>myName</code> is a private class field that can only be read and modified from within the class’s body.<p>Therefore, you need to use an internal code to access <code>myName</code>.<h4>Example: How to access private class fields</h4><pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {
+  // Create a private class field:
+  #myName = &#34;Oluwatobi&#34;;
+
+  // Create a public class field:
+  fullName = `${this.#myName} Sofela`;
+
+  // Create another public class field:
+  showMyName() {
+    return this.#myName;
+  }
+}
+
+// Create a new object instance:
+const author = new Name();
+
+// Check fullName&#39;s current value:
+author.fullName;
+
+// The invocation above will return:
+&#34;Oluwatobi Sofela&#34;
+
+// Check myName&#39;s current value:
+author.showMyName();
+
+// The invocation above will return:
+&#34;Oluwatobi&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-7acrhs><strong>Try Editing It</strong></a><p><strong>Note:</strong><ul><li>A <code>constructor()</code> method can only be public. Browsers will throw an <code>Uncaught SyntaxError</code> if you define it as a private class field.<li>You cannot create private class fields later (outside the class’s body). For instance, writing <code>author.#wifeName = &#34;Sarah&#34;</code> will throw an <code>Uncaught SyntaxError</code>.<li>Private class fields make data encapsulation possible in JavaScript classes.</ul><h3>What is a Static Class Field in JavaScript Classes?</h3><p>A static class field is a property you can only access and modify directly from the class itself.<p>In other words, JavaScript interprets static fields as a class’s own properties—not <a href=https://codesweetly.com/web-tech-terms-i#instance-property-in-javascript>instance</a> or <a href=https://codesweetly.com/web-tech-terms-p#prototypal-property-in-javascript>prototypal</a> properties.<p>Therefore, a class’s instance or <code>prototype</code> object cannot access static class fields.<p><strong>Tip:</strong><ul><li>Although you can define multiple static class fields with the same name, the last field will overwrite the previous ones.<li>JavaScript does not add static fields to the <code>prototype</code> property. They remain in the class’s body as its own properties. So, they are ideal for properties you wish to avoid replicating across the class’s instance objects.</ul><p>We prefix a class field with the <code>static</code> keyword to make it a static property.<h4>Example: How to create static class fields</h4><pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {
+  // Create a static class field:
+  static myName = &#34;Oluwatobi&#34;;
+}
+
+// Create a new object instance:
+const author = new Name();
+
+// Check myName&#39;s current value:
+author.myName;
+
+// The invocation above will return:
+undefined</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-dcx7ck><strong>Try Editing It</strong></a><p>The snippet above returned <code>undefined</code> because <code>myName</code> is a static class field that can only be read and modified from the class itself, not through its instance.<p>In other words, you need to call <code>myName</code> on the class itself to read or modify it.<h4>Example: How to access static class fields</h4><pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {
+  // Create a static class field:
+  static myName = &#34;Oluwatobi&#34;;
+}
+
+// Check myName&#39;s current value:
+Name.myName;
+
+// The invocation above will return:
+&#34;Oluwatobi&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-cvbm6x><strong>Try Editing It</strong></a><p>Suppose you define multiple static class fields with the same name. In that case, the last property will overwrite the previous ones.<h4>Example: The last static class field overwrites the previous ones with the same name</h4><pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Name {
+  // Create static class fields:
+  static myName = &#34;Oluwatobi&#34;;
+  static myName = &#34;Sofela&#34;;
+  static myName = &#34;CodeSweetly&#34;;
+}
+
+// Check myName&#39;s current value:
+Name.myName;
+
+// The invocation above will return:
+&#34;CodeSweetly&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-field/js-wtvny3><strong>Try Editing It</strong></a><p>The snippet above returned <code>&#34;CodeSweetly&#34;</code> because the last <code>myName</code> static class field overwrites the previously declared ones.<p>Now that we know the components of a JavaScript class, we can discuss its types.<h2>Types of JavaScript Classes</h2><p>The three types of JavaScript classes are:<ul><li>Class declaration<li>Class expression<li>Derived class</ul><p>Let’s discuss each type.<h3>What is a JavaScript Class Declaration?</h3><p>A class declaration is a class created without assigning it to a <a href=https://codesweetly.com/javascript-variable>variable</a>.<p>We sometimes call class declaration a “class definition” or “class statement.”<p>Here’s an example:<pre class=language-js><code class=language-js>class Numbers {}</code></pre><p>The class above is a class declaration because we defined it without storing it in a variable.<h3>What is a JavaScript Class Expression?</h3><p>A class expression is a class you create and assign to a variable.<p>Here’s an example:<pre class=language-js><code class=language-js>const myClassExpr = class Numbers {};</code></pre><p>The class above is a named class expression that we assigned to the <code>myClassExpr</code> variable.<p><strong>Note:</strong> You can only use a class expression’s name within the class’s body. In other words, JavaScript allows you to use <code>myClassExpr</code> and <code>Numbers</code> interchangeably within the class’s body. However, only <code>myClassExpr</code> is callable outside the class. Otherwise, browsers will throw a <code>ReferenceError</code>.<p>You can also write the snippet above as an anonymous class expression like so:<pre class=language-js><code class=language-js>const myClassExpr = class {};</code></pre><p>The class above is an anonymous function expression assigned to the <code>myClassExpr</code> variable.<p><strong>Tip:</strong><ul><li>An anonymous class is a class with no name.<li>A named class is a class with a name.</ul><p>Let’s now discuss derived classes.<h3>What is a Derived Class in JavaScript?</h3><p>A derived class is a class that extends the <a href=#what-is-a-public-class-field-in-javascript-classes>public</a> and <a href=#what-is-a-static-class-field-in-javascript-classes>static</a> features of an existing class.<p>In other words, a derived class is the child of a parent class.<p><strong>Important:</strong> A derived class <em>cannot</em> access its parent class’s <a href=#what-is-a-private-class-field-in-javascript-classes>private features</a>.<h4>Syntax of a derived class</h4><p>We use the <code>extends</code> keyword to create a derived class.<p><strong>Tip:</strong> The <code>extends</code> keyword in JavaScript makes one class the child of another constructor. In other words, the <code>extends</code> keyword assigns a constructor (class or function) as a specified class’s <a href=https://codesweetly.com/default-function-properties-in-javascript#what-is-the-default-prototype-property-in-javascript-functions-1>dunder proto</a>.<p>Here’s the syntax:<pre class=language-js><code class=language-js>class DerivedClass extends BaseClass {
+  // derived class&#39;s body
+}</code></pre><ul><li>A derived class is sometimes called a child class.<li>A base class is sometimes called a parent class.<li>You can extend any constructor (class or function) that meets the following criteria:<ul><li>You can use the <code>new</code> keyword to create an object instance from it.<li>It has a <a href=https://codesweetly.com/default-function-properties-in-javascript#what-is-the-default-prototype-property-in-javascript-functions><code>prototype</code></a> property.<li>Its <code>prototype</code> property’s value is an <a href=https://codesweetly.com/javascript-properties-object>object</a> or <code>null</code>.</ul></ul><p>Once you extend a child class to a parent class, the derived class will inherit all its base class’s public and static class fields.<h4>Example: How to use a base class’s features in a derived class</h4><pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  // Create a public class field:
+  myName = &#34;Oluwatobi&#34;;
+}
+
+// Create a derived class:
+class Bio extends Name { }
+
+// Create a new object instance:
+const myBio = new Bio();
+
+// Check myBio&#39;s current value:
+myBio;
+
+// The invocation above will return:
+{ myName: &#34;Oluwatobi&#34; }</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-explained/js-jivp9r><strong>Try Editing It</strong></a><p>The <code>Bio</code> class inherited its parent’s property because we used the <code>extends</code> keyword to assign the <code>Name</code> class as the derived class’s dunder proto.<p><strong>Note:</strong> A derived class’s class field will override its parent class’s property with the same name. For example, consider the following code:<pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  myName = &#34;Oluwatobi&#34;;
+}
+
+// Create a derived class:
+class Bio extends Name {
+  myName = &#34;Sofela&#34;;
+}
+
+// Create a new object instance:
+const myBio = new Bio();
+
+// Check myBio&#39;s current value:
+myBio;
+
+// The invocation above will return:
+{ myName: &#34;Sofela&#34; }</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-explained/js-kxiztt><strong>Try Editing It</strong></a><p>JavaScript also allows you to use the <code>super</code> keyword to access a parent class’s static or prototypal class fields from derived classes. Let’s discuss more on this now.<h2>What is the <code>super</code> Keyword in JavaScript?</h2><p>The <code>super</code> keyword searches a parent class or object literal for a specified static or prototypal property.<p>For instance, consider the following snippet:<pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  constructor() {
+    console.log(&#34;Oluwatobi is my Name&#34;);
+  }
+}
+
+// Create a child class:
+class Bio extends Name {
+  constructor() {
+    // Use super to access the parent class&#39;s constructor:
+    super();
+  }
+}
+
+// Invoke the Bio constructor class:
+new Bio();
+
+// The invocation above will return:
+&#34;Oluwatobi is my Name.&#34;
+{}</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/operators/super-keyword/js-qcdu2a><strong>Try Editing It</strong></a><p>The <code>super()</code> function call in the snippet above tells the computer to find a <code>constructor</code> in the parent class’s prototype chain.<p>You can use the <code>super</code> keyword as a “function caller” or “property accessor.” Let’s discuss how.<h3>How to Use the <code>super</code> Keyword as a Function Caller</h3><p>The <code>super()</code> function caller finds and invokes the parent class’s <code>constructor()</code> method.<p>In other words, <code>super()</code> allows you to access a parent class’s <code>constructor</code> from the <code>constructor</code> of a derived class.<h4>Syntax of the <code>super</code> keyword as a function caller</h4><pre class=language-js><code class=language-js>super(argument1, …, argumentN);</code></pre><p><strong>Note:</strong> A <code>super()</code> function caller is valid only in a derived class’s <code>constructor()</code> method.<h4>Example: How to use the <code>super()</code> function caller</h4><pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+// Create a derived class:
+class Bio extends Name {
+  constructor(firstName) {
+    // Use super to access the parent class&#39;s constructor:
+    super(firstName);
+  }
+}
+
+// Create a new object instance:
+const myBio = new Bio(&#34;Oluwatobi&#34;);
+
+// Check myBio&#39;s current value:
+myBio;
+
+// The invocation above will return:
+{ name: &#34;Oluwatobi&#34; }</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/operators/super-keyword/js-cdc4ks><strong>Try Editing It</strong></a><p>The <code>super()</code> function call in the snippet above tells the computer to find and invoke the parent class’s <code>constructor()</code>.<p>In other words, the <code>super()</code> function call searches for a <code>constructor</code> in <code>Name</code>’s prototype chain.<p><strong>Note the following:</strong><ul><li>Calling <code>super()</code> allows JavaScript to use the parent class’s <code>constructor</code> to initialize <code>this</code>. So, a <code>super()</code> function call is similar to writing <code>this = new ParentClass()</code>.<li>JavaScript requires you to call <code>super()</code> before using the <a href=https://www.freecodecamp.org/news/the-this-keyword-in-javascript/>keyword</a> <code>this</code>. Otherwise, the browser will throw a <code>ReferenceError</code>. In other words, a derived class’s <code>constructor</code> cannot access an uninitialized keyword <code>this</code>.</ul><h4>Example: What happens if you access <code>this</code> before <code>super</code> in a derived class’s <code>constructor</code>?</h4><pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+// Create a derived class:
+class Bio extends Name {
+  constructor(firstName) {
+    this.lastName = &#34;Sofela&#34;; // Using the keyword this before super will cause the browser to throw a ReferenceError:
+    super(firstName);
+  }
+}
+
+// Create a new object instance:
+const myBio = new Bio(&#34;Oluwatobi&#34;);</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/operators/super-keyword/js-zyd4dm><strong>Try Editing It</strong></a><p>The snippet above throws an <code>Uncaught ReferenceError</code> because a derived class’s <code>constructor</code> cannot access the keyword <code>this</code> before the <code>super()</code> function caller.<h4>Example: What happens if you use only <code>this</code> keyword in a derived class’s <code>constructor</code>?</h4><pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  createName() {
+    return &#34;Sofela&#34;;
+  }
+}
+
+// Create a derived class:
+class Bio extends Name {
+  constructor() {
+    this.firstName = &#34;Oluwatobi&#34;; // Using the keyword this before super will cause the browser to throw a ReferenceError:
+  }
+}
+
+// Create a new object instance:
+const myBio = new Bio();</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/operators/super-keyword/js-sgc2tx><strong>Try Editing It</strong></a><p>The snippet above throws an <code>Uncaught ReferenceError</code> because a derived class’s <code>constructor</code> cannot access the keyword <code>this</code> before the <code>super()</code> function caller.<p>Now that we know how to use the <code>super</code> keyword as a function caller, we can discuss using it as a property accessor.<h3>How to Use the <code>super</code> Keyword as a Property Accessor</h3><p>You can use the <code>super</code> keyword as a property accessor in your JavaScript classes and object literals.<ul><li><strong>Class Usage:</strong> The <code>super</code> keyword searches a class’s parent for a specified static or prototypal class field. In other words, <code>super</code> allows you to access a parent class’s static or prototypal properties from a child class.<li><strong>Object Literal Usage:</strong> The <code>super</code> keyword searches an object’s parent for a specified prototypal property. In other words, <code>super</code> allows you to access the parent object’s prototypal properties from a child object.</ul><h4>Syntax of the <code>super</code> keyword as a dot notation property accessor</h4><pre class=language-js><code class=language-js>super.parentClassOrObjectProperty;</code></pre><h4>Example: Use the <code>super</code> keyword’s dot notation to access the parent class’s static field</h4><pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  // Create a static class field:
+  static myName = &#34;Oluwatobi&#34;;
+}
+
+// Create a derived class:
+class Bio extends Name {
+  // Create a static property from the parent class&#39;s static class field:
+  static firstName = super.myName;
+}
+
+// Check firstName&#39;s current value:
+Bio.firstName;
+
+// The invocation above will return:
+&#34;Oluwatobi&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/operators/super-keyword/js-cr3jfd><strong>Try Editing It</strong></a><p>We used the <code>super</code> keyword in the snippet above to access the parent class’s static class field.<p><strong>Note:</strong> Prefixing the <code>firstName</code> statement with a <code>static</code> keyword makes <code>super</code> find a <code>myName</code> <a href=https://codesweetly.com/web-tech-terms-s#static-class-field-in-javascript>static property</a> in the parent class.<p>Suppose you omit the <code>static</code> keyword. In that case, <code>super</code> will search for a <code>myName</code> <a href=https://codesweetly.com/web-tech-terms-p#prototypal-property-in-javascript>prototypal property</a> in the parent class.<h4>Example: Use the <code>super</code> keyword’s dot notation to access the parent class’s prototypal field</h4><pre class=language-js><code class=language-js>// Create a new class:
+class Time {
+  // Create a prototypal method:
+  hourNow() {
+    return new Date().getHours();
+  }
+
+  // Create a second prototypal method:
+  minutesNow() {
+    return new Date().getMinutes();
+  }
+}
+
+// Create a derived class:
+class Moment extends Time {
+  // Create an instance property using the parent class&#39;s prototypal methods:
+  currentMoment = `The time is ${super.hourNow()}:${super.minutesNow()}.`
+}
+
+// Create a new object instance:
+const momentNow = new Moment();
+
+// Check momentNow&#39;s current value:
+console.log(momentNow);</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/operators/super-keyword/js-fr9bvs><strong>Try Editing It</strong></a><p>We used the <code>super</code> keyword in the snippet above to access the parent class’s prototypal class fields.<h4>Example: Use the <code>super</code> keyword’s dot notation to access a parent object’s prototypal property</h4><pre class=language-js><code class=language-js>// Create a new object:
+const website = {
+  // Create a method:
+  showName() {
+    return &#34;CodeSweetly&#34;;
+  }
+}
+
+// Create another object:
+const company = {
+  // Create a method:
+  showCompany() {
+    return super.showName();
+  }
+}
+
+// Change company&#39;s dunder proto to the website object:
+Object.setPrototypeOf(company, website);
+
+// Invoke the showCompany method:
+company.showCompany()
+
+// The invocation above will return:
+&#34;CodeSweetly&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/operators/super-keyword/js-mxdvkm><strong>Try Editing It</strong></a><p>We used the <code>super</code> keyword in the snippet above to access the parent object’s <code>showName()</code> method.<p><strong>Note:</strong> The <code>Object.setPrototypeOf()</code> code changes the company’s <a href=https://codesweetly.com/default-function-properties-in-javascript#what-is-the-default-prototype-property-in-javascript-functions-1><code>[[Prototype]]</code> property</a> to the website object. Therefore, the <code>company</code> object’s <a href=https://codesweetly.com/default-function-properties-in-javascript#the-javascript-prototype-chain-diagram>prototype chain</a> will look like this:<pre class=language-txt><code class=language-txt>{ showCompany: showCompany() } ---&gt; { showName: showName() } ---&gt; Object.prototype ---&gt; null</code></pre><p>You can also use the <code>super</code> keyword as a bracket notation property accessor to search a parent class or object literal for a specified static or prototypal property.<h4>Syntax of the <code>super</code> keyword as a bracket notation property accessor</h4><pre class=language-js><code class=language-js>super[expresssion];</code></pre><h4>Example: Use the <code>super</code> keyword’s bracket notation to access a parent class’s static field</h4><pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  // Create a static class field:
+  static myName = &#34;Oluwatobi&#34;;
+}
+
+// Create a derived class:
+class Bio extends Name {
+  // Create a static property from the parent class&#39;s static class field:
+  static firstName = super[&#34;myName&#34;];
+}
+
+// Check firstName&#39;s current value:
+Bio.firstName;
+
+// The invocation above will return:
+&#34;Oluwatobi&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/operators/super-keyword/js-vpw14s><strong>Try Editing It</strong></a><p>We used the <code>super</code> keyword in the snippet above to access the parent class’s static class field.<p><strong>Note:</strong> <code>super</code> cannot access a parent class’s instance class field because JavaScript sets an instance property on the object instance, not the class itself or its prototype chain. (<code>super</code> searches only for a parent’s static or prototypal properties.)<h4>Example: Use the <code>super</code> keyword to access the parent class’s instance field</h4><pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  // Create an instance class field:
+  myName = &#34;Oluwatobi&#34;;
+}
+
+// Create a derived class:
+class Bio extends Name {
+  // Create an instance property from the parent class&#39;s instance class field:
+  firstName = super.myName;
+}
+
+// Create a new object instance:
+const myBio = new Bio();
+
+// Check myBio&#39;s current value:
+myBio;
+
+// The invocation above will return:
+{ myName: &#34;Oluwatobi&#34;, firstName: undefined }</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/operators/super-keyword/js-kqsqqe><strong>Try Editing It</strong></a><p>The <code>firstName</code> property’s value is <code>undefined</code> because <code>super</code> could not find a prototypal <code>myName</code> field on the parent class.<p><strong>Note:</strong> The keywords <code>super</code> and <code><a href=https://codesweetly.com/javascript-this-keyword>this</a></code> allow you to search for a specified property in an object’s prototype chain. But they work in different ways. Let’s discuss their differences now.<h3><code>super</code> vs. <code>this</code> keyword: What’s the Difference?</h3><p>The difference between the <code>super</code> and <code>this</code> keyword is as follows:<ul><li><code>super</code> searches for a specified prototypal property in a parent class’s prototype chain.<li><code>this</code> searches for a specified prototypal property from a class’s object instance’s own properties to its prototype chain.</ul><p>In other words, <code>super</code> starts its search from the parent class’s <code>prototype</code> property. But <code>this</code> searches from an object instance’s local scope to its prototype chain.<p>For instance, consider the following code:<pre class=language-js><code class=language-js>// Create a new class:
+class ParentClass {
+  // Create a prototypal method:
+  showId() {
+    return &#34;I am a parent.&#34;;
+  }
+}
+
+// Create a derived class:
+class ChildClass extends ParentClass {
+  // Create a prototypal method:
+  showId() {
+    return &#34;I am a child.&#34;;
+  }
+  // Create another prototypal method:
+  getId() {
+    console.log(super.showId());
+    console.log(this.showId());
+  }
+}
+
+// Create a new object instance:
+const instanceObject = new ChildClass();
+
+// Invoke the instanceObject&#39;s getId() method:
+instanceObject.getId();
+
+// The invocation above will return:
+&#34;I am a parent.&#34;
+&#34;I am a child.&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/operators/super-keyword/js-v2st2a><strong>Try Editing It</strong></a><p>Here’s how <code>super</code> and <code>this</code> performed their searches:<table><thead><tr><th><th>super<th>this<tbody><tr><td>1.<td>Find <code>showId()</code> in <code>ParentClass</code>’s prototype chain, starting from
+<code>ParentClass.prototype</code>. <em>Found it.</em><td>Find <code>showId()</code> in <code>instanceObject</code>’s own properties. <em>Found none.</em><tr><td>2.<td>(Suppose <code>showId()</code> is not in <code>ParentClass.prototype</code>. In that case,
+<code>super</code> will continue its search in <code>Object.prototype</code>.)<td>Find <code>showId()</code> in <code>instanceObject</code>’s prototype chain, starting from
+<code>ChildClass.prototype</code>. <em>Found it.</em><tr><td>3.<td><td>(Suppose <code>showId()</code> is not in <code>ChildClass.prototype</code>. In that case,
+<code>this</code> will continue its search in <code>ParentClass.prototype</code>.)<tr><td>4.<td><td>(Suppose <code>showId()</code> is not in <code>ChildClass.prototype</code> and
+<code>ParentClass.prototype</code>. In that case, <code>this</code> will continue its search
+in <code>Object.prototype</code>.)</table><p>You can see that <code>super</code> shortens the steps required to find a prototypal method.<p>Now that we know how to use the three types of JavaScript classes, let’s look at the main components in one piece.<h2>Components of a JavaScript Class</h2><p>The main features of a JavaScript class are as follows:<ol><li>A <code>class</code> keyword<li>The class’s name<li>The <code>extends</code> clause<li>A code block (<code>{...}</code>)<li>The class’s body<li>A <code>constructor</code> method<li><code>super()</code> function caller<li><code>super</code> property accessor<li>Instance class fields<li>Prototypal class fields<li>Private class fields<li>Static class fields<li>Static initialization blocks</ol><p>Let’s look at these features in a class declaration.<pre class=language-js><code class=language-js>class ChildClass extends ParentClass {
+  constructor(parameter) {
+    super(parameter);
+  }
+  instanceClassField = &#34;Value can be any valid JavaScript data type&#34;;
+  prototypalClassField() {
+    // prototypalClassField&#39;s body
+  }
+  #privateClassField = &#34;Value can be any valid JavaScript data type&#34;;
+  static classField = &#34;Value can be any valid JavaScript data type&#34;;
+  static classFieldWithSuperValue = super.parentProperty;
+  static #privateClassField = &#34;Value can be any valid JavaScript data type&#34;;
+  static {
+    // Static initialization block&#39;s body
+  }
+}</code></pre><p>The constructor function equivalence of the snippet above looks like this:<pre class=language-js><code class=language-js>function ChildClass() {
+  this.instanceClassField = &#34;Value can be any valid JavaScript data type&#34;;
+}
+
+Object.setPrototypeOf(ChildClass, ParentClass);
+
+ChildClass.prototype.prototypalClassField = function () {
+  // prototypalClassField&#39;s body
+}
+
+ChildClass.staticClassField = &#34;Value can be any valid JavaScript data type&#34;;
+
+ChildClass.staticClassFieldWithSuperValue = Object.getPrototypeOf(ChildClass).parentProperty;
+
+(function () {
+  // Static initialization block&#39;s body
+})();</code></pre><p><strong>Note:</strong> You currently cannot create private fields in constructor functions. They are one of the latest features JavaScript introduced in classes.<h2>How Does a JavaScript Class Help with Encapsulation?</h2><p>Classes let you prevent external code from interacting with internal class fields. Instead, external code would use public methods to operate on the class’s internal implementations.<p>For instance, consider the following code:<pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  // Create a private class field data:
+  #myName = &#34;Oluwatobi&#34;;
+
+  // Create a publicly available method:
+  showMyName() {
+    return this.#myName;
+  }
+
+  // Create another publicly available method:
+  updateMyName(value) {
+    this.#myName = value;
+  }
+}
+
+// Create a new object instance:
+const bio = new Name();
+
+// Check the instance&#39;s data value:
+bio.myName;
+
+// The invocation above will return:
+undefined</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/encapsulation/js-q7uqv4><strong>Try Editing It</strong></a><p>The snippet above <a href=https://codesweetly.com/web-tech-terms-e#encapsulation>encapsulated</a> <code>Name</code>’s data because it defined <code>myName</code> as a private feature and provided two public methods for users to read and update the class’s internal implementation.<p>Consequently, the <code>bio</code> instance object knows nothing about the class’s internal data and cannot interact with it directly.<p>Whenever users need to access the encapsulated data, they would use the publicly available methods like so:<pre class=language-js><code class=language-js>// Check the instance&#39;s data value:
+bio.showMyName();
+
+// The invocation above will return:
+&#34;Oluwatobi&#34;
+
+// Update the instance&#39;s data value:
+bio.updateMyName(&#34;Sofela&#34;);
+
+// Check the instance&#39;s data value:
+bio.showMyName();
+
+// The invocation above will return:
+&#34;Sofela&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/encapsulation/js-3vq4es><strong>Try Editing It</strong></a><p>Encapsulating your data is an excellent way to keep your class clean. It prevents minor internal refactoring from breaking users’ code.<p>For instance, consider the following code:<pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  // Create a public class field data:
+  myName = &#34;Oluwatobi&#34;;
+}
+
+// Create a new object instance:
+const bio = new Name();
+
+// Check the instance&#39;s data value:
+bio.myName;
+
+// The invocation above will return:
+&#34;Oluwatobi&#34;
+
+// Update the instance&#39;s data value:
+bio.myName = &#34;Sofela&#34;;
+
+// Check the instance&#39;s data value:
+bio.myName;
+
+// The invocation above will return:
+&#34;Sofela&#34;</code></pre><p>Since the snippet above did not encapsulate the class’s data, refactoring the class field’s name would break users’ code.<p>Here’s an example:<pre class=language-js><code class=language-js>class Name {
+  // Update the data&#39;s name from myName to myFirstName:
+  myFirstName = &#34;Oluwatobi&#34;;
+}
+
+// Create a new object instance:
+const bio = new Name();
+
+// Check the instance&#39;s data value:
+bio.myName;
+
+// The invocation above will return:
+undefined</code></pre><p>The snippet above returned <code>undefined</code> because refactoring the class’s internal implementation broke the user’s <code>bio.myName</code> code. For the application to work appropriately, the user must update every instance of the code (which can be burdensome for large projects).<p>However, encapsulation prevents such refactoring from breaking the user’s code.<p>Here’s an example:<pre class=language-js><code class=language-js>class Name {
+  // Update the data&#39;s name from myName to myFirstName:
+  #myFirstName = &#34;Oluwatobi&#34;;
+
+  // Create a publicly available method:
+  showMyName() {
+    return this.#myFirstName;
+  }
+
+  // Create another publicly available method:
+  updateMyName(value) {
+    this.#myFirstName = value;
+  }
+}
+
+// Create a new object instance:
+const bio = new Name();
+
+// Check the instance&#39;s data value:
+bio.showMyName();
+
+// The invocation above will return:
+&#34;Oluwatobi&#34;
+
+// Update the instance&#39;s data value:
+bio.updateMyName(&#34;Sofela&#34;);
+
+// Check the instance&#39;s data value:
+bio.showMyName();
+
+// The invocation above will return:
+&#34;Sofela&#34;</code></pre><p>You can see that refactoring the class’s internal implementation did not break the user’s code. That’s the beauty of encapsulation!<p>Encapsulation allows you to provide users with an interface independent of the class’s underlying data. Therefore, you minimize the likelihood of users’ code breaking when you alter internal implementations.<h2>Important Things to Know about JavaScript Classes</h2><p>Here are five essential facts to remember when using JavaScript classes.<h3>1. Declare your class before you access it</h3><p>Classes are like constructor functions but have the same <a href=https://codesweetly.com/javascript-temporal-dead-zone#how-does-vars-tdz-differ-from-let-and-const-variables>temporal dead zone</a> behavior as <code>const</code> and <code>let</code> variables.<p>In other words, JavaScript does not <a href=https://www.freecodecamp.org/news/what-is-hoisting-in-javascript-3/>hoist</a> class declarations. Therefore, you must first declare your class before you can access it. Otherwise, the computer will throw an <code>Uncaught ReferenceError</code>.<p>Here’s an example:<pre class=language-js><code class=language-js>// Create an object instance from the Name class:
+const name = new Name();
+
+// Define the Name class:
+class Name {}</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-explained/js-74u2wt><strong>Try Editing It</strong></a><p>The snippet above throws an <code>Uncaught ReferenceError</code> because JavaScript does not hoist classes. So, invoking <code>Name()</code> before its definition is invalid.<h3>2. Classes are functions</h3><p>The <code>typeof</code> a class is a function because, under the hood, the <code>class</code> keyword creates a new <a href=https://codesweetly.com/javascript-function-object>function</a>.<p>For instance, consider the following code:<pre class=language-js><code class=language-js>// Define a JavaScript class:
+class Bio {
+  // Define two instance class fields:
+  firstName = &#34;Oluwatobi&#34;;
+  lastName = &#34;Sofela&#34;;
+  // Create a prototypal method:
+  showBio() {
+    return `${ firstName } ${ lastName } runs CodeSweetly.`;
+  }
+}
+
+// Create a new object instance:
+const aboutMe = new Bio();
+
+// Check what data type the Bio class is:
+typeof Bio;
+
+// The invocation above will return:
+&#34;function&#34;</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-explained/js-spwwdy><strong>Try Editing It</strong></a><p>The computer processes the snippet above as follows:<ol><li>Create a new function named <code>Bio</code>.<li>Add the class’s instance properties to the newly created function’s <code>this</code> keyword.<li>Add the class’s prototypal properties to the newly created function’s <code>prototype</code> property.</ol><h3>3. Classes are strict</h3><p>JavaScript executes classes in strict mode. So, follow the strict syntax rules when you use classes. Otherwise, your code will throw errors—some of which will be silent errors that are difficult to debug.<h3>4. Avoid the <code>return</code> keyword in your class’s <code>constructor</code> method</h3><p>Suppose your class’s <code>constructor</code> returns a <a href=https://codesweetly.com/javascript-non-primitive-data-type>non-primitive value</a>. In that case, JavaScript will ignore the values of all the <code>this</code> keywords and assign the non-primitive to the <code>new</code> keyword expression.<p>In other words, a <code>constructor</code>’s <a href=https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_properties#returning_overriding_object><code>return</code> object overrides</a> its <code>this</code> keyword.<p>For instance, consider the following code:<pre class=language-js><code class=language-js>// Create a new class:
+class Name {
+  constructor() {
+    this.firstName = &#34;Oluwatobi&#34;;
+    this.lastName = &#34;Sofela&#34;;
+    return { companyName: &#34;CodeSweetly&#34; };
+  }
+}
+
+// Create a new object instance:
+const myName = new Name();
+
+// Check myName&#39;s current value:
+myName;
+
+// The invocation above will return:
+{ companyName: &#34;CodeSweetly&#34; }
+
+// Check firstName&#39;s current value:
+myName.firstName;
+
+// The invocation above will return:
+undefined
+
+// Check lastName&#39;s current value:
+myName.lastName;
+
+// The invocation above will return:
+undefined</code></pre><p><a href=https://codesweetly.com/try-it-sdk/javascript/function/class/class-explained/js-vgwrmg><strong>Try Editing It</strong></a><p>The <code>new</code> keyword expression returned only <code>{ companyName: &#34;CodeSweetly&#34; }</code> because JavaScript ignores the <code>constructor</code> method’s <code>this</code> keywords whenever you use a <code>return</code> operator to produce an object.<h3>5. A class’s evaluation starts from the <code>extends</code> clause to its values</h3><p>JavaScript evaluates your class according to the following order:<h4>1. <code>extends</code> clause</h4><p>If you declare an <code>extends</code> clause, the computer will first evaluate it.<p><strong>Note:</strong> Browsers will throw a <code>TypeError</code> if the <code>extends</code> clause does not evaluate to a constructor function or <code>null</code>.<h4>2. Extract the class’s <code>constructor</code></h4><p>JavaScript extracts the class’s <code>constructor</code>.<p><strong>Note:</strong> Suppose you did not define a <code>constructor</code> method. In that case, the computer will use the default one.<h4>3. Parse the class’s property names</h4><p>The computer analyzes the class’s class field names (not their values) according to their order of declaration.<h4>4. Parse the class’s methods and property accessors</h4><p>JavaScript analyzes the class’s methods and property accessors according to their order of declaration by doing the following:<ul><li>Add the prototypal methods and property accessors to the class’s <code>prototype</code> property.<li>Analyze the static methods and property accessors as the class’s own properties, which you can call on the class itself.<li>Analyze the private instance methods and property accessors as private properties of the class’s instance object.</ul><h4>5. Parse the class’s property values</h4><p>The computer analyzes the class field values according to their order of declaration by doing the following:<ul><li>Save each instance field’s initializer expression for later evaluations. JavaScript will evaluate the initializer expression during the following periods:<ul><li>When the <code>new</code> keyword is creating an instance object.<li>While processing the parent class’s <code>constructor</code>.<li>Before the <code>super()</code> function call returns.</ul><li>Set each static field’s keyword <code>this</code> to the class itself and create the static property on the class.<li>Evaluate the class’s <a href=https://codesweetly.com/web-tech-terms-s#static-initialization-blocks>static initialization blocks</a> and set their keyword <code>this</code> to the class itself.</ul><p><strong>Note:</strong><ul><li>Only after JavaScript parses a class’s property values is the class fully initialized and available as a constructor function.<li>Any attempt to access the child class before its complete initialization would return a <code>ReferenceError</code>.</ul><h2>Overview</h2><p>In this article, we discussed what a JavaScript class object is. We also used examples to discuss class fields, the <code>super</code> keyword, and data encapsulation.<p>Thanks for reading!<p></section></main>
+<hr>
+<footer>
+        <label>原网址: <a href="https://www.freecodecamp.org/news/javascript-class-handbook/" target="_blank" referrerpolicy="no-referrer" rel="noopener noreferrer">访问</a></label><br/>
+        <label>创建时间: 2024-05-27 10:34:27</label><br/>
+        <br/>
+        
+      </footer>
+</body>
+</html>
